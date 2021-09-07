@@ -1,6 +1,6 @@
 include(FetchContent)
 
-set(DOCS_DIR ${PROJECT_SOURCE_DIR}/docs)
+set(DOCS_DIR ${CMAKE_CURRENT_BINARY_DIR}/../../docs)
 file(MAKE_DIRECTORY ${DOCS_DIR})
 
 # requires
