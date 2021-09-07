@@ -178,14 +178,12 @@ public:
    */
   Queryable &operator=(const Queryable &) = delete;
   /**
-   * @brief Implicit cast operator to vector.
-   *
+   * @brief Implicit cast operator to vector as rvalue reference.
+   * @remark Object state will be invalid after this call since items have been
+   * moved out.
    * @return std::vector<T>
    */
-  operator std::vector<T>() const {
-    return std::vector<T>();
-  } // std::move(items_); }
-  // operator const std::vector<T> &() const { return items_; }
+  operator const std::vector<T> &&() const { return std::move(items_); }
 
   /**
    * @brief Equals overload operator for Queryable<T> against a
