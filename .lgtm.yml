@@ -1,0 +1,18 @@
+# lgtm.com: Code Analysis
+# https://lgtm.com/projects/g/awalsh128/fluentcpp
+#
+# File is required in root folder.
+#
+extraction:
+  cpp:
+    after_prepare:
+      - "mkdir custom_cmake"
+      # Need later version of CMake than lgtm has.
+      - "wget --quiet -O - https://cmake.org/files/v3.16/cmake-3.16.3-Linux-x86_64.tar.gz | tar --strip-components=1 -xz -C custom_cmake"
+      - "export PATH=$(pwd)/custom_cmake/bin:${PATH}"
+    index:
+      build_command:
+        - cd $LGTM_SRC
+        - mkdir build; cd build
+        - cmake .. -DCMAKE_BUILD_TYPE=RELWITHDEBINFO
+        - make

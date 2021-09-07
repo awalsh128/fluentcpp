@@ -1,0 +1,5 @@
+Language: Cpp
+AlignAfterOpenBracket: AlwaysBreak
+AllowShortLambdasOnASingleLine: All
+AlwaysBreakTemplateDeclarations: Yes
+ColumLimit: 80
