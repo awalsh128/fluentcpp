@@ -88,7 +88,6 @@ class DoxygenAwesomeDarkModeToggle extends HTMLElement {
     }
 
     static enableDarkMode(enable) {
-        let head = document.getElementsByTagName('head')[0]
         if(enable) {
             document.documentElement.classList.add("dark-mode")
             document.documentElement.classList.remove("light-mode")
