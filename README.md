@@ -4,8 +4,10 @@
 [![Build](https://github.com/awalsh128/fluentcpp/actions/workflows/build.yml/badge.svg)](https://github.com/awalsh128/fluentcpp/actions/workflows/build.yml)
 [![License: Apache2](https://shields.io/badge/license-apache2-blue.svg)](https://github.com/awalsh128/fluentcpp/blob/master/LICENSE)
 [![Lines of Code](https://tokei.rs/b1/github/awalsh128/fluentcpp)](https://github.com/awalsh128/fluentcpp)
+<!-- Enable once lgtm.com is fixed. Currently stuck on old rev.
 [![Code Grade](https://img.shields.io/lgtm/grade/cpp/g/awalsh128/fluentcpp.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/awalsh128/fluentcpp/context:cpp)
 [![Code Alerts](https://img.shields.io/lgtm/alerts/g/awalsh128/fluentcpp.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/awalsh128/fluentcpp/alerts/)
+-->
 
 Fluent C++ is a library that can be used to express information in a functional way that allows for easy auto-complete and shorter expressions.
 
