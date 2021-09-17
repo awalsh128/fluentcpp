@@ -1,4 +1,8 @@
-add_library(fluentcpp STATIC query.h)
+message(STATUS "Building and installing library.")
+
+file(GLOB SRC_FILES *.h *.cpp)
+
+add_library(fluentcpp STATIC ${SRC_FILES})
 
 set_target_properties(fluentcpp PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -8,11 +12,8 @@ set_target_properties(fluentcpp PROPERTIES
 
 target_include_directories(fluentcpp PUBLIC .)
 
-message(STATUS "Building library.")
 install(TARGETS fluentcpp DESTINATION lib)
-install(FILES query.h query.cpp DESTINATION include)
-
-message(STATUS "Installing library.")
+install(FILES ${SRC_FILES} DESTINATION include)  
 install(TARGETS fluentcpp
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

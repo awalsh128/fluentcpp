@@ -41,6 +41,7 @@
 
 #include "asserts.h"
 #include "traits.h"
+#include "transforms.h"
 
 // DO NOT USE
 //
@@ -100,15 +101,6 @@ template <typename TrueT, typename FalseT> class Merge;
  * @return Queryable<T>
  */
 template <typename T> Queryable<T> query(std::vector<T> items);
-
-/**
- * @brief Queries the sequence of items using an initializer list.
- *
- * @tparam T Type of items to query over.
- * @param items Items to query over.
- * @return Queryable<T>
- */
-template <typename T> Queryable<T> query(std::initializer_list<T> items);
 
 /**
  * @brief Core object used to query items and hold the sequence state.
@@ -235,7 +227,7 @@ public:
    * @param action_func Void function to apply to each item.
    * @return Queryable<T>
    */
-  template <typename ActionFn> Queryable<T> action(ActionFn action_func) const;
+  template <typename ActionFn> Queryable<T> action(ActionFn action_func);
 
   /**
    * @brief Determines whether all items of a sequence satisfy a condition.
@@ -261,7 +253,7 @@ public:
    * @param predicate Function to test each item for a condition.
    * @return WhenTrue<T> True / if block query for items that evaluated to true.
    */
-  template <typename Predicate> WhenTrue<T> branch(Predicate predicate) const;
+  template <typename Predicate> WhenTrue<T> branch(Predicate predicate);
 
   /**
    * @brief Produces the set difference of two sequences.
@@ -269,14 +261,14 @@ public:
    * @param rhs_items Right hand side sequence.
    * @return Queryable<T> Sequence of items not found in both sequences.
    */
-  Queryable<T> difference(std::vector<T> rhs_items) const;
+  Queryable<T> difference(std::vector<T> rhs_items);
 
   /**
    * @brief Gets distinct items from a sequence.
    *
    * @return Queryable<T>
    */
-  Queryable<T> distinct() const;
+  Queryable<T> distinct();
 
   /**
    * @brief Indicates of the sequence is empty.
@@ -295,7 +287,7 @@ public:
    * of std::nullopt
    */
   template <typename Predicate>
-  std::optional<T> first_or_default(Predicate predicate) const;
+  std::optional<T> first_or_default(Predicate predicate);
 
   /**
    * @brief Projects each item in the sequence-of-sequences and flattens the
@@ -303,7 +295,7 @@ public:
    *
    * @return Queryable<U = std::vector<T>>
    */
-  auto flatten() const;
+  auto flatten();
 
   /**
    * @brief Groups the items of a sequence.
@@ -313,7 +305,7 @@ public:
    * @return Queryable<std::vector<T>>
    */
   template <typename KeySelector>
-  Queryable<std::vector<T>> group_by(KeySelector key_selector) const;
+  Queryable<std::vector<T>> group_by(KeySelector key_selector);
 
   /**
    * @brief Produces the set intersection of two sequences.
@@ -321,7 +313,7 @@ public:
    * @param rhs_items Right hand side sequence.
    * @return Queryable<T> The intersected set that share the same items.
    */
-  Queryable<T> intersect(const std::vector<T> &rhs_items) const;
+  Queryable<T> intersect(const std::vector<T> &rhs_items);
 
   /**
    * @brief Correlates the items of two sequences based on matching keys.
@@ -339,7 +331,7 @@ public:
   template <typename U, typename LhsKeySelector, typename RhsKeySelector>
   Queryable<std::tuple<T, U>> join(std::vector<U> rhs_items,
                                    LhsKeySelector lhs_key_selector,
-                                   RhsKeySelector rhs_key_selector) const;
+                                   RhsKeySelector rhs_key_selector);
 
   /**
    * @brief Groups the items of a sequence by key and produces as a key-group
@@ -349,15 +341,14 @@ public:
    * @param key_selector Transform to key function to apply to each item.
    * @return Queryable<std::pair<K, std::vector<T>>>
    */
-  template <typename KeySelector>
-  auto keyed_group_by(KeySelector key_selector) const;
+  template <typename KeySelector> auto keyed_group_by(KeySelector key_selector);
 
   /**
    * @brief Gets the maximum item from the sequence.
    *
    * @return T
    */
-  T max() const;
+  T max();
 
   /**
    * @brief Gets the maximum item from the sequence based on a selected value.
@@ -366,14 +357,14 @@ public:
    * @param value_selector Transform to value function to apply to each item.
    * @return T
    */
-  template <typename ValueSelector> T max(ValueSelector value_selector) const;
+  template <typename ValueSelector> T max(ValueSelector value_selector);
 
   /**
    * @brief Gets the minimum item from the sequence.
    *
    * @return T
    */
-  T min() const;
+  T min();
 
   /**
    * @brief Gets the minimum item from the sequence based on a selected value.
@@ -382,7 +373,7 @@ public:
    * @param value_selector Transform to value function to apply to each item.
    * @return T
    */
-  template <typename ValueSelector> T min(ValueSelector value_selector) const;
+  template <typename ValueSelector> T min(ValueSelector value_selector);
 
   /**
    * @brief Orders the sequence by the selected value.
@@ -394,15 +385,14 @@ public:
    * @return Queryable<T>
    */
   template <typename ValueSelector>
-  Queryable<T> order_by(ValueSelector value_selector,
-                        bool descending = false) const;
+  Queryable<T> order_by(ValueSelector value_selector, bool descending = false);
 
   /**
    * @brief Inverts the order of the items in the sequence.
    *
    * @return Queryable<T>
    */
-  Queryable<T> reverse() const;
+  Queryable<T> reverse();
 
   /**
    * @brief Projects each item of a sequence into a new form.
@@ -411,14 +401,14 @@ public:
    * @param selector Transform function to apply to each item.
    * @return Queryable<decltype(selector(T))>
    */
-  template <typename Selector> auto select(Selector selector) const;
+  template <typename Selector> auto select(Selector selector);
 
   /**
    * @brief Randomizes / shuffles all the item's order in the sequence.
    *
    * @return Queryable<T>
    */
-  Queryable<T> shuffle() const;
+  Queryable<T> shuffle();
 
   /**
    * @brief Gets the size of the sequence.
@@ -434,7 +424,7 @@ public:
    * @param value The number of items from the beginning to skip.
    * @return Queryable<T>
    */
-  Queryable<T> skip(size_t value) const;
+  Queryable<T> skip(size_t value);
 
   /**
    * @brief Gets a slice of the sequence.
@@ -452,14 +442,14 @@ public:
    * @param stride The length of the skip to the next size items.
    * @return Queryable<T>
    */
-  Queryable<T> slice(size_t start_index, size_t size, size_t stride = 1) const;
+  Queryable<T> slice(size_t start_index, size_t size, size_t stride = 1);
 
   /**
    * @brief Sorts the items in the sequence.
    *
    * @return Queryable<T>
    */
-  Queryable<T> sort() const;
+  Queryable<T> sort();
 
   /**
    * @brief Takes a specified number of contiguous items from the start of a
@@ -468,7 +458,7 @@ public:
    * @param value The number of items from the beginning to keep.
    * @return Queryable<T>
    */
-  Queryable<T> take(size_t value) const;
+  Queryable<T> take(size_t value);
 
   /**
    * @brief Takes the specified number of items from the sequence at random
@@ -477,7 +467,7 @@ public:
    * @param value The number of items to take randomly.
    * @return Queryable<T>
    */
-  Queryable<T> take_random(size_t value) const;
+  Queryable<T> take_random(size_t value);
 
   /**
    * @brief Trim from the back of the sequence.
@@ -485,7 +475,7 @@ public:
    * @param size The number of items to trim / erase from the back.
    * @return Queryable<T>
    */
-  Queryable<T> trim(size_t size) const;
+  Queryable<T> trim(size_t size);
 
   /**
    * @brief Groups items by a selected key value and puts them into a hash map.
@@ -495,7 +485,7 @@ public:
    * @return std::map<K, std::vector<T>>
    */
   template <typename KeySelector>
-  auto to_multi_value_map(KeySelector key_selector) const;
+  auto to_multi_value_map(KeySelector key_selector);
 
   /**
    * @brief Groups items by selected key value, takes the first item of every
@@ -506,21 +496,21 @@ public:
    * @return std::map<K, T>
    */
   template <typename KeySelector /* = std::function<K(T)>*/>
-  auto to_single_value_map(KeySelector key_selector) const;
+  auto to_single_value_map(KeySelector key_selector);
 
   /**
    * @brief Gets the sequence as a set.
    *
    * @return std::set<T>
    */
-  std::set<T> to_set() const;
+  std::set<T> to_set();
 
   /**
    * @brief Gets the sequence as a vector.
    *
    * @return std::vector<T>
    */
-  std::vector<T> to_vector() const;
+  std::vector<T> to_vector();
 
   /**
    * @brief Unions the left hand and right hand side sequences.
@@ -528,7 +518,7 @@ public:
    * @param rhs_items The right hand side sequence to union.
    * @return Queryable<T>
    */
-  Queryable<T> unionize(std::vector<T> rhs_items) const;
+  Queryable<T> unionize(std::vector<T> rhs_items);
 
   /**
    * @brief Selects items in the sequence that satisfy the predicate /
@@ -537,7 +527,7 @@ public:
    * @param predicate Function to test each item for a condition.
    * @return Queryable<T>
    */
-  template <typename Predicate> Queryable<T> where(Predicate predicate) const;
+  template <typename Predicate> Queryable<T> where(Predicate predicate);
 
   /**
    * @brief Produces a sequence of tuples with items from the two specified
@@ -552,7 +542,7 @@ public:
    */
   template <typename U>
   Queryable<std::tuple<T, U>> zip(std::vector<U> rhs_items,
-                                  bool truncate = false) const;
+                                  bool truncate = false);
 
   /**
    * @brief Produces a sequence of tuples with items from the two specified
@@ -567,17 +557,13 @@ public:
    */
   template <typename U>
   Queryable<std::tuple<T, U>> zip(std::initializer_list<U> rhs_items,
-                                  bool truncate) const;
+                                  bool truncate);
 
 private:
   /**
    * @brief Sequence of items to be queried over.
-   *
-   * @remark Sequence is const qualified to avoid unintentional mutations in
-   * future development. Any mutations are made explicit in implementation by
-   * moving into a const removed vector.
    */
-  const std::vector<T> items_;
+  std::vector<T> items_;
 };
 
 } // namespace fcpp
@@ -590,12 +576,9 @@ private:
  *****************************************************************************/
 
 namespace fcpp {
+
 template <typename T> Queryable<T> query(std::vector<T> items) {
   return Queryable<T>(std::move(items));
-}
-
-template <typename T> Queryable<T> query(std::initializer_list<T> items) {
-  return query(std::vector<T>(items));
 }
 
 template <typename T>
@@ -616,8 +599,7 @@ template <typename U, typename AccumulateFn>
 U Queryable<T>::accumulate(U initial, AccumulateFn accumulate_func) const {
   static_assert(traits::is_additive<U>::value,
                 "Initial value type must be additive.");
-  // @todo Check that AccumulateFn takes two args and produces an additive
-  // return type.
+  // @todo Check that AccumulateFn is a binary operation.
   return std::accumulate(std::make_move_iterator(items_.begin()),
                          std::make_move_iterator(items_.end()), initial,
                          accumulate_func);
@@ -625,8 +607,8 @@ U Queryable<T>::accumulate(U initial, AccumulateFn accumulate_func) const {
 
 template <typename T>
 template <typename ActionFn>
-Queryable<T> Queryable<T>::action(ActionFn action_func) const {
-  // @todo Check that ActionFn takes a single arg.
+Queryable<T> Queryable<T>::action(ActionFn action_func) {
+  // @todo Check that ActionFn is a unary operation.
   std::for_each(items_.begin(), items_.end(),
                 [&action_func](auto item) { action_func(item); });
   return Queryable<T>(std::move(items_));
@@ -645,7 +627,7 @@ bool Queryable<T>::any(Predicate predicate) const {
 }
 
 template <typename T>
-Queryable<T> Queryable<T>::difference(std::vector<T> rhs_items) const {
+Queryable<T> Queryable<T>::difference(std::vector<T> rhs_items) {
   static_assert(traits::is_equality_comparable<T>::value,
                 "T must be equality comparable.");
   // @todo Bubble up concepts for comparisons.
@@ -658,15 +640,13 @@ Queryable<T> Queryable<T>::difference(std::vector<T> rhs_items) const {
   return Queryable<T>(std::move(difference));
 }
 
-template <typename T> Queryable<T> Queryable<T>::distinct() const {
+template <typename T> Queryable<T> Queryable<T>::distinct() {
   static_assert(traits::is_equality_comparable<T>::value,
                 "T must be equality comparable.");
   // @todo Reduce the number of transforms.
-  auto distinguished = std::set<T>(std::make_move_iterator(items_.begin()),
-                                   std::make_move_iterator(items_.end()));
-  return Queryable<T>(
-      std::vector<T>(std::make_move_iterator(distinguished.begin()),
-                     std::make_move_iterator(distinguished.end())));
+  std::set<T> distinguished(std::make_move_iterator(items_.begin()),
+                            std::make_move_iterator(items_.end()));
+  return Queryable<T>(transforms::to_vector(std::move(distinguished)));
 }
 
 template <typename T> bool Queryable<T>::empty() const {
@@ -675,20 +655,20 @@ template <typename T> bool Queryable<T>::empty() const {
 
 template <typename T>
 template <typename Predicate>
-std::optional<T> Queryable<T>::first_or_default(Predicate predicate) const {
-  std::vector<T> mutable_items(std::move(items_));
-  auto it = std::find_if(mutable_items.begin(), mutable_items.end(), predicate);
-  return it == mutable_items.end() ? std::nullopt
-                                   : std::optional<T>(std::move(*it));
+std::optional<T> Queryable<T>::first_or_default(Predicate predicate) {
+  // @todo Require predicate to be a unary operation.
+  auto end = std::make_move_iterator(items_.end());
+  auto it =
+      std::find_if(std::make_move_iterator(items_.begin()), end, predicate);
+  return it != end ? std::make_optional(*it) : std::nullopt;
 }
 
-template <typename T> auto Queryable<T>::flatten() const {
+template <typename T> auto Queryable<T>::flatten() {
   // @todo asserts::invariant T is a vector.
   using U = T::value_type;
-  std::vector<T> mutable_items(std::move(items_));
   std::vector<U> flattened;
-  for (T &item : mutable_items) {
-    for (U &sub_item : std::move(item)) {
+  for (T &item : items_) {
+    for (U &sub_item : item) {
       flattened.push_back(std::move(sub_item));
     }
   }
@@ -697,8 +677,7 @@ template <typename T> auto Queryable<T>::flatten() const {
 
 template <typename T>
 template <typename KeySelector>
-Queryable<std::vector<T>>
-Queryable<T>::group_by(KeySelector key_selector) const {
+Queryable<std::vector<T>> Queryable<T>::group_by(KeySelector key_selector) {
   using K = decltype(key_selector(*items_.begin()));
   static_assert(
       traits::is_less_than_comparable<K>::value,
@@ -721,7 +700,7 @@ Queryable<T>::group_by(KeySelector key_selector) const {
 }
 
 template <typename T>
-Queryable<T> Queryable<T>::intersect(const std::vector<T> &rhs_items) const {
+Queryable<T> Queryable<T>::intersect(const std::vector<T> &rhs_items) {
   // @todo Investigate potential copies of rhs_items when set_intersection
   // called.
   std::vector<T> intersection;
@@ -736,7 +715,7 @@ template <typename T>
 template <typename U, typename LhsKeySelector, typename RhsKeySelector>
 Queryable<std::tuple<T, U>>
 Queryable<T>::join(std::vector<U> rhs_items, LhsKeySelector lhs_key_selector,
-                   RhsKeySelector rhs_key_selector) const {
+                   RhsKeySelector rhs_key_selector) {
   using KU = decltype(rhs_key_selector(*rhs_items.begin()));
   using KT = decltype(rhs_key_selector(*items_.begin()));
   static_assert(
@@ -775,11 +754,7 @@ Queryable<T>::join(std::vector<U> rhs_items, LhsKeySelector lhs_key_selector,
 
 template <typename T>
 template <typename KeySelector>
-auto Queryable<T>::keyed_group_by(KeySelector key_selector) const {
-  // @todo Allow non-copyable objects to use this function.
-  static_assert(std::is_copy_constructible_v<T>,
-                "T must be copy constructible as it is used by the "
-                "key_selector and group add.");
+auto Queryable<T>::keyed_group_by(KeySelector key_selector) {
   using K = decltype(key_selector(*items_.begin()));
 
   std::map<K, std::vector<T>> mapped;
@@ -792,51 +767,54 @@ auto Queryable<T>::keyed_group_by(KeySelector key_selector) const {
        std::make_move_iterator(mapped.end())});
 }
 
-template <typename T> T Queryable<T>::max() const {
+template <typename T> T Queryable<T>::max() {
   static_assert(traits::is_less_than_comparable<T>::value,
                 "T must be less-than compareable.");
+  asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
 
   // @todo Investigate performance for large objects.
-  std::vector<T> mutable_items(std::move(items_));
-  return *std::max_element(std::make_move_iterator(mutable_items.begin()),
-                           std::make_move_iterator(mutable_items.end()),
-                           [](auto lhs, auto rhs) { return lhs < rhs; });
+  return *std::max_element(std::make_move_iterator(items_.begin()),
+                           std::make_move_iterator(items_.end()));
 }
 
 template <typename T>
 template <typename ValueSelector>
-T Queryable<T>::max(ValueSelector value_selector) const {
+T Queryable<T>::max(ValueSelector value_selector) {
   static_assert(traits::is_less_than_comparable<decltype(
                     value_selector(*items_.begin()))>::value,
                 "ValueSelector return type must be less-than compareable.");
+  asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
+  // @todo Require unary operation.
 
-  std::vector<T> mutable_items(std::move(items_));
-  return *std::max_element(std::make_move_iterator(mutable_items.begin()),
-                           std::make_move_iterator(mutable_items.end()),
-                           [&value_selector](auto lhs, auto rhs) {
+  return *std::max_element(std::make_move_iterator(items_.begin()),
+                           std::make_move_iterator(items_.end()),
+                           [&value_selector](const auto &lhs, const auto &rhs) {
                              return value_selector(lhs) < value_selector(rhs);
                            });
 }
 
-template <typename T> T Queryable<T>::min() const {
+template <typename T> T Queryable<T>::min() {
+  static_assert(traits::is_less_than_comparable<T>::value,
+                "T must be less-than compareable.");
+  asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
+
   // @todo Guard with concepts as seen in min_element.
-  std::vector<T> mutable_items(std::move(items_));
-  return *std::min_element(std::make_move_iterator(mutable_items.begin()),
-                           std::make_move_iterator(mutable_items.end()),
-                           [](auto lhs, auto rhs) { return lhs < rhs; });
+  return *std::min_element(std::make_move_iterator(items_.begin()),
+                           std::make_move_iterator(items_.end()));
 }
 
 template <typename T>
 template <typename ValueSelector /* = std::function<K(T)>*/>
-T Queryable<T>::min(ValueSelector value_selector) const {
+T Queryable<T>::min(ValueSelector value_selector) {
   static_assert(traits::is_less_than_comparable<decltype(
                     value_selector(*items_.begin()))>::value,
                 "ValueSelector return type must be less-than compareable.");
+  asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
+  // @todo Require unary operation.
 
-  std::vector<T> mutable_items(std::move(items_));
-  return *std::min_element(std::make_move_iterator(mutable_items.begin()),
-                           std::make_move_iterator(mutable_items.end()),
-                           [&value_selector](auto lhs, auto rhs) {
+  return *std::min_element(std::make_move_iterator(items_.begin()),
+                           std::make_move_iterator(items_.end()),
+                           [&value_selector](const auto &lhs, const auto &rhs) {
                              return value_selector(lhs) < value_selector(rhs);
                            });
 }
@@ -844,58 +822,57 @@ T Queryable<T>::min(ValueSelector value_selector) const {
 template <typename T>
 template <typename ValueSelector>
 Queryable<T> Queryable<T>::order_by(ValueSelector value_selector,
-                                    bool descending) const {
+                                    bool descending) {
+  static_assert(
+      std::is_copy_assignable_v<T> ||
+          (std::is_move_assignable_v<T> && std::is_move_constructible_v<T>),
+      "T must either be copy assignable, or move assignable and "
+      "constructible.");
   static_assert(traits::is_less_than_comparable<decltype(
                     value_selector(*items_.begin()))>::value,
                 "ValueSelector return type must be less-than compareable.");
 
-  std::vector<T> items(std::make_move_iterator(items_.begin()),
-                       std::make_move_iterator(items_.end()));
-
   using K = decltype(value_selector(*items_.begin()));
-  std::sort(items.begin(), items.end(),
-            [&value_selector, &descending](auto lhs, auto rhs) -> bool {
-              const K lhs_value = value_selector(lhs);
-              const K rhs_value = value_selector(rhs);
-              return descending ? lhs_value > rhs_value : lhs_value < rhs_value;
-            });
+  std::sort(
+      items_.begin(), items_.end(),
+      [&value_selector, &descending](const auto &lhs, const auto &rhs) -> bool {
+        const K &lhs_value = value_selector(lhs);
+        const K &rhs_value = value_selector(rhs);
+        return descending ? lhs_value > rhs_value : lhs_value < rhs_value;
+      });
 
-  return Queryable<T>(std::move(items));
+  return Queryable<T>(std::move(items_));
 }
 
-template <typename T> Queryable<T> Queryable<T>::reverse() const {
-  std::vector<T> reversed(std::make_move_iterator(items_.begin()),
-                          std::make_move_iterator(items_.end()));
-  std::reverse(reversed.begin(), reversed.end());
-  return Queryable<T>(std::move(reversed));
+template <typename T> Queryable<T> Queryable<T>::reverse() {
+  std::reverse(items_.begin(), items_.end());
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
 template <typename Selector /* = std::function<U(T)>*/>
-auto Queryable<T>::select(Selector selector) const {
+auto Queryable<T>::select(Selector selector) {
   using U = decltype(selector(*items_.begin()));
-  std::vector<T> mutable_items(std::move(items_));
   std::vector<U> selected;
   selected.reserve(items_.size());
-  std::transform(std::make_move_iterator(mutable_items.begin()),
-                 std::make_move_iterator(mutable_items.end()),
+  std::transform(std::make_move_iterator(items_.begin()),
+                 std::make_move_iterator(items_.end()),
                  std::back_inserter(selected), selector);
 
   return Queryable<U>(std::move(selected));
 }
 
-template <typename T> Queryable<T> Queryable<T>::shuffle() const {
-  std::vector<T> mutable_items(std::move(items_));
-  std::shuffle(mutable_items.begin(), mutable_items.end(),
+template <typename T> Queryable<T> Queryable<T>::shuffle() {
+  std::shuffle(items_.begin(), items_.end(),
                std::mt19937(std::random_device()()));
-  return Queryable<T>(std::move(mutable_items));
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T> size_t Queryable<T>::size() const {
   return items_.size();
 }
 
-template <typename T> Queryable<T> Queryable<T>::skip(size_t value) const {
+template <typename T> Queryable<T> Queryable<T>::skip(size_t value) {
   asserts::invariant::eval(value <= size())
       << "Skip value " << value
       << " must be less than or equal to sequence size of " << size() << ".";
@@ -906,7 +883,7 @@ template <typename T> Queryable<T> Queryable<T>::skip(size_t value) const {
 
 template <typename T>
 Queryable<T> Queryable<T>::slice(size_t start_index, size_t size,
-                                 size_t stride) const {
+                                 size_t stride) {
   asserts::invariant::eval(start_index < this->size())
       << "Slice start index " << start_index
       << " must be less than sequence size of " << this->size() << ".";
@@ -917,19 +894,25 @@ Queryable<T> Queryable<T>::slice(size_t start_index, size_t size,
       << " must be less than or equal to the sequence size of " << this->size()
       << ".";
 
-  std::valarray<T> view(items_.data(), items_.size());
-  std::valarray<T> sliced = view[std::slice(start_index, size, stride)];
+  std::vector<T> sliced;
+  sliced.reserve(size);
 
-  return Queryable<T>({std::begin(sliced), std::end(sliced)});
+  int i = start_index;
+  for (size_t current_size = 0; current_size < size; current_size++) {
+    sliced.push_back(std::move(items_[i]));
+    i += stride;
+  }
+
+  return Queryable<T>(std::move(sliced));
 }
 
-template <typename T> Queryable<T> Queryable<T>::sort() const {
+template <typename T> Queryable<T> Queryable<T>::sort() {
   std::vector<T> sorted(std::move(items_));
   std::sort(sorted.begin(), sorted.end());
   return Queryable<T>(std::move(sorted));
 }
 
-template <typename T> Queryable<T> Queryable<T>::take(size_t value) const {
+template <typename T> Queryable<T> Queryable<T>::take(size_t value) {
   asserts::invariant::eval(value <= size())
       << "Take value " << value
       << " must be less than or equal to sequence size of " << size() << ".";
@@ -938,8 +921,7 @@ template <typename T> Queryable<T> Queryable<T>::take(size_t value) const {
                        std::make_move_iterator(items_.begin() + value)});
 }
 
-template <typename T>
-Queryable<T> Queryable<T>::take_random(size_t value) const {
+template <typename T> Queryable<T> Queryable<T>::take_random(size_t value) {
   asserts::invariant::eval(value <= size())
       << "Take random value " << value
       << " must be less than or equal to sequence size of " << size() << ".";
@@ -964,22 +946,19 @@ Queryable<T> Queryable<T>::take_random(size_t value) const {
 
 template <typename T>
 template <typename KeySelector /* = std::function<K(T)>*/>
-auto Queryable<T>::to_multi_value_map(KeySelector key_selector) const {
-  static_assert(std::is_copy_constructible_v<T>,
-                "T must be copy constructible as it is used by the "
-                "key_selector and value add.");
-
+auto Queryable<T>::to_multi_value_map(KeySelector key_selector) {
   using K = decltype(key_selector(*items_.begin()));
   std::map<K, std::vector<T>> mapped;
-  std::for_each(std::make_move_iterator(items_.begin()),
-                std::make_move_iterator(items_.end()),
-                [&](auto item) { mapped[key_selector(item)].push_back(item); });
+  std::for_each(items_.begin(), items_.end(),
+                [&key_selector, &mapped](auto &item) {
+                  mapped[key_selector(item)].push_back(std::move(item));
+                });
   return mapped;
 }
 
 template <typename T>
 template <typename KeySelector /* = std::function<K(T)>*/>
-auto Queryable<T>::to_single_value_map(KeySelector key_selector) const {
+auto Queryable<T>::to_single_value_map(KeySelector key_selector) {
   using K = decltype(key_selector(*items_.begin()));
   static_assert(traits::is_less_than_comparable<K>::value,
                 "KeySelector return type must be less-than compareable.");
@@ -997,43 +976,42 @@ auto Queryable<T>::to_single_value_map(KeySelector key_selector) const {
   return mapped;
 }
 
-template <typename T> std::set<T> Queryable<T>::to_set() const {
+template <typename T> std::set<T> Queryable<T>::to_set() {
   static_assert(traits::is_less_than_comparable<T>::value,
                 "T must be less-than compareable.");
-  return std::set<T>(items_.begin(), items_.end());
+  return std::set<T>(std::make_move_iterator(items_.begin()),
+                     std::make_move_iterator(items_.end()));
 }
 
-template <typename T> std::vector<T> Queryable<T>::to_vector() const {
+template <typename T> std::vector<T> Queryable<T>::to_vector() {
   return std::move(items_);
 }
 
-template <typename T> Queryable<T> Queryable<T>::trim(size_t size) const {
+template <typename T> Queryable<T> Queryable<T>::trim(size_t size) {
   asserts::invariant(items_.size() <= size)
       << "Size " << size << " must be less than or equal to sequence size of "
       << this->size() << ".";
 
-  std::vector<T> mutable_items(std::move(items_));
-  mutable_items.resize(items_.size() - size);
-  return Queryable<T>(std::move(mutable_items));
+  items_.resize(items_.size() - size);
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
-Queryable<T> Queryable<T>::unionize(std::vector<T> rhs_items) const {
+Queryable<T> Queryable<T>::unionize(std::vector<T> rhs_items) {
   static_assert(traits::is_less_than_comparable<T>::value,
                 "T must be less-than compareable.");
 
-  std::set<T> unionized({std::make_move_iterator(items_.begin()),
-                         std::make_move_iterator(items_.end())});
+  std::set<T> unionized(std::make_move_iterator(items_.begin()),
+                        std::make_move_iterator(items_.end()));
   std::move(rhs_items.begin(), rhs_items.end(),
             std::inserter(unionized, unionized.end()));
-  return Queryable<T>(
-      std::move(std::vector<T>{std::make_move_iterator(unionized.begin()),
-                               std::make_move_iterator(unionized.end())}));
+
+  return Queryable<T>(transforms::to_vector(std::move(unionized)));
 }
 
 template <typename T>
 template <typename Predicate>
-Queryable<T> Queryable<T>::where(Predicate predicate) const {
+Queryable<T> Queryable<T>::where(Predicate predicate) {
   std::vector<T> filtered;
   std::copy_if(std::make_move_iterator(items_.begin()),
                std::make_move_iterator(items_.end()),
@@ -1044,7 +1022,7 @@ Queryable<T> Queryable<T>::where(Predicate predicate) const {
 template <typename T>
 template <typename U>
 Queryable<std::tuple<T, U>> Queryable<T>::zip(std::vector<U> rhs_items,
-                                              bool truncate) const {
+                                              bool truncate) {
   if (!truncate) {
     static_assert(std::is_default_constructible_v<T>,
                   "T must have a default constructor so default values can "
@@ -1082,7 +1060,7 @@ Queryable<std::tuple<T, U>> Queryable<T>::zip(std::vector<U> rhs_items,
 template <typename T>
 template <typename U>
 Queryable<std::tuple<T, U>>
-Queryable<T>::zip(std::initializer_list<U> rhs_items, bool truncate) const {
+Queryable<T>::zip(std::initializer_list<U> rhs_items, bool truncate) {
   return zip(std::vector<U>(std::move(rhs_items)), truncate);
 }
 
@@ -1097,13 +1075,13 @@ public:
   Merge &operator=(const Merge &) = delete;
 
   // Merges the true and false branches as a zip.
-  Queryable<std::tuple<TrueT, FalseT>> merge(bool truncate = false) const {
+  Queryable<std::tuple<TrueT, FalseT>> merge(bool truncate = false) {
     return true_queried_.zip(std::move(false_queried_.to_vector()), truncate);
   }
 
 private:
-  const Queryable<TrueT> true_queried_;
-  const Queryable<FalseT> false_queried_;
+  Queryable<TrueT> true_queried_;
+  Queryable<FalseT> false_queried_;
 };
 
 template <typename WhenTrueQueriedT, typename T> class WhenFalse {
@@ -1126,15 +1104,15 @@ public:
       typename WhenFalseQueriedT =
           std::invoke_result_t<WhenFalseQuery, Queryable<T>>::item_type>
   Merge<WhenTrueQueriedT, WhenFalseQueriedT>
-  when_false(WhenFalseQuery when_false_query) const {
+  when_false(WhenFalseQuery when_false_query) {
     return Merge<WhenTrueQueriedT, WhenFalseQueriedT>(
         Queryable<WhenTrueQueriedT>(when_true_queried_.to_vector()),
         when_false_query(Queryable<T>(std::move(when_false_items_))));
   }
 
 private:
-  const Queryable<WhenTrueQueriedT> when_true_queried_;
-  const std::vector<T> when_false_items_;
+  Queryable<WhenTrueQueriedT> when_true_queried_;
+  std::vector<T> when_false_items_;
 };
 
 // True branch from the Queryable<T>::branch predicate.
@@ -1157,21 +1135,20 @@ public:
       ,
       typename WhenTrueQueriedT =
           std::invoke_result_t<WhenTrueQuery, Queryable<T>>::item_type>
-  WhenFalse<WhenTrueQueriedT, T>
-  when_true(WhenTrueQuery when_true_query) const {
+  WhenFalse<WhenTrueQueriedT, T> when_true(WhenTrueQuery when_true_query) {
     return WhenFalse<WhenTrueQueriedT, T>(
         std::move(when_true_query(Queryable<T>(std::move(when_true_items_)))),
         std::move(when_false_items_));
   }
 
 private:
-  const std::vector<T> when_true_items_;
-  const std::vector<T> when_false_items_;
+  std::vector<T> when_true_items_;
+  std::vector<T> when_false_items_;
 };
 
 template <typename T>
 template <typename Predicate>
-WhenTrue<T> Queryable<T>::branch(Predicate predicate) const {
+WhenTrue<T> Queryable<T>::branch(Predicate predicate) {
   std::vector<T> when_true_items;
   std::vector<T> when_false_items;
   std::for_each(std::make_move_iterator(items_.begin()),
