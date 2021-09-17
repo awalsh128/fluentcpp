@@ -1,5 +1,8 @@
 Language: Cpp
 AlignAfterOpenBracket: AlwaysBreak
+AllowShortFunctionsOnASingleLine: All
 AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: Yes
 AlwaysBreakTemplateDeclarations: Yes
 ColumLimit: 80
+ShortLambdaStyle: All
