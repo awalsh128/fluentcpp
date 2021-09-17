@@ -51,8 +51,8 @@ public:
     if (!condition_) {
       // Living dangerously, guaranteed not to live on the stack though. See
       // above link.
-      throw std::invalid_argument(
-          message_.str()); // lgtm [cpp/throw-in-destructor]
+      throw std::invalid_argument(  // lgtm [cpp/throw-in-destructor]
+          message_.str());
     }
   }
 
