@@ -5,18 +5,19 @@
   "C_Cpp.dimInactiveRegions": false,
 
   // sudo apt install clang-format; which clang-format
-  "clang-format.executable": "/usr/bin/clang-format",  
+  "clang-format.executable": "/usr/bin/clang-format",
   "clang-format.language.c.enable": true,
   "[c]": {
-     "editor.defaultFormatter": "xaver.clang-format",
-     "editor.wordBasedSuggestions": false,
-     "editor.suggest.insertMode": "replace",
-     "editor.semanticHighlighting.enabled": true
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.wordBasedSuggestions": false,
+    "editor.suggest.insertMode": "replace",
+    "editor.semanticHighlighting.enabled": true
   },
 
   "cmake.configureSettings": {
     "CMAKE_BUILD_TYPE": "${buildType}"
-  },  
+  },
+  "cmake.loggingLevel": "trace",
   "cmake.sourceDirectory": "${workspaceFolder}/.",
 
   "editor.rulers": [80],
@@ -69,6 +70,25 @@
     "cstddef": "cpp",
     "cstring": "cpp",
     "valarray": "cpp",
-    "iterator": "cpp"
+    "iterator": "cpp",
+    "regex": "cpp",
+    "bitset": "cpp",
+    "atomic": "cpp",
+    "bit": "cpp",
+    "condition_variable": "cpp",
+    "cstdarg": "cpp",
+    "algorithm": "cpp",
+    "memory": "cpp",
+    "memory_resource": "cpp",
+    "random": "cpp",
+    "future": "cpp",
+    "iomanip": "cpp",
+    "iostream": "cpp",
+    "mutex": "cpp",
+    "shared_mutex": "cpp",
+    "thread": "cpp",
+    "list": "cpp",
+    "unordered_set": "cpp"
   },
+  "C_Cpp.errorSquiggles": "Disabled"
 }

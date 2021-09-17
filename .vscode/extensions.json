@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "pokowaka.pokowaka-iwyu",
-    "xaver.clang-format"
+    "xaver.clang-format",
+    "ms-vscode.cmake-tools"
   ]
 }
