@@ -1,24 +1,34 @@
-name: Release
+name: Integrate
 
 on:
   push:
     branches: [master]
-    tags:
-      - "*"
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
 
 jobs:
-  release:
+  integrate:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "Job triggered by ${{github.event_name}} event."
+      - run: echo "Job triggered by ${{ github.event_name }} event."
 
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          # We must fetch at least the immediate parents so that if this is
+          # a pull request then we can checkout the head.
+          fetch-depth: 2
+
+      # If this run was triggered by a pull request event, then checkout
+      # the head of the pull request instead of the merge commit.
+      - name: Checkout (pull request)
+        run: git checkout HEAD^2
+        if: ${{ github.event_name == 'pull_request' }}
 
       - name: Cache Dependencies
         uses: actions/cache@v2
@@ -39,16 +49,3 @@ jobs:
       - name: Test
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
-
-      - name: Deploy Documentation
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages
-          folder: ${{github.workspace}}/build/docs/api
-
-# TODO Enable once library builds are file path qualified.
-#       - name: Create Release Package
-#         uses: ncipollo/release-action@v1
-#         with:
-#           bodyFile: "README.md"
-#           token: ${{secrets.GITHUB_TOKEN}}
