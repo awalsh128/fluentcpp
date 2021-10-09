@@ -6,6 +6,11 @@ on:
     tags:
       - "*"
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Git tag"
+      notes:
+        description: "Release notes"
 
 env:
   BUILD_TYPE: Release
@@ -46,9 +51,20 @@ jobs:
           branch: gh-pages
           folder: ${{github.workspace}}/build/website
 
-# TODO Enable once library builds are file path qualified.
-#       - name: Create Release Package
-#         uses: ncipollo/release-action@v1
-#         with:
-#           bodyFile: "README.md"
-#           token: ${{secrets.GITHUB_TOKEN}}
+      - name: Create Release Package Artifacts
+        run: |
+          ${{github.workspace}}/.github/workflows/create_release_pkg_artifacts.sh \
+            ${{github.workspace}} \
+            ${{github.event.inputs.tag}} \
+            "${{github.event.inputs.notes}}"
+
+      - name: Create Tag
+        run: git tag ${{github.event.inputs.tag}}; git push origin --tags
+
+      - name: Create Release Package
+        uses: ncipollo/release-action@v1
+        with:
+          bodyFile: "${{github.workspace}}/release/notes.md"
+          artifacts: "fluentcpp-${{github.event.inputs.tag}}.tar.gz"
+          tag: ${{github.event.inputs.tag}}
+          token: ${{secrets.GITHUB_TOKEN}}
