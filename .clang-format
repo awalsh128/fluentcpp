@@ -4,5 +4,4 @@ AllowShortFunctionsOnASingleLine: All
 AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: Yes
 AlwaysBreakTemplateDeclarations: Yes
-ColumLimit: 80
-ShortLambdaStyle: All
+ColumnLimit: 80
