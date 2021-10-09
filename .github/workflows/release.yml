@@ -44,7 +44,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           branch: gh-pages
-          folder: ${{github.workspace}}/build/docs/api
+          folder: ${{github.workspace}}/build/website
 
 # TODO Enable once library builds are file path qualified.
 #       - name: Create Release Package
