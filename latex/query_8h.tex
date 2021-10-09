@@ -1,0 +1,188 @@
+\hypertarget{query_8h}{}\doxysection{/home/runner/work/fluentcpp/fluentcpp/src/query.h File Reference}
+\label{query_8h}\index{/home/runner/work/fluentcpp/fluentcpp/src/query.h@{/home/runner/work/fluentcpp/fluentcpp/src/query.h}}
+
+
+A library to express information in a functional way that allows for easy auto-\/complete and shorter expressions.  
+
+
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$iterator$>$}\newline
+{\ttfamily \#include $<$map$>$}\newline
+{\ttfamily \#include $<$optional$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include $<$set$>$}\newline
+{\ttfamily \#include $<$tuple$>$}\newline
+{\ttfamily \#include $<$type\+\_\+traits$>$}\newline
+{\ttfamily \#include $<$utility$>$}\newline
+{\ttfamily \#include $<$valarray$>$}\newline
+{\ttfamily \#include $<$variant$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include \char`\"{}asserts.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}traits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}transforms.\+h\char`\"{}}\newline
+Include dependency graph for query.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{query_8h__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Core object used to query items and hold the sequence state. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classfcpp_1_1WhenTrue}{fcpp\+::\+When\+True$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em True / if block query of \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{Queryable$<$\+T$>$\+::branch}} method. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classfcpp_1_1WhenFalse}{fcpp\+::\+When\+False$<$ When\+True\+Queried\+T, T $>$}}
+\begin{DoxyCompactList}\small\item\em False / else block query of \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{Queryable$<$\+T$>$\+::branch}} method. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classfcpp_1_1Merge}{fcpp\+::\+Merge$<$ True\+T, False\+T $>$}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classfcpp_1_1Merge}{Merge}} result of both if and else block queries from \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{Queryable$<$\+T$>$\+::branch}} method. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Core object used to query items and hold the sequence state. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classfcpp_1_1Merge}{fcpp\+::\+Merge$<$ True\+T, False\+T $>$}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classfcpp_1_1Merge}{Merge}} result of both if and else block queries from \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{Queryable$<$\+T$>$\+::branch}} method. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classfcpp_1_1WhenFalse}{fcpp\+::\+When\+False$<$ When\+True\+Queried\+T, T $>$}}
+\begin{DoxyCompactList}\small\item\em False / else block query of \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{Queryable$<$\+T$>$\+::branch}} method. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classfcpp_1_1WhenTrue}{fcpp\+::\+When\+True$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em True / if block query of \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{Queryable$<$\+T$>$\+::branch}} method. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{E\+X\+PR}}(...)~\+\_\+\+\_\+\+G\+E\+T\+\_\+\+M\+A\+C\+R\+O\+\_\+\+\_\+(\+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R2\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R1\+\_\+\+\_\+)(auto, \+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+)
+\begin{DoxyCompactList}\small\item\em Syntactic sugar for terse expressions using pass by value. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{query_8h_a3eff0f74c45c60dc7a5edb32bb7cbf4a}{C\+R\+\_\+\+E\+X\+PR}}(...)~\+\_\+\+\_\+\+G\+E\+T\+\_\+\+M\+A\+C\+R\+O\+\_\+\+\_\+(\+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R2\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R1\+\_\+\+\_\+)(const auto \&, \+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+)
+\begin{DoxyCompactList}\small\item\em Syntactic sugar for terse expressions using pass by constant reference. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\Queryable$<$ T $>$ \mbox{\hyperlink{query_8h_aeea416a11cf2455528dcee9d6ad211de}{fcpp\+::query}} (std\+::vector$<$ T $>$ items)
+\begin{DoxyCompactList}\small\item\em Queries the sequence of items using a vector. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{query_8h_a1a72e49531c25c64dde1d54c8dce5bff}{fcpp\+::operator==}} (const Queryable$<$ T $>$ \&lhs, const std\+::vector$<$ T $>$ \&rhs)
+\item 
+{\footnotesize template$<$typename T $>$ }\\bool \mbox{\hyperlink{query_8h_afcd406d84c96661904c4b6443e40340c}{fcpp\+::operator==}} (const Queryable$<$ T $>$ \&lhs, const Queryable$<$ T $>$ \&rhs)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A library to express information in a functional way that allows for easy auto-\/complete and shorter expressions. 
+
+\begin{DoxyAuthor}{Author}
+Andrew Walsh (\href{mailto:awalsh128@gmail.com}{\texttt{ awalsh128@gmail.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2021-\/08-\/20
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright 2021 Google L\+LC
+\end{DoxyCopyright}
+Licensed under the Apache License, Version 2.\+0 (the \char`\"{}\+License\char`\"{}); you may not use this file except in compliance with the License. You may obtain a copy of the License at \begin{DoxyVerb}https://www.apache.org/licenses/LICENSE-2.0
+\end{DoxyVerb}
+
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \char`\"{}\+A\+S I\+S\char`\"{} B\+A\+S\+IS, W\+I\+T\+H\+O\+UT W\+A\+R\+R\+A\+N\+T\+I\+ES OR C\+O\+N\+D\+I\+T\+I\+O\+NS OF A\+NY K\+I\+ND, either express or implied. See the License for the specific language governing permissions and limitations under the License. 
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{query_8h_a3eff0f74c45c60dc7a5edb32bb7cbf4a}\label{query_8h_a3eff0f74c45c60dc7a5edb32bb7cbf4a}} 
+\index{query.h@{query.h}!CR\_EXPR@{CR\_EXPR}}
+\index{CR\_EXPR@{CR\_EXPR}!query.h@{query.h}}
+\doxysubsubsection{\texorpdfstring{CR\_EXPR}{CR\_EXPR}}
+{\footnotesize\ttfamily \#define C\+R\+\_\+\+E\+X\+PR(\begin{DoxyParamCaption}\item[{}]{... }\end{DoxyParamCaption})~\+\_\+\+\_\+\+G\+E\+T\+\_\+\+M\+A\+C\+R\+O\+\_\+\+\_\+(\+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R2\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R1\+\_\+\+\_\+)(const auto \&, \+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+)}
+
+
+
+Syntactic sugar for terse expressions using pass by constant reference. 
+
+\begin{DoxyItemize}
+\item List of variable names passed in. \begin{DoxyReturn}{Returns}
+Produced value of the variables and operations evaluated.
+\end{DoxyReturn}
+Examples\+: C\+R\+\_\+\+E\+X\+PR(x, y, x + y) C\+R\+\_\+\+E\+X\+PR(x, x + 10) \end{DoxyItemize}
+\mbox{\Hypertarget{query_8h_a4af4019a96b4243ad506824e53321028}\label{query_8h_a4af4019a96b4243ad506824e53321028}} 
+\index{query.h@{query.h}!EXPR@{EXPR}}
+\index{EXPR@{EXPR}!query.h@{query.h}}
+\doxysubsubsection{\texorpdfstring{EXPR}{EXPR}}
+{\footnotesize\ttfamily \#define E\+X\+PR(\begin{DoxyParamCaption}\item[{}]{... }\end{DoxyParamCaption})~\+\_\+\+\_\+\+G\+E\+T\+\_\+\+M\+A\+C\+R\+O\+\_\+\+\_\+(\+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R2\+\_\+\+\_\+, \+\_\+\+\_\+\+E\+X\+P\+R1\+\_\+\+\_\+)(auto, \+\_\+\+\_\+\+V\+A\+\_\+\+A\+R\+G\+S\+\_\+\+\_\+)}
+
+
+
+Syntactic sugar for terse expressions using pass by value. 
+
+\begin{DoxyItemize}
+\item List of variable names passed in. \begin{DoxyReturn}{Returns}
+Produced value of the variables and operations evaluated.
+\end{DoxyReturn}
+Examples\+: E\+X\+PR(x, y, x + y) E\+X\+PR(x, x + 10) \end{DoxyItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{query_8h_afcd406d84c96661904c4b6443e40340c}\label{query_8h_afcd406d84c96661904c4b6443e40340c}} 
+\index{query.h@{query.h}!operator==@{operator==}}
+\index{operator==@{operator==}!query.h@{query.h}}
+\doxysubsubsection{\texorpdfstring{operator==()}{operator==()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool fcpp\+::operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{lhs,  }\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{rhs }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em lhs} & Left operand Queryable$<$\+T$>$ to compare. \\
+\hline
+{\em rhs} & Right operand Queryable$<$\+T$>$ to compare. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if both sides are equal. 
+
+false if both side are not equal. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{query_8h_a1a72e49531c25c64dde1d54c8dce5bff}\label{query_8h_a1a72e49531c25c64dde1d54c8dce5bff}} 
+\index{query.h@{query.h}!operator==@{operator==}}
+\index{operator==@{operator==}!query.h@{query.h}}
+\doxysubsubsection{\texorpdfstring{operator==()}{operator==()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool fcpp\+::operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{lhs,  }\item[{const std\+::vector$<$ T $>$ \&}]{rhs }\end{DoxyParamCaption})}
+
+\begin{DoxyRemark}{Remarks}
+Based off of internal items\+\_\+ stored inside Queryable$<$\+T$>$.
+\end{DoxyRemark}
+
+\begin{DoxyParams}{Parameters}
+{\em lhs} & Left operand Queryable$<$\+T$>$ to compare. \\
+\hline
+{\em rhs} & Right operand std\+::vector$<$\+T$>$ to compare. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if both sides are equal. 
+
+false if both side are not equal. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{query_8h_aeea416a11cf2455528dcee9d6ad211de}\label{query_8h_aeea416a11cf2455528dcee9d6ad211de}} 
+\index{query.h@{query.h}!query@{query}}
+\index{query@{query}!query.h@{query.h}}
+\doxysubsubsection{\texorpdfstring{query()}{query()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+Queryable$<$ T $>$ fcpp\+::query (\begin{DoxyParamCaption}\item[{std\+::vector$<$ T $>$}]{items }\end{DoxyParamCaption})}
+
+
+
+Queries the sequence of items using a vector. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of items to query over. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em items} & Items to query over. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}

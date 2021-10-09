@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+/* Sticky footer styles */
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px; /* Margin bottom by footer height */
+}
+
+.fa {
+  padding-right: 10px; /* Gap between fontawesome icon and text. */
+}
+
+footer {
+  margin-top: 1rem;
+  padding: 1rem;
+}

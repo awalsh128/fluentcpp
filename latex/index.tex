@@ -1,0 +1,74 @@
+\href{http://www.repostatus.org/\#active}{\texttt{ }} \href{https://github.com/awalsh128/fluentcpp/actions/workflows/integrate.yml}{\texttt{ }} \href{https://github.com/awalsh128/fluentcpp/blob/master/LICENSE}{\texttt{ }} \href{https://github.com/awalsh128/fluentcpp}{\texttt{ }} \href{https://lgtm.com/projects/g/awalsh128/fluentcpp/context:cpp}{\texttt{ }} \href{https://lgtm.com/projects/g/awalsh128/fluentcpp/alerts/}{\texttt{ }}
+
+{\bfseries{Fluent C++}} is a library that can be used to express information in a functional way that allows for easy auto-\/complete and shorter expressions.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{std::vector<int> xs;}
+\DoxyCodeLine{\textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} x = 0; x < 1000; x++) xs.push\_back(x);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\mbox{\hyperlink{query_8h_aeea416a11cf2455528dcee9d6ad211de}{fcpp::query}}(xs)}
+\DoxyCodeLine{    .where(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x > 500))}
+\DoxyCodeLine{    .shuffle()}
+\end{DoxyCode}
+\hypertarget{index_autotoc_md1}{}\doxysection{Building}\label{index_autotoc_md1}
+Two types of builds\+:
+
+one for local debugging and library generation,
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> mkdir build \&\& cd build}
+\DoxyCodeLine{> cmake .. -\/DCMAKE\_BUILD\_TYPE=Debug}
+\DoxyCodeLine{> make    \# Builds and tests}
+\end{DoxyCode}
+
+
+and the other for all release assets.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{> mkdir build \&\& cd build}
+\DoxyCodeLine{> cmake .. -\/DCMAKE\_BUILD\_TYPE=Release}
+\DoxyCodeLine{> make    \# Builds, tests and creates documentation.}
+\end{DoxyCode}
+\hypertarget{index_autotoc_md2}{}\doxysection{Usage Examples}\label{index_autotoc_md2}
+Find more in the \href{https://github.com/awalsh128/fluentcpp/tree/master/examples}{\texttt{ examples folder}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <fcpp/query.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <iostream>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{  \textcolor{comment}{// @todo Add descriptions and use cases.}}
+\DoxyCodeLine{  std::vector<int> xs;}
+\DoxyCodeLine{  \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} x = 0; x < 1000; x++) xs.push\_back(x);}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \mbox{\hyperlink{query_8h_aeea416a11cf2455528dcee9d6ad211de}{fcpp::query}}(xs)}
+\DoxyCodeLine{      .where(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x > 500))}
+\DoxyCodeLine{      .shuffle()}
+\DoxyCodeLine{      .skip(10)}
+\DoxyCodeLine{      .select(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x \% 10))}
+\DoxyCodeLine{      .distinct()}
+\DoxyCodeLine{      .order\_by(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x))}
+\DoxyCodeLine{      .branch(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x > 5))}
+\DoxyCodeLine{      .when\_true([](\textcolor{keyword}{auto} q)}
+\DoxyCodeLine{                 \{ \textcolor{keywordflow}{return} q.select(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x + 100)); \})}
+\DoxyCodeLine{      .when\_false([](\textcolor{keyword}{auto} q)}
+\DoxyCodeLine{                  \{ \textcolor{keywordflow}{return} q.select(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x -\/ 100)); \})}
+\DoxyCodeLine{      .merge()}
+\DoxyCodeLine{      .select(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, std::get<0>(x)))}
+\DoxyCodeLine{      .action([](\textcolor{keyword}{auto} x)}
+\DoxyCodeLine{              \{ std::cout << x; \});}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+\hypertarget{index_autotoc_md3}{}\doxysection{Dependencies}\label{index_autotoc_md3}
+
+\begin{DoxyItemize}
+\item \href{https://cmake.org/cmake/help/latest/guide/tutorial/index.html}{\texttt{ C\+Make}} -\/ C++ build system for generating library objects.
+\item \href{https://github.com/catchorg/Catch2/blob/devel/README.md}{\texttt{ Catch}} -\/ Catch v2 test framework. This is pulled in by C\+Make at build time.
+\item \href{https://www.doxygen.nl/index.html}{\texttt{ Doxygen}} -\/ A\+PI documentation product. 
+\end{DoxyItemize}

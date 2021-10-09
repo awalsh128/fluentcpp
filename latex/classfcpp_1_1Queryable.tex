@@ -1,0 +1,1062 @@
+\hypertarget{classfcpp_1_1Queryable}{}\doxysection{fcpp\+::Queryable$<$ T $>$ Class Template Reference}
+\label{classfcpp_1_1Queryable}\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+
+
+Core object used to query items and hold the sequence state.  
+
+
+
+
+{\ttfamily \#include $<$query.\+h$>$}
+
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a2c517adac3b68e87b362d7874d794332}\label{classfcpp_1_1Queryable_a2c517adac3b68e87b362d7874d794332}} 
+typedef T \mbox{\hyperlink{classfcpp_1_1Queryable_a2c517adac3b68e87b362d7874d794332}{item\+\_\+type}}
+\begin{DoxyCompactList}\small\item\em Type of items to query over. Used for type deduction. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}} (std\+::vector$<$ T $>$ items)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} object from a sequence of items. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable_a972d0938ae11a49b08809d5719cee8ca}{Queryable}} ()=delete
+\begin{DoxyCompactList}\small\item\em Empty constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable_a6c0ecdd73f8c453405a143b288e1cb8f}{Queryable}} (\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} \&\&)=default
+\begin{DoxyCompactList}\small\item\em Move assignment operator. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable_ab2b0a0790b0d7be4abe9a9118fe71e9a}{Queryable}} (const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Copy constructor operator. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} \& \mbox{\hyperlink{classfcpp_1_1Queryable_aedf642391a79718c0e233720d1a55a83}{operator=}} (const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Copy assignment operator. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable_a0c6822226c8d2f41aa0affd85b20b4a1}{operator const std\+::vector$<$ T $>$ \&\&}} () const
+\begin{DoxyCompactList}\small\item\em Implicit cast operator to vector as rvalue reference. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename U , typename Accumulate\+Fn $>$ }\\U \mbox{\hyperlink{classfcpp_1_1Queryable_abe58cdf73d28d22f8a093dd824d64325}{accumulate}} (U initial, Accumulate\+Fn accumulate\+\_\+func) const
+\begin{DoxyCompactList}\small\item\em Sums all the projected values of the sequence into a single value. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Action\+Fn $>$ }\\\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_aefaf7cb34fa6db997c1a511ffa2e7652}{action}} (Action\+Fn action\+\_\+func)
+\begin{DoxyCompactList}\small\item\em Executes a void action to create side effects. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Predicate $>$ }\\bool \mbox{\hyperlink{classfcpp_1_1Queryable_a0c840cddfba6609fba7fe35bd424fea4}{all}} (Predicate predicate) const
+\begin{DoxyCompactList}\small\item\em Determines whether all items of a sequence satisfy a condition. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Predicate $>$ }\\bool \mbox{\hyperlink{classfcpp_1_1Queryable_a1bb0de06cc44da253487b0495817a8aa}{any}} (Predicate predicate) const
+\begin{DoxyCompactList}\small\item\em Determines whether a sequence contains any items. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Predicate $>$ }\\\mbox{\hyperlink{classfcpp_1_1WhenTrue}{When\+True}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{branch}} (Predicate predicate)
+\begin{DoxyCompactList}\small\item\em Branches the sequence into two based on a condition. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a863b8977eee183604dd8cdd4001ef1f2}{difference}} (std\+::vector$<$ T $>$ rhs\+\_\+items)
+\begin{DoxyCompactList}\small\item\em Produces the set difference of two sequences. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a8c6fe42dd0710c9edbd04e7953492ee3}{distinct}} ()
+\begin{DoxyCompactList}\small\item\em Gets distinct items from a sequence. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classfcpp_1_1Queryable_ab902874bdfe8494dd94929a374392ca1}{empty}} () const
+\begin{DoxyCompactList}\small\item\em Indicates of the sequence is empty. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Predicate $>$ }\\std\+::optional$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a79b72200fd856f679829ae9d1f2b6dd1}{first\+\_\+or\+\_\+default}} (Predicate predicate)
+\begin{DoxyCompactList}\small\item\em Gets the first item of a sequence, or a default value if no item is found. \end{DoxyCompactList}\item 
+auto \mbox{\hyperlink{classfcpp_1_1Queryable_a29c7980304fb9bf6b7e1d6118044ef41}{flatten}} ()
+\begin{DoxyCompactList}\small\item\em Projects each item in the sequence-\/of-\/sequences and flattens the resulting sequences into one (i.\+e. vector$<$vector$<$\+T$>$$>$ -\/$>$ vector$<$\+T$>$). \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Key\+Selector $>$ }\\\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::vector$<$ T $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_aede834295955473228603511b016c46e}{group\+\_\+by}} (Key\+Selector key\+\_\+selector)
+\begin{DoxyCompactList}\small\item\em Groups the items of a sequence. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_af0b9ac8984238abacf592c5545925748}{intersect}} (const std\+::vector$<$ T $>$ \&rhs\+\_\+items)
+\begin{DoxyCompactList}\small\item\em Produces the set intersection of two sequences. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename U , typename Lhs\+Key\+Selector , typename Rhs\+Key\+Selector $>$ }\\\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::tuple$<$ T, U $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a275f68e6e0a034585e6246bf7cb83cd0}{join}} (std\+::vector$<$ U $>$ rhs\+\_\+items, Lhs\+Key\+Selector lhs\+\_\+key\+\_\+selector, Rhs\+Key\+Selector rhs\+\_\+key\+\_\+selector)
+\begin{DoxyCompactList}\small\item\em Correlates the items of two sequences based on matching keys. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Key\+Selector $>$ }\\auto \mbox{\hyperlink{classfcpp_1_1Queryable_afd3c9e3a276a0307081cfc9f5378e3d7}{keyed\+\_\+group\+\_\+by}} (Key\+Selector key\+\_\+selector)
+\begin{DoxyCompactList}\small\item\em Groups the items of a sequence by key and produces as a key-\/group pair sequence. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}{max}} ()
+\begin{DoxyCompactList}\small\item\em Gets the maximum item from the sequence. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\+Selector $>$ }\\T \mbox{\hyperlink{classfcpp_1_1Queryable_ad43e3faef7ac566e950e1721d638af4d}{max}} (Value\+Selector value\+\_\+selector)
+\begin{DoxyCompactList}\small\item\em Gets the maximum item from the sequence based on a selected value. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{classfcpp_1_1Queryable_a6277dd3c32cabef4a369ee4934713c52}{min}} ()
+\begin{DoxyCompactList}\small\item\em Gets the minimum item from the sequence. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\+Selector $>$ }\\T \mbox{\hyperlink{classfcpp_1_1Queryable_af5542211bcb0cca37b5c10a9d25dff4e}{min}} (Value\+Selector value\+\_\+selector)
+\begin{DoxyCompactList}\small\item\em Gets the minimum item from the sequence based on a selected value. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\+Selector $>$ }\\\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a602241a2328173e1c8437dfd54d65cb7}{order\+\_\+by}} (Value\+Selector value\+\_\+selector, bool descending=false)
+\begin{DoxyCompactList}\small\item\em Orders the sequence by the selected value. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a61691c8877e3f545fc5d35ba879cfd96}{reverse}} ()
+\begin{DoxyCompactList}\small\item\em Inverts the order of the items in the sequence. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Selector $>$ }\\auto \mbox{\hyperlink{classfcpp_1_1Queryable_ae134d9182adc199ef2e863c28478d05a}{select}} (Selector selector)
+\begin{DoxyCompactList}\small\item\em Projects each item of a sequence into a new form. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a1290687cda3f76692b23104cb31909a6}{shuffle}} ()
+\begin{DoxyCompactList}\small\item\em Randomizes / shuffles all the item\textquotesingle{}s order in the sequence. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}} () const
+\begin{DoxyCompactList}\small\item\em Gets the size of the sequence. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a38c5930c2276e6394a4b1395cded39b1}{skip}} (size\+\_\+t value)
+\begin{DoxyCompactList}\small\item\em Bypasses a specified number of items in the sequence and then returns the remaining items. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a9278a124ab47469301082cc8b77b9cd6}{slice}} (size\+\_\+t start\+\_\+index, size\+\_\+t \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}, size\+\_\+t stride=1)
+\begin{DoxyCompactList}\small\item\em Gets a slice of the sequence. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a50fffbe4332ac62bbc6a89eb0e064b17}{sort}} ()
+\begin{DoxyCompactList}\small\item\em Sorts the items in the sequence. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a903c7f0d36e68278858932057ae7fabe}{take}} (size\+\_\+t value)
+\begin{DoxyCompactList}\small\item\em Takes a specified number of contiguous items from the start of a sequence. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a86f90fa4f1751ac918ad3601d002c781}{take\+\_\+random}} (size\+\_\+t value)
+\begin{DoxyCompactList}\small\item\em Takes the specified number of items from the sequence at random places. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_ae91020682e139d499aaf5adc114804ac}{trim}} (size\+\_\+t \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}})
+\begin{DoxyCompactList}\small\item\em Trim from the back of the sequence. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Key\+Selector $>$ }\\auto \mbox{\hyperlink{classfcpp_1_1Queryable_a80a1d43f51d0b3e0da7f6f4050f8f9ca}{to\+\_\+multi\+\_\+value\+\_\+map}} (Key\+Selector key\+\_\+selector)
+\begin{DoxyCompactList}\small\item\em Groups items by a selected key value and puts them into a hash map. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Key\+Selector $>$ }\\auto \mbox{\hyperlink{classfcpp_1_1Queryable_a0a3381370b348b2dfd3f7aae3013d377}{to\+\_\+single\+\_\+value\+\_\+map}} (Key\+Selector key\+\_\+selector)
+\begin{DoxyCompactList}\small\item\em Groups items by selected key value, takes the first item of every group, and puts them into a hash map. \end{DoxyCompactList}\item 
+std\+::set$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a0ae9b2b1409645018152712dbd4c653b}{to\+\_\+set}} ()
+\begin{DoxyCompactList}\small\item\em Gets the sequence as a set. \end{DoxyCompactList}\item 
+std\+::vector$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a90636a0132afa4437e2fe38a10262818}{to\+\_\+vector}} ()
+\begin{DoxyCompactList}\small\item\em Gets the sequence as a vector. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a56ce5e9e0bef42e46ec88e5881275385}{unionize}} (std\+::vector$<$ T $>$ rhs\+\_\+items)
+\begin{DoxyCompactList}\small\item\em Unions the left hand and right hand side sequences. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Predicate $>$ }\\\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a3251df3ba348429da627c3dfbaad47f8}{where}} (Predicate predicate)
+\begin{DoxyCompactList}\small\item\em Selects items in the sequence that satisfy the predicate / conditional. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename U $>$ }\\\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::tuple$<$ T, U $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}{zip}} (std\+::vector$<$ U $>$ rhs\+\_\+items, bool truncate=false)
+\begin{DoxyCompactList}\small\item\em Produces a sequence of tuples with items from the two specified sequences. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename U $>$ }\\\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::tuple$<$ T, U $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable_a942dd01bf91e9687f9b8a2d1c3ef3d0c}{zip}} (std\+::initializer\+\_\+list$<$ U $>$ rhs\+\_\+items, bool truncate)
+\begin{DoxyCompactList}\small\item\em Produces a sequence of tuples with items from the two specified sequences. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classfcpp_1_1Queryable_a55dae8bcd1a84a12b4de9de005f78fc1}{operator==}} (const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&lhs, const std\+::vector$<$ T $>$ \&rhs)
+\begin{DoxyCompactList}\small\item\em Equals overload operator for Queryable$<$\+T$>$ against a std\+::vector$<$\+T$>$. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classfcpp_1_1Queryable_ae864207c966986bf5ecc6f032766b1e4}{operator==}} (const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&lhs, const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&rhs)
+\begin{DoxyCompactList}\small\item\em Equals overload operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class fcpp\+::\+Queryable$<$ T $>$}
+
+Core object used to query items and hold the sequence state. 
+
+Any operation performed from \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable$<$\+T$>$}} will be moved into the new instance of \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable$<$\+T$>$}}. This means that any reference to the previous instance of \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable$<$\+T$>$}} may have unexpected behavior dependent on the operation performed and memory semantics of the object under query.
+
+The nomenclature used in the documentation is as follows\+:
+\begin{DoxyItemize}
+\item Sequence refers to an ordered collection that can contain duplicates.
+\item Item refers to an object in a sequence. It doesn\textquotesingle{}t have any inherit properties.
+\item Key refers to an object that has equality.
+\item Value refers to an object that has comparison. It the context of hash tables, it refers to the value part of the key-\/value pair.
+\end{DoxyItemize}
+
+\begin{DoxyRemark}{Remarks}
+Note that not all methods are type dependent and will not always be valid. For example the \mbox{\hyperlink{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}{max}} method will not work on items that don\textquotesingle{}t have comparability. This will show as an error at compile time though.
+\end{DoxyRemark}
+In terms of memory semantics, if a signature takes by value and not reference, it is because it makes modifications to the value and doesn\textquotesingle{}t want to cause side effects. To prevent a copy of a single use variable, it must be moved.
+
+Lambdas can be passed with arguments by reference or value depending on the caller\textquotesingle{}s preference. Pass by reference may be the case if the object is large. \mbox{[}\mbox{]}(auto x) \{ return x.\+y; \} // Fundamental type \mbox{[}\mbox{]}(auto\& x) \{ return x.\+y; \} // Larger composite type
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of items to query over. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}\label{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!Queryable@{Queryable}}
+\index{Queryable@{Queryable}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Queryable()}{Queryable()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} (\begin{DoxyParamCaption}\item[{std\+::vector$<$ T $>$}]{items }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Construct a new \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} object from a sequence of items. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em items} & Sequence of items to query over. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a972d0938ae11a49b08809d5719cee8ca}\label{classfcpp_1_1Queryable_a972d0938ae11a49b08809d5719cee8ca}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!Queryable@{Queryable}}
+\index{Queryable@{Queryable}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Queryable()}{Queryable()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+
+
+Empty constructor. 
+
+\begin{DoxyRemark}{Remarks}
+Removed since no-\/op state is unusable. 
+\end{DoxyRemark}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a6c0ecdd73f8c453405a143b288e1cb8f}\label{classfcpp_1_1Queryable_a6c0ecdd73f8c453405a143b288e1cb8f}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!Queryable@{Queryable}}
+\index{Queryable@{Queryable}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Queryable()}{Queryable()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&\&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Move assignment operator. 
+
+\begin{DoxyRemark}{Remarks}
+Allowed since state will be stable as it isn\textquotesingle{}t shared amongst multiple copies. 
+\end{DoxyRemark}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_ab2b0a0790b0d7be4abe9a9118fe71e9a}\label{classfcpp_1_1Queryable_ab2b0a0790b0d7be4abe9a9118fe71e9a}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!Queryable@{Queryable}}
+\index{Queryable@{Queryable}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Queryable()}{Queryable()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}} (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+
+
+Copy constructor operator. 
+
+\begin{DoxyRemark}{Remarks}
+Not allowed since state will not be stable as multiple Queryables are moving items. 
+\end{DoxyRemark}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_abe58cdf73d28d22f8a093dd824d64325}\label{classfcpp_1_1Queryable_abe58cdf73d28d22f8a093dd824d64325}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!accumulate@{accumulate}}
+\index{accumulate@{accumulate}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{accumulate()}{accumulate()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename U , typename Accumulate\+Fn $>$ \\
+U \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::accumulate (\begin{DoxyParamCaption}\item[{U}]{initial,  }\item[{Accumulate\+Fn}]{accumulate\+\_\+func }\end{DoxyParamCaption}) const}
+
+
+
+Sums all the projected values of the sequence into a single value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em U} & Accumulating value type. \\
+\hline
+{\em Accumulate\+Fn} & std\+::function$<$\+U(\+U, T)$>$ Transform function type. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em initial} & Value to start with before iterating sequence. \\
+\hline
+{\em accumulate\+\_\+func} & Transform function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+U The final accumulated value. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_aefaf7cb34fa6db997c1a511ffa2e7652}\label{classfcpp_1_1Queryable_aefaf7cb34fa6db997c1a511ffa2e7652}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!action@{action}}
+\index{action@{action}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{action()}{action()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Action\+Fn $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::action (\begin{DoxyParamCaption}\item[{Action\+Fn}]{action\+\_\+func }\end{DoxyParamCaption})}
+
+
+
+Executes a void action to create side effects. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em action\+\_\+func} & Void function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a0c840cddfba6609fba7fe35bd424fea4}\label{classfcpp_1_1Queryable_a0c840cddfba6609fba7fe35bd424fea4}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!all@{all}}
+\index{all@{all}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{all()}{all()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Predicate $>$ \\
+bool \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::all (\begin{DoxyParamCaption}\item[{Predicate}]{predicate }\end{DoxyParamCaption}) const}
+
+
+
+Determines whether all items of a sequence satisfy a condition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em predicate} & Function to test each item for a condition. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if all items satisfy the predicate. 
+
+false if one of the items doesn\textquotesingle{}t satisfy the predicate. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a1bb0de06cc44da253487b0495817a8aa}\label{classfcpp_1_1Queryable_a1bb0de06cc44da253487b0495817a8aa}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!any@{any}}
+\index{any@{any}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{any()}{any()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Predicate $>$ \\
+bool \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::any (\begin{DoxyParamCaption}\item[{Predicate}]{predicate }\end{DoxyParamCaption}) const}
+
+
+
+Determines whether a sequence contains any items. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em predicate} & Function to test each item for a condition. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if all of the items satisfy the predicate. 
+
+false if none of the items satisfy the predicate. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}\label{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!branch@{branch}}
+\index{branch@{branch}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{branch()}{branch()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Predicate $>$ \\
+\mbox{\hyperlink{classfcpp_1_1WhenTrue}{When\+True}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::branch (\begin{DoxyParamCaption}\item[{Predicate}]{predicate }\end{DoxyParamCaption})}
+
+
+
+Branches the sequence into two based on a condition. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em predicate} & Function to test each item for a condition. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+When\+True$<$\+T$>$ True / if block query for items that evaluated to true. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a863b8977eee183604dd8cdd4001ef1f2}\label{classfcpp_1_1Queryable_a863b8977eee183604dd8cdd4001ef1f2}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!difference@{difference}}
+\index{difference@{difference}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{difference()}{difference()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::difference (\begin{DoxyParamCaption}\item[{std\+::vector$<$ T $>$}]{rhs\+\_\+items }\end{DoxyParamCaption})}
+
+
+
+Produces the set difference of two sequences. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs\+\_\+items} & Right hand side sequence. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ Sequence of items not found in both sequences. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a8c6fe42dd0710c9edbd04e7953492ee3}\label{classfcpp_1_1Queryable_a8c6fe42dd0710c9edbd04e7953492ee3}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!distinct@{distinct}}
+\index{distinct@{distinct}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{distinct()}{distinct()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::distinct}
+
+
+
+Gets distinct items from a sequence. 
+
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_ab902874bdfe8494dd94929a374392ca1}\label{classfcpp_1_1Queryable_ab902874bdfe8494dd94929a374392ca1}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!empty@{empty}}
+\index{empty@{empty}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{empty()}{empty()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::empty}
+
+
+
+Indicates of the sequence is empty. 
+
+\begin{DoxyReturn}{Returns}
+true if the sequence is empty. 
+
+false if the sequence is populated. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a79b72200fd856f679829ae9d1f2b6dd1}\label{classfcpp_1_1Queryable_a79b72200fd856f679829ae9d1f2b6dd1}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!first\_or\_default@{first\_or\_default}}
+\index{first\_or\_default@{first\_or\_default}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{first\_or\_default()}{first\_or\_default()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Predicate $>$ \\
+std\+::optional$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::first\+\_\+or\+\_\+default (\begin{DoxyParamCaption}\item[{Predicate}]{predicate }\end{DoxyParamCaption})}
+
+
+
+Gets the first item of a sequence, or a default value if no item is found. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em predicate} & Function to test each item for a condition. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::optional$<$\+T$>$ Either the satisfying item or the not found item of std\+::nullopt 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a29c7980304fb9bf6b7e1d6118044ef41}\label{classfcpp_1_1Queryable_a29c7980304fb9bf6b7e1d6118044ef41}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!flatten@{flatten}}
+\index{flatten@{flatten}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{flatten()}{flatten()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+auto \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::flatten}
+
+
+
+Projects each item in the sequence-\/of-\/sequences and flattens the resulting sequences into one (i.\+e. vector$<$vector$<$\+T$>$$>$ -\/$>$ vector$<$\+T$>$). 
+
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$U = std\+::vector$<$\+T$>$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_aede834295955473228603511b016c46e}\label{classfcpp_1_1Queryable_aede834295955473228603511b016c46e}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!group\_by@{group\_by}}
+\index{group\_by@{group\_by}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{group\_by()}{group\_by()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Key\+Selector $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::vector$<$ T $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::group\+\_\+by (\begin{DoxyParamCaption}\item[{Key\+Selector}]{key\+\_\+selector }\end{DoxyParamCaption})}
+
+
+
+Groups the items of a sequence. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Key\+Selector} & Transform function type. std\+::function$<$\+K(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+selector} & Transform to key function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$std\+::vector$<$\+T$>$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_af0b9ac8984238abacf592c5545925748}\label{classfcpp_1_1Queryable_af0b9ac8984238abacf592c5545925748}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!intersect@{intersect}}
+\index{intersect@{intersect}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{intersect()}{intersect()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::intersect (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ T $>$ \&}]{rhs\+\_\+items }\end{DoxyParamCaption})}
+
+
+
+Produces the set intersection of two sequences. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs\+\_\+items} & Right hand side sequence. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ The intersected set that share the same items. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a275f68e6e0a034585e6246bf7cb83cd0}\label{classfcpp_1_1Queryable_a275f68e6e0a034585e6246bf7cb83cd0}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!join@{join}}
+\index{join@{join}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{join()}{join()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename U , typename Lhs\+Key\+Selector , typename Rhs\+Key\+Selector $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::tuple$<$ T, U $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::join (\begin{DoxyParamCaption}\item[{std\+::vector$<$ U $>$}]{rhs\+\_\+items,  }\item[{Lhs\+Key\+Selector}]{lhs\+\_\+key\+\_\+selector,  }\item[{Rhs\+Key\+Selector}]{rhs\+\_\+key\+\_\+selector }\end{DoxyParamCaption})}
+
+
+
+Correlates the items of two sequences based on matching keys. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em U} & Type of the right hand side sequence. \\
+\hline
+{\em Lhs\+Key\+Selector} & Transform to key function type. std\+::function$<$\+K(\+T)$>$ \\
+\hline
+{\em Rhs\+Key\+Selector} & Transform to key function type. std\+::function$<$\+K(\+U)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em rhs\+\_\+items} & The right hand side sequence to join against. \\
+\hline
+{\em lhs\+\_\+key\+\_\+selector} & Transform to key function to apply to each item in this / left hand side sequence. \\
+\hline
+{\em rhs\+\_\+key\+\_\+selector} & Transform to key function to apply to each item in the right hand side sequence. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$std\+::tuple$<$\+T, U$>$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_afd3c9e3a276a0307081cfc9f5378e3d7}\label{classfcpp_1_1Queryable_afd3c9e3a276a0307081cfc9f5378e3d7}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!keyed\_group\_by@{keyed\_group\_by}}
+\index{keyed\_group\_by@{keyed\_group\_by}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{keyed\_group\_by()}{keyed\_group\_by()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Key\+Selector $>$ \\
+auto \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::keyed\+\_\+group\+\_\+by (\begin{DoxyParamCaption}\item[{Key\+Selector}]{key\+\_\+selector }\end{DoxyParamCaption})}
+
+
+
+Groups the items of a sequence by key and produces as a key-\/group pair sequence. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Key\+Selector} & Transform to key function type. std\+::function$<$\+K(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+selector} & Transform to key function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$std\+::pair$<$K, std\+::vector$<$\+T$>$$>$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}\label{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!max@{max}}
+\index{max@{max}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{max()}{max()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+T \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::max}
+
+
+
+Gets the maximum item from the sequence. 
+
+\begin{DoxyReturn}{Returns}
+T 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_ad43e3faef7ac566e950e1721d638af4d}\label{classfcpp_1_1Queryable_ad43e3faef7ac566e950e1721d638af4d}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!max@{max}}
+\index{max@{max}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{max()}{max()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Value\+Selector $>$ \\
+T \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::max (\begin{DoxyParamCaption}\item[{Value\+Selector}]{value\+\_\+selector }\end{DoxyParamCaption})}
+
+
+
+Gets the maximum item from the sequence based on a selected value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\+Selector} & Transform to value function type. std\+::function$<$\+V(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em value\+\_\+selector} & Transform to value function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+T 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a6277dd3c32cabef4a369ee4934713c52}\label{classfcpp_1_1Queryable_a6277dd3c32cabef4a369ee4934713c52}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!min@{min}}
+\index{min@{min}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{min()}{min()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+T \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::min}
+
+
+
+Gets the minimum item from the sequence. 
+
+\begin{DoxyReturn}{Returns}
+T 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_af5542211bcb0cca37b5c10a9d25dff4e}\label{classfcpp_1_1Queryable_af5542211bcb0cca37b5c10a9d25dff4e}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!min@{min}}
+\index{min@{min}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{min()}{min()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Value\+Selector $>$ \\
+T \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::min (\begin{DoxyParamCaption}\item[{Value\+Selector}]{value\+\_\+selector }\end{DoxyParamCaption})}
+
+
+
+Gets the minimum item from the sequence based on a selected value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\+Selector} & Transform to value function type. std\+::function$<$\+V(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em value\+\_\+selector} & Transform to value function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+T 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a0c6822226c8d2f41aa0affd85b20b4a1}\label{classfcpp_1_1Queryable_a0c6822226c8d2f41aa0affd85b20b4a1}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!operator const std::vector$<$ T $>$ \&\&@{operator const std::vector$<$ T $>$ \&\&}}
+\index{operator const std::vector$<$ T $>$ \&\&@{operator const std::vector$<$ T $>$ \&\&}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator const std::vector$<$ T $>$ \&\&()}{operator const std::vector< T > \&\&()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::operator const std\+::vector$<$ T $>$ \&\& (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Implicit cast operator to vector as rvalue reference. 
+
+\begin{DoxyRemark}{Remarks}
+Object state will be invalid after this call since items have been moved out. 
+\end{DoxyRemark}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_aedf642391a79718c0e233720d1a55a83}\label{classfcpp_1_1Queryable_aedf642391a79718c0e233720d1a55a83}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!operator=@{operator=}}
+\index{operator=@{operator=}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}\& \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+
+
+Copy assignment operator. 
+
+\begin{DoxyRemark}{Remarks}
+Not allowed since state will not be stable as multiple Queryables are moving items. 
+\end{DoxyRemark}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a602241a2328173e1c8437dfd54d65cb7}\label{classfcpp_1_1Queryable_a602241a2328173e1c8437dfd54d65cb7}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!order\_by@{order\_by}}
+\index{order\_by@{order\_by}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{order\_by()}{order\_by()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Value\+Selector $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::order\+\_\+by (\begin{DoxyParamCaption}\item[{Value\+Selector}]{value\+\_\+selector,  }\item[{bool}]{descending = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Orders the sequence by the selected value. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\+Selector} & Transform to value function type. std\+::function$<$\+V(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em value\+\_\+selector} & Transform to value function to apply to each item. \\
+\hline
+{\em descending} & True if to order by greater to smaller values, otherwise smaller to greater. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a61691c8877e3f545fc5d35ba879cfd96}\label{classfcpp_1_1Queryable_a61691c8877e3f545fc5d35ba879cfd96}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!reverse@{reverse}}
+\index{reverse@{reverse}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{reverse()}{reverse()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::reverse}
+
+
+
+Inverts the order of the items in the sequence. 
+
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_ae134d9182adc199ef2e863c28478d05a}\label{classfcpp_1_1Queryable_ae134d9182adc199ef2e863c28478d05a}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!select@{select}}
+\index{select@{select}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{select()}{select()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Selector $>$ \\
+auto \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::select (\begin{DoxyParamCaption}\item[{Selector}]{selector }\end{DoxyParamCaption})}
+
+
+
+Projects each item of a sequence into a new form. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Selector} & Transform function type that takes. std\+::function$<$\+V(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em selector} & Transform function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$decltype(selector(\+T))$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a1290687cda3f76692b23104cb31909a6}\label{classfcpp_1_1Queryable_a1290687cda3f76692b23104cb31909a6}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!shuffle@{shuffle}}
+\index{shuffle@{shuffle}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{shuffle()}{shuffle()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::shuffle}
+
+
+
+Randomizes / shuffles all the item\textquotesingle{}s order in the sequence. 
+
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}\label{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!size@{size}}
+\index{size@{size}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+size\+\_\+t \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::size}
+
+
+
+Gets the size of the sequence. 
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a38c5930c2276e6394a4b1395cded39b1}\label{classfcpp_1_1Queryable_a38c5930c2276e6394a4b1395cded39b1}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!skip@{skip}}
+\index{skip@{skip}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{skip()}{skip()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::skip (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{value }\end{DoxyParamCaption})}
+
+
+
+Bypasses a specified number of items in the sequence and then returns the remaining items. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & The number of items from the beginning to skip. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a9278a124ab47469301082cc8b77b9cd6}\label{classfcpp_1_1Queryable_a9278a124ab47469301082cc8b77b9cd6}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!slice@{slice}}
+\index{slice@{slice}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{slice()}{slice()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::slice (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{start\+\_\+index,  }\item[{size\+\_\+t}]{size,  }\item[{size\+\_\+t}]{stride = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+
+
+Gets a slice of the sequence. 
+
+\begin{DoxyRemark}{Remarks}
+See std\+::slice for exact behavior.
+\end{DoxyRemark}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{query_8h_aeea416a11cf2455528dcee9d6ad211de}{query}}(\{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}).\mbox{\hyperlink{classfcpp_1_1Queryable_a9278a124ab47469301082cc8b77b9cd6}{slice}}(2, 3, 2)}
+\DoxyCodeLine{ .to\_vector() == \{3, 5, 7\};}
+\end{DoxyCode}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em start\+\_\+index} & The initial / starting index into the sequence inclusively. \\
+\hline
+{\em size} & The number of the items to retrieve starting at start\+\_\+index. \\
+\hline
+{\em stride} & The length of the skip to the next size items. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a50fffbe4332ac62bbc6a89eb0e064b17}\label{classfcpp_1_1Queryable_a50fffbe4332ac62bbc6a89eb0e064b17}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!sort@{sort}}
+\index{sort@{sort}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{sort()}{sort()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::sort}
+
+
+
+Sorts the items in the sequence. 
+
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a903c7f0d36e68278858932057ae7fabe}\label{classfcpp_1_1Queryable_a903c7f0d36e68278858932057ae7fabe}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!take@{take}}
+\index{take@{take}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{take()}{take()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::take (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{value }\end{DoxyParamCaption})}
+
+
+
+Takes a specified number of contiguous items from the start of a sequence. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & The number of items from the beginning to keep. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a86f90fa4f1751ac918ad3601d002c781}\label{classfcpp_1_1Queryable_a86f90fa4f1751ac918ad3601d002c781}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!take\_random@{take\_random}}
+\index{take\_random@{take\_random}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{take\_random()}{take\_random()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::take\+\_\+random (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{value }\end{DoxyParamCaption})}
+
+
+
+Takes the specified number of items from the sequence at random places. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & The number of items to take randomly. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a80a1d43f51d0b3e0da7f6f4050f8f9ca}\label{classfcpp_1_1Queryable_a80a1d43f51d0b3e0da7f6f4050f8f9ca}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!to\_multi\_value\_map@{to\_multi\_value\_map}}
+\index{to\_multi\_value\_map@{to\_multi\_value\_map}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{to\_multi\_value\_map()}{to\_multi\_value\_map()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Key\+Selector $>$ \\
+auto \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::to\+\_\+multi\+\_\+value\+\_\+map (\begin{DoxyParamCaption}\item[{Key\+Selector}]{key\+\_\+selector }\end{DoxyParamCaption})}
+
+
+
+Groups items by a selected key value and puts them into a hash map. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Key\+Selector} & Transform to key function type. std\+::function$<$\+K(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+selector} & Transform to key function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::map$<$K, std\+::vector$<$\+T$>$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a0ae9b2b1409645018152712dbd4c653b}\label{classfcpp_1_1Queryable_a0ae9b2b1409645018152712dbd4c653b}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!to\_set@{to\_set}}
+\index{to\_set@{to\_set}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{to\_set()}{to\_set()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::set$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::to\+\_\+set}
+
+
+
+Gets the sequence as a set. 
+
+\begin{DoxyReturn}{Returns}
+std\+::set$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a0a3381370b348b2dfd3f7aae3013d377}\label{classfcpp_1_1Queryable_a0a3381370b348b2dfd3f7aae3013d377}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!to\_single\_value\_map@{to\_single\_value\_map}}
+\index{to\_single\_value\_map@{to\_single\_value\_map}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{to\_single\_value\_map()}{to\_single\_value\_map()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Key\+Selector $>$ \\
+auto \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::to\+\_\+single\+\_\+value\+\_\+map (\begin{DoxyParamCaption}\item[{Key\+Selector}]{key\+\_\+selector }\end{DoxyParamCaption})}
+
+
+
+Groups items by selected key value, takes the first item of every group, and puts them into a hash map. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Key\+Selector} & Transform to key function type. std\+::function$<$\+K(\+T)$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em key\+\_\+selector} & Transform to key function to apply to each item. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::map$<$\+K, T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a90636a0132afa4437e2fe38a10262818}\label{classfcpp_1_1Queryable_a90636a0132afa4437e2fe38a10262818}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!to\_vector@{to\_vector}}
+\index{to\_vector@{to\_vector}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{to\_vector()}{to\_vector()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::vector$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::to\+\_\+vector}
+
+
+
+Gets the sequence as a vector. 
+
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_ae91020682e139d499aaf5adc114804ac}\label{classfcpp_1_1Queryable_ae91020682e139d499aaf5adc114804ac}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!trim@{trim}}
+\index{trim@{trim}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{trim()}{trim()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::trim (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{size }\end{DoxyParamCaption})}
+
+
+
+Trim from the back of the sequence. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & The number of items to trim / erase from the back. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a56ce5e9e0bef42e46ec88e5881275385}\label{classfcpp_1_1Queryable_a56ce5e9e0bef42e46ec88e5881275385}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!unionize@{unionize}}
+\index{unionize@{unionize}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{unionize()}{unionize()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::unionize (\begin{DoxyParamCaption}\item[{std\+::vector$<$ T $>$}]{rhs\+\_\+items }\end{DoxyParamCaption})}
+
+
+
+Unions the left hand and right hand side sequences. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs\+\_\+items} & The right hand side sequence to union. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a3251df3ba348429da627c3dfbaad47f8}\label{classfcpp_1_1Queryable_a3251df3ba348429da627c3dfbaad47f8}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!where@{where}}
+\index{where@{where}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{where()}{where()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename Predicate $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::where (\begin{DoxyParamCaption}\item[{Predicate}]{predicate }\end{DoxyParamCaption})}
+
+
+
+Selects items in the sequence that satisfy the predicate / conditional. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em predicate} & Function to test each item for a condition. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Queryable$<$\+T$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a942dd01bf91e9687f9b8a2d1c3ef3d0c}\label{classfcpp_1_1Queryable_a942dd01bf91e9687f9b8a2d1c3ef3d0c}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!zip@{zip}}
+\index{zip@{zip}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{zip()}{zip()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename U $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::tuple$<$ T, U $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::zip (\begin{DoxyParamCaption}\item[{std\+::initializer\+\_\+list$<$ U $>$}]{rhs\+\_\+items,  }\item[{bool}]{truncate }\end{DoxyParamCaption})}
+
+
+
+Produces a sequence of tuples with items from the two specified sequences. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em U} & Type of the right hand side items. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em rhs\+\_\+items} & Right hand side items of the produced tuple sequence. \\
+\hline
+{\em truncate} & Truncate the combined sequence by the minimum size of the two. If false both T and U must have a default constructor so default values can be provided if one sequence is larger than the other. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$std\+::tuple$<$\+T, U$>$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}\label{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!zip@{zip}}
+\index{zip@{zip}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{zip()}{zip()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+template$<$typename U $>$ \\
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ std\+::tuple$<$ T, U $>$ $>$ \mbox{\hyperlink{classfcpp_1_1Queryable}{fcpp\+::\+Queryable}}$<$ T $>$\+::zip (\begin{DoxyParamCaption}\item[{std\+::vector$<$ U $>$}]{rhs\+\_\+items,  }\item[{bool}]{truncate = {\ttfamily false} }\end{DoxyParamCaption})}
+
+
+
+Produces a sequence of tuples with items from the two specified sequences. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em U} & Type of the right hand side items. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em rhs\+\_\+items} & Right hand side items of the produced tuple sequence. \\
+\hline
+{\em truncate} & Truncate the combined sequence by the minimum size of the two. If false both T and U must have a default constructor so default values can be provided if one sequence is larger than the other. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$std\+::tuple$<$\+T, U$>$$>$ 
+\end{DoxyReturn}
+
+
+\doxysubsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_ae864207c966986bf5ecc6f032766b1e4}\label{classfcpp_1_1Queryable_ae864207c966986bf5ecc6f032766b1e4}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!operator==@{operator==}}
+\index{operator==@{operator==}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator==}{operator==}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{lhs,  }\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Equals overload operator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lhs} & Left operand Queryable$<$\+T$>$ to compare. \\
+\hline
+{\em rhs} & Right operand Queryable$<$\+T$>$ to compare. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if both sides are equal. 
+
+false if both side are not equal. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfcpp_1_1Queryable_a55dae8bcd1a84a12b4de9de005f78fc1}\label{classfcpp_1_1Queryable_a55dae8bcd1a84a12b4de9de005f78fc1}} 
+\index{fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}!operator==@{operator==}}
+\index{operator==@{operator==}!fcpp::Queryable$<$ T $>$@{fcpp::Queryable$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator==}{operator==}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool operator== (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable}}$<$ T $>$ \&}]{lhs,  }\item[{const std\+::vector$<$ T $>$ \&}]{rhs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Equals overload operator for Queryable$<$\+T$>$ against a std\+::vector$<$\+T$>$. 
+
+\begin{DoxyRemark}{Remarks}
+Based off of internal items\+\_\+ stored inside Queryable$<$\+T$>$.
+\end{DoxyRemark}
+
+\begin{DoxyParams}{Parameters}
+{\em lhs} & Left operand Queryable$<$\+T$>$ to compare. \\
+\hline
+{\em rhs} & Right operand std\+::vector$<$\+T$>$ to compare. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if both sides are equal. 
+
+false if both side are not equal. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/runner/work/fluentcpp/fluentcpp/src/\mbox{\hyperlink{query_8h}{query.\+h}}\end{DoxyCompactItemize}

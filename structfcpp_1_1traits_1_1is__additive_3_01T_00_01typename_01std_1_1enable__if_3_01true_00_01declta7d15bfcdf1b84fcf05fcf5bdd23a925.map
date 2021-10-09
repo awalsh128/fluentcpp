@@ -1,0 +1,4 @@
+<map id="fcpp::traits::is_additive&lt; T, typename std::enable_if&lt; true, decltype(std::declval&lt; T &amp; &gt;()+std::declval&lt; T &amp; &gt;(),(void) 0)&gt;::type &gt;" name="fcpp::traits::is_additive&lt; T, typename std::enable_if&lt; true, decltype(std::declval&lt; T &amp; &gt;()+std::declval&lt; T &amp; &gt;(),(void) 0)&gt;::type &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="5,80,223,165"/>
+<area shape="rect" id="node2" title=" " alt="" coords="72,5,156,32"/>
+</map>
