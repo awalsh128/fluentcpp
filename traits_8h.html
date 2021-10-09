@@ -5,7 +5,12 @@
     <title>/home/runner/work/fluentcpp/fluentcpp/src/traits.h File Reference</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Type" content="charset=UTF-8" />
-    <script src="js/jquery.min.js"></script>
+    <!-- Order matters here since below uses jQuery. -->
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
@@ -175,9 +180,7 @@ Classes</h2></td></tr>
         <div class="col">
           <p class="copyright mb-0">
             <a href="mailto:awalsh128@gmail.com">Andrew Walsh</a> - Copyright ©
-            <script>
-              document.write(new Date().getFullYear());
-            </script>
+            <span id="copyrightYear"></span>
             Google LLC
           </p>
         </div>
@@ -189,5 +192,8 @@ Classes</h2></td></tr>
       </div>
     </div>
   </footer>
+  <script>
+    $("#copyrightYear").text(new Date().getFullYear().toString());
+  </script>
 </body>
 </html>
