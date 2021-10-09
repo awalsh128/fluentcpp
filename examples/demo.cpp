@@ -1,4 +1,4 @@
-#include "../src/query.h"
+#include "query.h"
 
 #include <iostream>
 #include <string_view>
@@ -14,23 +14,23 @@ void print(std::string_view title, const std::vector<int> items) {
 
 void complex_query() {
   std::vector<int> xs;
-  for (int x = 0; x < 1000; x++)
-    xs.push_back(x);
+  for (int x = 0; x < 1000; x++) xs.push_back(x);
 
-  print("complex_query",
-        fcpp::query(xs)
-            .where(EXPR(x, x > 500))
-            .shuffle()
-            .skip(10)
-            .select(EXPR(x, x % 10))
-            .distinct()
-            .order_by(EXPR(x, x))
-            .branch(EXPR(x, x > 5))
-            .when_true([](auto q) { return q.select(EXPR(x, x + 100)); })
-            .when_false([](auto q) { return q.select(EXPR(x, x - 100)); })
-            .merge()
-            .select(EXPR(x, std::get<0>(x)))
-            .to_vector());
+  print(
+      "complex_query",
+      fcpp::query(xs)
+          .where(EXPR(x, x > 500))
+          .shuffle()
+          .skip(10)
+          .select(EXPR(x, x % 10))
+          .distinct()
+          .order_by(EXPR(x, x))
+          .branch(EXPR(x, x > 5))
+          .when_true([](auto q) { return q.select(EXPR(x, x + 100)); })
+          .when_false([](auto q) { return q.select(EXPR(x, x - 100)); })
+          .merge()
+          .select(EXPR(x, std::get<0>(x)))
+          .to_vector());
 }
 
 void simple_filter() {
