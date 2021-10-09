@@ -1,7 +1,7 @@
 # Fluent C++ :: Readme
 
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![Build](https://github.com/awalsh128/fluentcpp/actions/workflows/build.yml/badge.svg)](https://github.com/awalsh128/fluentcpp/actions/workflows/build.yml)
+[![Build](https://github.com/awalsh128/fluentcpp/actions/workflows/integrate.yml/badge.svg)](https://github.com/awalsh128/fluentcpp/actions/workflows/integrate.yml)
 [![License: Apache2](https://shields.io/badge/license-apache2-blue.svg)](https://github.com/awalsh128/fluentcpp/blob/master/LICENSE)
 [![](https://tokei.rs/b1/github/awalsh128/fluentcpp)](https://github.com/awalsh128/fluentcpp)
 [![Code Grade](https://img.shields.io/lgtm/grade/cpp/g/awalsh128/fluentcpp.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/awalsh128/fluentcpp/context:cpp)
