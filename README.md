@@ -3,11 +3,11 @@
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Build](https://github.com/awalsh128/fluentcpp/actions/workflows/build.yml/badge.svg)](https://github.com/awalsh128/fluentcpp/actions/workflows/build.yml)
 [![License: Apache2](https://shields.io/badge/license-apache2-blue.svg)](https://github.com/awalsh128/fluentcpp/blob/master/LICENSE)
-[![Lines of Code](https://tokei.rs/b1/github/awalsh128/fluentcpp)](https://github.com/awalsh128/fluentcpp)
+[![](https://tokei.rs/b1/github/awalsh128/fluentcpp)](https://github.com/awalsh128/fluentcpp)
 [![Code Grade](https://img.shields.io/lgtm/grade/cpp/g/awalsh128/fluentcpp.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/awalsh128/fluentcpp/context:cpp)
 [![Code Alerts](https://img.shields.io/lgtm/alerts/g/awalsh128/fluentcpp.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/awalsh128/fluentcpp/alerts/)
 
-Fluent C++ is a library that can be used to express information in a functional way that allows for easy auto-complete and shorter expressions.
+**Fluent C++** is a library that can be used to express information in a functional way that allows for easy auto-complete and shorter expressions.
 
 ```cpp
   std::vector<int> xs;
@@ -77,42 +77,3 @@ int main()
 - [CMake](https://cmake.org/cmake/help/latest/guide/tutorial/index.html) - C++ build system for generating library objects.
 - [Catch](https://github.com/catchorg/Catch2/blob/devel/README.md) - Catch v2 test framework. This is pulled in by CMake at build time.
 - [Doxygen](https://www.doxygen.nl/index.html) - API documentation product.
-
-## File Layout
-
-```text
-.
-├──  .clang-format
-├── CMakeLists.txt
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── cmake-variants.json
-├── configs
-│   ├── assets.md
-│   └── doxygen
-│       ├── CMakeLists.txt
-│       ├── Doxyfile.in
-│       ├── doxygen-awesome-darkmode-toggle.js
-│       ├── doxygen-awesome-sidebar-only-darkmode-toggle.css
-│       ├── doxygen-awesome-sidebar-only.css
-│       ├── doxygen-awesome.css
-│       ├── footer.html
-│       └── header.html
-├── docs
-├── examples
-│   ├── CMakeLists.txt
-│   └── demo.cpp
-├── src
-│   ├── CMakeLists.txt
-│   ├── asserts.h
-│   ├── query.cpp
-│   ├── query.h
-│   └── traits.h
-└── tests
-    ├── CMakeLists.txt
-    ├── query_compound_test.cpp
-    └── query_integer_test.cpp
-
-6 directories, 25 files
-```
