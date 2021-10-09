@@ -18,24 +18,34 @@
       .shuffle()
 ```
 
+## Installing
+
+- Go to [the release](https://github.com/awalsh128/fluentcpp/releases) you want to install.
+- Download the `fluentcpp-<tag>.tar.gz` file.
+- Decompress the file in the directory `tar -xvzf fluentcpp-<tag>.tar.gz`.
+- Run the install command `sudo ./install.sh`.
+- The library files are now installed on your system and can be used as in the examples.
+
 ## Building
+
+If you just want to build the source code and not install it, you can run these commands instead.
 
 Two types of builds:
 
 one for local debugging and library generation,
 
 ```bash
-> mkdir build && cd build
-> cmake .. -DCMAKE_BUILD_TYPE=Debug
-> make    # Builds and tests
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug # Builds and tests
+cmake --build . --config Debug --target fluentcpp
 ```
 
 and the other for all release assets.
 
 ```bash
-> mkdir build && cd build
-> cmake .. -DCMAKE_BUILD_TYPE=Release
-> make    # Builds, tests and creates documentation.
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug # Builds, tests and creates documentation
+cmake --build . --config Debug --target fluentcpp
 ```
 
 ## Usage Examples
@@ -43,7 +53,7 @@ and the other for all release assets.
 Find more in the [examples folder](https://github.com/awalsh128/fluentcpp/tree/master/examples).
 
 ```cpp
-#include <fcpp/query.h>
+#include <fluentcpp/query.h>
 #include <iostream>
 #include <vector>
 
