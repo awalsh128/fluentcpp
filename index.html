@@ -119,20 +119,30 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">    .where(<a class="code" href="query_8h.html#a4af4019a96b4243ad506824e53321028">EXPR</a>(x, x &gt; 500))</div>
 <div class="line">    .shuffle()</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md1"></a>
+Installing</h1>
+<ul>
+<li>Go to <a href="https://github.com/awalsh128/fluentcpp/releases">the release</a> you want to install.</li>
+<li>Download the <code>fluentcpp-&lt;tag&gt;.tar.gz</code> file.</li>
+<li>Decompress the file in the directory <code>tar -xvzf fluentcpp-&lt;tag&gt;.tar.gz</code>.</li>
+<li>Run the install command <code>sudo ./install.sh</code>.</li>
+<li>The library files are now installed on your system and can be used as in the examples.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md2"></a>
 Building</h1>
+<p>If you just want to build the source code and not install it, you can run these commands instead.</p>
 <p>Two types of builds:</p>
 <p>one for local debugging and library generation,</p>
-<div class="fragment"><div class="line">&gt; mkdir build &amp;&amp; cd build</div>
-<div class="line">&gt; cmake .. -DCMAKE_BUILD_TYPE=Debug</div>
-<div class="line">&gt; make    # Builds and tests</div>
+<div class="fragment"><div class="line">mkdir build &amp;&amp; cd build</div>
+<div class="line">cmake .. -DCMAKE_BUILD_TYPE=Debug # Builds and tests</div>
+<div class="line">cmake --build . --config Debug --target fluentcpp</div>
 </div><!-- fragment --><p>and the other for all release assets.</p>
-<div class="fragment"><div class="line">&gt; mkdir build &amp;&amp; cd build</div>
-<div class="line">&gt; cmake .. -DCMAKE_BUILD_TYPE=Release</div>
-<div class="line">&gt; make    # Builds, tests and creates documentation.</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md2"></a>
+<div class="fragment"><div class="line">mkdir build &amp;&amp; cd build</div>
+<div class="line">cmake .. -DCMAKE_BUILD_TYPE=Debug # Builds, tests and creates documentation</div>
+<div class="line">cmake --build . --config Debug --target fluentcpp</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
 Usage Examples</h1>
 <p>Find more in the <a href="https://github.com/awalsh128/fluentcpp/tree/master/examples">examples folder</a>.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;fcpp/query.h&gt;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;fluentcpp/query.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"> </div>
@@ -159,7 +169,7 @@ Usage Examples</h1>
 <div class="line">      .action([](<span class="keyword">auto</span> x)</div>
 <div class="line">              { std::cout &lt;&lt; x; });</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Dependencies</h1>
 <ul>
 <li><a href="https://cmake.org/cmake/help/latest/guide/tutorial/index.html">CMake</a> - C++ build system for generating library objects.</li>

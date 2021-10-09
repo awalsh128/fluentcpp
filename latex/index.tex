@@ -11,16 +11,26 @@
 \DoxyCodeLine{    .where(\mbox{\hyperlink{query_8h_a4af4019a96b4243ad506824e53321028}{EXPR}}(x, x > 500))}
 \DoxyCodeLine{    .shuffle()}
 \end{DoxyCode}
-\hypertarget{index_autotoc_md1}{}\doxysection{Building}\label{index_autotoc_md1}
+\hypertarget{index_autotoc_md1}{}\doxysection{Installing}\label{index_autotoc_md1}
+
+\begin{DoxyItemize}
+\item Go to \href{https://github.com/awalsh128/fluentcpp/releases}{\texttt{ the release}} you want to install.
+\item Download the {\ttfamily fluentcpp-\/$<$tag$>$.tar.\+gz} file.
+\item Decompress the file in the directory {\ttfamily tar -\/xvzf fluentcpp-\/$<$tag$>$.tar.\+gz}.
+\item Run the install command {\ttfamily sudo ./install.sh}.
+\item The library files are now installed on your system and can be used as in the examples.
+\end{DoxyItemize}\hypertarget{index_autotoc_md2}{}\doxysection{Building}\label{index_autotoc_md2}
+If you just want to build the source code and not install it, you can run these commands instead.
+
 Two types of builds\+:
 
 one for local debugging and library generation,
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{> mkdir build \&\& cd build}
-\DoxyCodeLine{> cmake .. -\/DCMAKE\_BUILD\_TYPE=Debug}
-\DoxyCodeLine{> make    \# Builds and tests}
+\DoxyCodeLine{mkdir build \&\& cd build}
+\DoxyCodeLine{cmake .. -\/DCMAKE\_BUILD\_TYPE=Debug \# Builds and tests}
+\DoxyCodeLine{cmake -\/-\/build . -\/-\/config Debug -\/-\/target fluentcpp}
 \end{DoxyCode}
 
 
@@ -28,16 +38,16 @@ and the other for all release assets.
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{> mkdir build \&\& cd build}
-\DoxyCodeLine{> cmake .. -\/DCMAKE\_BUILD\_TYPE=Release}
-\DoxyCodeLine{> make    \# Builds, tests and creates documentation.}
+\DoxyCodeLine{mkdir build \&\& cd build}
+\DoxyCodeLine{cmake .. -\/DCMAKE\_BUILD\_TYPE=Debug \# Builds, tests and creates documentation}
+\DoxyCodeLine{cmake -\/-\/build . -\/-\/config Debug -\/-\/target fluentcpp}
 \end{DoxyCode}
-\hypertarget{index_autotoc_md2}{}\doxysection{Usage Examples}\label{index_autotoc_md2}
+\hypertarget{index_autotoc_md3}{}\doxysection{Usage Examples}\label{index_autotoc_md3}
 Find more in the \href{https://github.com/awalsh128/fluentcpp/tree/master/examples}{\texttt{ examples folder}}.
 
 
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include <fcpp/query.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <fluentcpp/query.h>}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include <iostream>}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include <vector>}}
 \DoxyCodeLine{}
@@ -65,7 +75,7 @@ Find more in the \href{https://github.com/awalsh128/fluentcpp/tree/master/exampl
 \DoxyCodeLine{              \{ std::cout << x; \});}
 \DoxyCodeLine{\}}
 \end{DoxyCode}
-\hypertarget{index_autotoc_md3}{}\doxysection{Dependencies}\label{index_autotoc_md3}
+\hypertarget{index_autotoc_md4}{}\doxysection{Dependencies}\label{index_autotoc_md4}
 
 \begin{DoxyItemize}
 \item \href{https://cmake.org/cmake/help/latest/guide/tutorial/index.html}{\texttt{ C\+Make}} -\/ C++ build system for generating library objects.
