@@ -3,7 +3,8 @@
 
 namespace fcpp::transforms {
 
-template <typename T> std::vector<T> to_vector(std::set<T> items) {
+template <typename T>
+std::vector<T> to_vector(std::set<T> items) {
   std::vector<T> result;
   result.reserve(items.size());
   for (auto it = items.begin(); it != items.end();) {
