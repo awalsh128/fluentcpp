@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 PROJECT_DIR=$1
 TAG=$2
@@ -23,5 +23,5 @@ tar -czvf $PKG_NAME.tar.gz *
 zip $PKG_NAME.zip *
 
 cd ..
-echo "**Full Changelog**: https://github.com/awalsh128/fluent/commits/$TAG\n\n" > notes.md
+echo "**Full Changelog**: https://github.com/awalsh128/fluent/commits/$TAG" > notes.md
 echo $NOTES >> notes.md
