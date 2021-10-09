@@ -11,8 +11,9 @@ body {
   margin-bottom: 60px; /* Margin bottom by footer height */
 }
 
-.fa {
-  padding-right: 10px; /* Gap between fontawesome icon and text. */
+.fa,
+.fab {
+  padding-right: 5px; /* Gap between fontawesome icon and text. */
 }
 
 footer {
