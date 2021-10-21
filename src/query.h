@@ -1137,9 +1137,25 @@ Queryable<T>::zip(std::initializer_list<U> rhs_items, bool truncate) {
   return zip(std::vector<U>(std::move(rhs_items)), truncate);
 }
 
+/**
+ * @brief Merge result of both if and else block queries from
+ * Queryable<T>::branch method.
+ *
+ * @tparam FalseT Type of items projected from false / else block query.
+ * @tparam TrueT Type of items projected from true / if block query.
+ */
 template <typename TrueT, typename FalseT>
 class Merge {
 public:
+  /**
+   * @brief Construct a new Merge object from the transformed true and false
+   * branches of the predicate.
+   *
+   * @param true_queried Queryable that is the transformed sequence of true
+   * branched items of the predicate.
+   * @param false_queried Queryable that is the transformed sequence of false
+   * branched items of the predicate.
+   */
   explicit Merge(Queryable<TrueT> true_queried, Queryable<FalseT> false_queried)
       : true_queried_(std::move(true_queried)),
         false_queried_(std::move(false_queried)) {}
@@ -1148,7 +1164,14 @@ public:
   Merge(const Merge &) = delete;
   Merge &operator=(const Merge &) = delete;
 
-  // Merges the true and false branches as a zip.
+  /**
+   * @brief Merges the true and false branch sequences as a zip.
+   *
+   * @param truncate Truncate the combined sequence by the minimum size of the
+   * two. If false both T and U must have a default constructor so default
+   * values can be provided if one sequence is larger than the other.
+   * @return Queryable<std::tuple<TrueT, FalseT>>
+   */
   Queryable<std::tuple<TrueT, FalseT>> merge(bool truncate = false) {
     return true_queried_.zip(std::move(false_queried_.to_vector()), truncate);
   }
@@ -1158,9 +1181,25 @@ private:
   Queryable<FalseT> false_queried_;
 };
 
+/**
+ * @brief False / else block query of Queryable<T>::branch method.
+ *
+ * @tparam WhenTrueQueried Type of items projected from true / if block query.
+ * @tparam T Type of items to query over.
+ */
 template <typename WhenTrueQueriedT, typename T>
 class WhenFalse {
 public:
+  /**
+   * @brief Construct a new WhereFalse object from a sequence of transformed
+   * items from the true branch of the predicate and the not yet transformed
+   * false branch sequence.
+   *
+   * @param when_true_queried Queryable that is the transformed sequence of true
+   * branched items of the predicate.
+   * @param when_false_items Sequence of false branched items of the predicate
+   * to query over.
+   */
   explicit WhenFalse(
       Queryable<WhenTrueQueriedT> when_true_queried,
       std::vector<T> when_false_items)
@@ -1171,7 +1210,16 @@ public:
   WhenFalse(const WhenFalse &) = delete;
   WhenFalse &operator=(const WhenFalse &) = delete;
 
-  // Queries the false branched items from the Queryable<T>::branch predicate.
+  /**
+   * @brief Projects each item of the false branched sequence into a new form
+   * from the Queryable<T>::branch of the predicate.
+   *
+   * @tparam WhenFalseQuery Type of transform function.
+   * @tparam WhenFalseQueriedT Type of items that will be transformed.
+   * @param when_false_query Transform function that projects each item into a
+   * new form.
+   * @return Merge<WhenTrueQueriedT, WhenFalseQueriedT>
+   */
   template <
       typename WhenFalseQuery /* =
                                  std::function<Queryable<WhenFalseQueriedT>(Queryable<T>&)>
@@ -1191,10 +1239,23 @@ private:
   std::vector<T> when_false_items_;
 };
 
-// True branch from the Queryable<T>::branch predicate.
+/**
+ * @brief True / if block query of Queryable<T>::branch method.
+ *
+ * @tparam T Type of items to query over.
+ */
 template <typename T>
 class WhenTrue {
 public:
+  /**
+   * @brief Construct a new WhereTrue object from a sequence of true and false
+   * branched items of the predicate that are to be transformed.
+   *
+   * @param when_true_items Sequence of items from the true branch of the
+   * predicate.
+   * @param when_false_items Sequence of items from the false branch of the
+   * predicate. over.
+   */
   explicit WhenTrue(
       std::vector<T> when_true_items, std::vector<T> when_false_items)
       : when_true_items_(std::move(when_true_items)),
@@ -1204,7 +1265,16 @@ public:
   WhenTrue(const WhenTrue &) = delete;
   WhenTrue &operator=(const WhenTrue &) = delete;
 
-  // Queries the true branched items from the Queryable<T>::branch predicate.
+  /**
+   * @brief Projects each item of the true branched sequence into a new form
+   * from the Queryable<T>::branch of the predicate.
+   *
+   * @tparam WhenTrueQuery Type of transform function.
+   * @tparam WhenTrueQueriedT Type of items that will be transformed.
+   * @param when_true_query Transform function that projects each item into a
+   * new form.
+   * @return WhenFalse<WhenTrueQueriedT, T>
+   */
   template <
       typename WhenTrueQuery /* =
                                 std::function<Queryable<WhenTrueQueriedT>(Queryable<T>)>
