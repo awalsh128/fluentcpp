@@ -21,16 +21,11 @@ jobs:
           # a pull request then we can checkout the head.
           fetch-depth: 2
 
-      - name: Cache Dependencies
-        uses: actions/cache@v2
+      - name: APT Packages
+        uses: awalsh128/cache-apt-pkgs-action@v1
         id: cache-deps
         with:
-          path: "~/cache-deps"
-          key: cache-deps
-
-      # Install release dependencies since analysis should be on released artifacts and not debug.
-      - name: Install Dependencies
-        run: ${{github.workspace}}/.github/workflows/deps_install.sh "~/cache-deps"
+          packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize

@@ -16,15 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Cache Dependencies
-        uses: actions/cache@v2
+      - name: APT Packages
+        uses: awalsh128/cache-apt-pkgs-action@v1
         id: cache-deps
         with:
-          path: "~/cache-deps"
-          key: cache-deps
-
-      - name: Install Dependencies
-        run: ${{github.workspace}}/.github/workflows/deps_install.sh "~/cache-deps"
+          packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen
 
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
