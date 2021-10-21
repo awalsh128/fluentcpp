@@ -2,8 +2,6 @@
   "C_Cpp.clang_format_style": "file",
   "C_Cpp.clang_format_fallbackStyle": "none",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "C_Cpp.dimInactiveRegions": false,
-
   // sudo apt install clang-format; which clang-format
   "clang-format.executable": "/usr/bin/clang-format",
   "clang-format.language.c.enable": true,
@@ -13,19 +11,27 @@
     "editor.suggest.insertMode": "replace",
     "editor.semanticHighlighting.enabled": true
   },
-
   "cmake.configureSettings": {
-    "CMAKE_BUILD_TYPE": "${buildType}"
+    "CMAKE_BUILD_TYPE": "${buildType}",
+    "BUILD_TESTS": true,
+    "BUILD_WEBSITE": true,
+    "BUILD_BENCHMARKS": true,
+    "BUILD_EXAMPLES": true,
   },
   "cmake.loggingLevel": "trace",
   "cmake.sourceDirectory": "${workspaceFolder}/.",
-
-  "editor.rulers": [80],
+  "editor.rulers": [
+    80
+  ],
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
-
+  "[python]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+  },
   "files.associations": {
     "type_traits": "cpp",
     "array": "cpp",
@@ -89,6 +95,5 @@
     "thread": "cpp",
     "list": "cpp",
     "unordered_set": "cpp"
-  },
-  "C_Cpp.errorSquiggles": "Disabled"
+  }
 }
