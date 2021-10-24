@@ -5,8 +5,10 @@ on:
     inputs:
       tag:
         description: "Git tag"
+        required: true
       notes:
         description: "Release notes"
+        required: false
 
 env:
   BUILD_TYPE: Release
@@ -28,10 +30,16 @@ jobs:
           packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        working-directory: ${{github.workspace}}/build
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+            -RUN_TESTS=true \
+            -DBUILD_WEBSITE=true
 
       - name: Build
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        working-directory: ${{github.workspace}}/build
+        run: cmake --build --config ${{env.BUILD_TYPE}}
 
       - name: Test
         working-directory: ${{github.workspace}}/build
