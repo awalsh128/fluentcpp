@@ -48,6 +48,18 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug # Builds, tests and creates documentation
 cmake --build . --config Debug --target fluentcpp
 ```
 
+Lastly, to install the library on the system for use.
+
+```bash
+
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release --target fluentcpp
+make install
+```
+
+This will install artifacts in the ``/usr/local/lib/fluentcpp`` and ``/usr/local/include/fluentcpp`` directories so that they can be referenced as the usage example below (i.e. ``#include <fluentcpp/query.h``.
+
 ## Usage Examples
 
 Find more in the [examples folder](https://github.com/awalsh128/fluentcpp/tree/master/examples).
