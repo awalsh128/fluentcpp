@@ -1,16 +1,17 @@
 message(STATUS "Building and installing library.")
 
-add_library(fluentcpp STATIC  
-  asserts.h
-  traits.h
-  transforms.h transforms.cpp
-  query.h query.cpp)
+file(GLOB_RECURSE HEADER_FILES "*.h")
+file(GLOB_RECURSE IMPL_FILES "*.cpp*")
 
-set_target_properties(fluentcpp PROPERTIES
-  VERSION ${PROJECT_VERSION}
-  PUBLIC_HEADER query.h
-  CXX_STANDARD_REQUIRED 20)
+add_library(fluentcpp STATIC ${HEADER_FILES} ${IMPL_FILES})
+
+set_target_properties(fluentcpp 
+  PROPERTIES
+  PUBLIC_HEADER "${HEADER_FILES}"
+  VERSION ${PROJECT_VERSION}  
+  CXX_STANDARD 20
+  CXX_STANDARD_REQUIRED YES)
 
 install(TARGETS fluentcpp
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT lib
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/fluentcpp COMPONENT lib
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/fluentcpp COMPONENT dev)
