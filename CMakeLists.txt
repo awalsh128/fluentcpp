@@ -14,9 +14,9 @@ project(fluentcpp
 
 include(assets/scripts/functions.cmake)
 
-option(RUN_TESTS, "Run unit and benchmark tests." OFF)
+option(BUILD_TESTS "Build unit tests." OFF)
+option(BUILD_BENCHMARKS "Build benchmark tests." OFF)
 option(BUILD_WEBSITE "Build Doxygen and product website." OFF)
-option(RUN_BENCHMARKS "Run benchmark tests." OFF)
 option(BUILD_EXAMPLES "Build code examples using the product." OFF)
 
 # Make the src directory available for include lookup.
