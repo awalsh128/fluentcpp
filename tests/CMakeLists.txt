@@ -33,11 +33,15 @@ if (BUILD_BENCHMARKS)
 
   FetchContent_MakeAvailable(googletest googlebenchmark)
 
-  add_executable(benchmarks benchmarks.cpp)
-  target_link_libraries(benchmarks PUBLIC benchmark::benchmark fluentcpp)
+  add_executable(benchmarks benchmarks.cpp benchmarks_common.h)
   add_test(NAME benchmarks COMMAND tests)
+  target_link_libraries(benchmarks PUBLIC benchmark::benchmark fluentcpp)
+  
+  add_executable(benchmarks_baseline benchmarks_baseline.cpp benchmarks_common.h)
+  add_test(NAME benchmarks_baseline COMMAND tests)
+  target_link_libraries(benchmarks_baseline PUBLIC benchmark::benchmark)
 
-  py3_build(benchmarks_delta.py)
+  py3_build(benchmarks_report.py)
   
   file(COPY benchmark.sh
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR} 
