@@ -1,16 +1,26 @@
 message(STATUS "Building and installing library.")
 
-file(GLOB_RECURSE HEADER_FILES "*.h")
-file(GLOB_RECURSE IMPL_FILES "*.cpp*")
+set(HEADER_FILES
+  ${PROJECT_SOURCE_DIR}/include/fluentcpp/asserts.h
+  ${PROJECT_SOURCE_DIR}/include/fluentcpp/query.h
+  ${PROJECT_SOURCE_DIR}/include/fluentcpp/traits.h
+  ${PROJECT_SOURCE_DIR}/include/fluentcpp/transforms.h)
 
-add_library(fluentcpp STATIC ${HEADER_FILES} ${IMPL_FILES})
+add_library(fluentcpp STATIC ${HEADER_FILES} query.cpp transforms.cpp)
+add_library(fluentcpp::fluentcpp ALIAS fluentcpp)
 
-set_target_properties(fluentcpp 
+# Consumers include headers as <fluentcpp/query.h>, both in-tree and installed.
+target_include_directories(fluentcpp
+  PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
+target_compile_features(fluentcpp PUBLIC cxx_std_20)
+
+set_target_properties(fluentcpp
   PROPERTIES
   PUBLIC_HEADER "${HEADER_FILES}"
-  VERSION ${PROJECT_VERSION}  
-  CXX_STANDARD 20
-  CXX_STANDARD_REQUIRED YES)
+  VERSION ${PROJECT_VERSION})
 
 install(TARGETS fluentcpp
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/fluentcpp COMPONENT lib

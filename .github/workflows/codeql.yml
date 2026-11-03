@@ -1,0 +1,52 @@
+name: CodeQL
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: 0 19 * * 0
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Setup APT packages (minimal for analysis)
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: |
+            clang
+            clang-format
+            cmake
+
+      - name: Ensure Clang is available
+        run: clang --version || true
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+
+      - name: Autobuild (CodeQL)
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v2
+
+      - name: Clang-format
+        run: |
+          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
+          if [ -z "${FILES}" ]; then
+            echo "No C/C++ source files found, skipping format check."
+            exit 0
+          fi
+          if [ -f .clang-format ]; then
+            clang-format -style=file -n $FILES || true
+          else
+            clang-format -style=LLVM -n $FILES || true
+          fi
+          git --no-pager diff --name-only || true

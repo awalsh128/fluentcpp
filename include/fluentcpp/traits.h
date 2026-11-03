@@ -2,8 +2,8 @@
  * @file traits.h
  * @author Andrew Walsh (awalsh128@gmail.com)
  * @brief Traits for asserting object features.
- * @version 0.1
- * @date 2021-09-03
+ * @version 0.2
+ * @date 2026-10-21
  *
  * @copyright Copyright 2021 Google LLC
  *

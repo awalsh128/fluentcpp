@@ -1,0 +1,36 @@
+name: Apply Format
+
+on:
+  workflow_dispatch:
+
+jobs:
+  apply-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          fetch-depth: 0
+
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y clang-format git
+
+      - name: Apply clang-format
+        run: |
+          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
+          if [ -z "${FILES}" ]; then
+            echo "No C/C++ source files found, nothing to format."
+            exit 0
+          fi
+          if [ -f .clang-format ]; then
+            clang-format -style=file -i $FILES
+          else
+            clang-format -style=LLVM -i $FILES
+          fi
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git checkout -b format/auto
+          git add -A
+          git commit -m "Apply clang-format" || echo "No changes to commit"
+          git push origin format/auto

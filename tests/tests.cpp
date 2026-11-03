@@ -1,8 +1,12 @@
 #include "models.h"
-#include "query.h"
+// Included before query.h to verify both headers can be included together.
+#include "fluentcpp/transforms.h"
+#include "fluentcpp/query.h"
 
 #include <memory>
 #include <ostream>
+#include <stdexcept>
+#include <string>
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -293,9 +297,15 @@ TEMPLATE_TEST_CASE("slice no-stride", "", Object, NonCopyObject) {
       Create<TestType>({3, 4, 5}));
 }
 
-TEMPLATE_TEST_CASE("slice zero-stride", "", Object, NonCopyObject) {
-  REQUIRE(fcpp::query(Create<TestType>({1, 2, 3})).slice(2, 3, 0).to_vector() ==
-          Create<TestType>({3, 3, 3}));
+TEST_CASE("slice zero-stride") {
+  REQUIRE(fcpp::query(Create<Object>({1, 2, 3})).slice(2, 3, 0).to_vector() ==
+          Create<Object>({3, 3, 3}));
+}
+
+TEST_CASE("slice zero-stride non-copyable throws") {
+  REQUIRE_THROWS_AS(
+      fcpp::query(Create<NonCopyObject>({1, 2, 3})).slice(2, 3, 0),
+      std::invalid_argument);
 }
 
 TEMPLATE_TEST_CASE("take", "", Object, NonCopyObject) {
@@ -388,6 +398,147 @@ TEMPLATE_TEST_CASE("zip truncate", "", Object, NonCopyObject) {
 
   REQUIRE(fcpp::query(Create<TestType>({1, 2, 3, 4}))
               .zip(Create<TestType>({5, 6, 7, 8, 9}), /*truncate=*/true)
+              .to_vector() == expected);
+}
+
+// Regression tests using std::string, which unlike the int based models above
+// is left empty when moved from. This catches items being moved before use.
+using Strings = std::vector<std::string>;
+
+TEST_CASE("where by-value predicate keeps items") {
+  REQUIRE(fcpp::query(Strings{"apple", "bob", "carrot"})
+              .where(EXPR(s, s.size() > 3))
+              .to_vector() == Strings{"apple", "carrot"});
+}
+
+TEST_CASE("first_or_default by-value predicate keeps item") {
+  REQUIRE(
+      fcpp::query(Strings{"apple", "bob"}).first_or_default(EXPR(s, s == "bob")) ==
+      "bob");
+}
+
+TEST_CASE("operator== different sizes") {
+  REQUIRE_FALSE(fcpp::query(Strings{"a", "b"}) == Strings{"a"});
+  REQUIRE_FALSE(fcpp::query(Strings{"a"}) == Strings{"a", "b"});
+  REQUIRE_FALSE(fcpp::query(Strings{"a"}) == fcpp::query(Strings{"a", "b"}));
+}
+
+TEST_CASE("intersect unsorted") {
+  REQUIRE(fcpp::query(Strings{"c", "a", "b", "c"})
+              .intersect(Strings{"c", "b"})
+              .to_vector() == Strings{"c", "b"});
+}
+
+TEST_CASE("difference unsorted") {
+  REQUIRE(fcpp::query(Strings{"c", "a", "b", "c"})
+              .difference(Strings{"c", "b"})
+              .to_vector() == Strings{"a", "c"});
+}
+
+TEST_CASE("join one-to-many and many-to-one") {
+  std::vector<std::tuple<std::string, std::string>> expected = {
+      {"a1", "a2"}, {"a1", "a3"}, {"a4", "a2"}, {"a4", "a3"}};
+  REQUIRE(fcpp::query(Strings{"a1", "a4"})
+              .join(Strings{"a2", "a3"}, CR_EXPR(s, s[0]), CR_EXPR(s, s[0]))
+              .to_vector() == expected);
+}
+
+TEST_CASE("join different item types") {
+  std::vector<std::tuple<Object, std::string>> expected = {{1, "1"}};
+  REQUIRE(fcpp::query(Create<Object>({1, 2}))
+              .join(
+                  Strings{"1"}, CR_EXPR(o, o.value),
+                  CR_EXPR(s, std::stoi(s)))
+              .to_vector() == expected);
+}
+
+TEST_CASE("join one-to-many non-copyable throws") {
+  REQUIRE_THROWS_AS(
+      fcpp::query(Create<NonCopyObject>({1}))
+          .join(
+              Create<NonCopyObject>({1, 1}), CR_EXPR(x, x.value),
+              CR_EXPR(x, x.value)),
+      std::invalid_argument);
+}
+
+TEST_CASE("slice past end throws") {
+  REQUIRE_THROWS_AS(
+      fcpp::query(Strings{"x", "y", "z"}).slice(1, 3), std::invalid_argument);
+}
+
+TEST_CASE("slice zero-stride strings") {
+  REQUIRE(fcpp::query(Strings{"x", "y"}).slice(0, 3, 0).to_vector() ==
+          Strings{"x", "x", "x"});
+}
+
+TEMPLATE_TEST_CASE("trim", "", Object, NonCopyObject) {
+  REQUIRE(fcpp::query(Create<TestType>({1, 2, 3})).trim(1).to_vector() ==
+          Create<TestType>({1, 2}));
+}
+
+TEST_CASE("trim too many throws") {
+  REQUIRE_THROWS_AS(fcpp::query(Strings{"x"}).trim(2), std::invalid_argument);
+}
+
+struct NoDefault {
+  int value;
+  explicit NoDefault(int value) : value(value) {}
+  bool operator==(const NoDefault &rhs) const { return value == rhs.value; }
+};
+
+TEST_CASE("zip truncate without default constructor") {
+  std::vector<NoDefault> lhs;
+  lhs.emplace_back(1);
+  lhs.emplace_back(2);
+  std::vector<NoDefault> rhs;
+  rhs.emplace_back(3);
+  auto zipped = fcpp::query(std::move(lhs))
+                    .zip(std::move(rhs), /*truncate=*/true)
+                    .to_vector();
+  REQUIRE(zipped.size() == 1);
+  REQUIRE(std::get<0>(zipped[0]).value == 1);
+  REQUIRE(std::get<1>(zipped[0]).value == 3);
+}
+
+TEST_CASE("implicit conversion moves items") {
+  Strings result = fcpp::query(Strings{"a", "b"}).reverse();
+  REQUIRE(result == Strings{"b", "a"});
+}
+
+TEST_CASE("order_by is stable and supports descending") {
+  REQUIRE(fcpp::query(Strings{"bb", "a", "cc", "d"})
+              .order_by(CR_EXPR(s, s.size()), /*descending=*/true)
+              .to_vector() == Strings{"bb", "cc", "a", "d"});
+}
+
+TEST_CASE("distinct and unionize strings") {
+  REQUIRE(fcpp::query(Strings{"b", "a", "b"}).distinct().to_vector() ==
+          Strings{"a", "b"});
+  REQUIRE(fcpp::query(Strings{"b", "a"}).unionize(Strings{"c", "a"}).to_vector() ==
+          Strings{"a", "b", "c"});
+}
+
+TEST_CASE("take_random returns distinct items") {
+  auto taken = fcpp::query(Strings{"a", "b", "c", "d"}).take_random(4).to_set();
+  REQUIRE(taken == std::set<std::string>{"a", "b", "c", "d"});
+}
+
+TEST_CASE("group_by and to_single_value_map keep items") {
+  REQUIRE(fcpp::query(Strings{"ab", "c", "de"})
+              .group_by(EXPR(s, s.size()))
+              .to_vector() == std::vector<Strings>{{"c"}, {"ab", "de"}});
+  REQUIRE(fcpp::query(Strings{"ab", "c", "de"})
+              .to_single_value_map(EXPR(s, s.size())) ==
+          std::map<size_t, std::string>{{1, "c"}, {2, "ab"}});
+}
+
+TEST_CASE("branch keeps items") {
+  std::vector<std::tuple<std::string, std::string>> expected = {{"apple", "b"}};
+  REQUIRE(fcpp::query(Strings{"apple", "b"})
+              .branch(EXPR(s, s.size() > 1))
+              .when_true([](auto q) { return std::move(q); })
+              .when_false([](auto q) { return std::move(q); })
+              .merge()
               .to_vector() == expected);
 }
 

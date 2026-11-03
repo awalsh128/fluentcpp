@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            compiler: clang
+          - os: ubuntu-latest
+            compiler: gcc
+          - os: macos-latest
+            compiler: clang
+          - os: windows-latest
+            compiler: msvc
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+
+      - name: Setup toolchain (Ubuntu/Clang or GCC)
+        if: matrix.os == 'ubuntu-latest' && (matrix.compiler == 'clang' || matrix.compiler == 'gcc')
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.compiler }}" = "clang" ]; then
+            sudo apt-get install -y clang clang-format clang-tidy ccache ninja-build
+          else
+            sudo apt-get install -y build-essential clang-format ccache ninja-build
+          fi
+
+      - name: Setup toolchain (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew update || true
+          brew install ninja || true
+
+      - name: Configure (CMake)
+        env:
+          CC: ${{ matrix.compiler == 'clang' && '/usr/bin/clang' || (matrix.compiler == 'gcc' && '/usr/bin/gcc' || '') }}
+          CXX: ${{ matrix.compiler == 'clang' && '/usr/bin/clang++' || (matrix.compiler == 'gcc' && '/usr/bin/g++' || '') }}
+        run: |
+          mkdir -p build
+          cd build
+          if [ "${{ matrix.compiler }}" = "msvc" ]; then
+            cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
+          else
+            cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+              -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX}
+          fi
+
+      - name: Build
+        run: |
+          if [ "${{ matrix.compiler }}" = "msvc" ]; then
+            cmake --build build --config Debug
+          else
+            cmake --build build --config Debug -- -j$(nproc || sysctl -n hw.ncpu)
+          fi
+
+      - name: Run tests
+        run: |
+          if [ "${{ matrix.compiler }}" = "msvc" ]; then
+            ctest --test-dir build -C Debug --output-on-failure
+          else
+            cd build && ctest --output-on-failure -C Debug
+          fi
+
+      - name: clang-format check (only on clang-enabled runners)
+        if: matrix.compiler == 'clang'
+        run: |
+          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
+          if [ -z "${FILES}" ]; then
+            echo "No C/C++ source files found, skipping format check."
+            exit 0
+          fi
+          if [ -f .clang-format ]; then
+            clang-format -style=file -i $FILES
+          else
+            clang-format -style=LLVM -i $FILES
+          fi
+          if ! git diff --quiet; then
+            echo "clang-format would change files:"; git --no-pager diff --name-only
+            exit 1
+          fi
+
+      - name: clang-tidy (informational, clang only)
+        if: matrix.compiler == 'clang'
+        continue-on-error: true
+        run: |
+          if [ -f build/compile_commands.json ]; then
+            FILES=$(git ls-files 'src/**/*.cpp' || true)
+            if [ -n "${FILES}" ]; then
+              clang-tidy -p build $FILES || true
+            else
+              echo "No source files matched for clang-tidy."
+            fi
+          else
+            echo "No compile_commands.json found — skip clang-tidy."
+          fi

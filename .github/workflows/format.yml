@@ -1,0 +1,31 @@
+name: Format Check
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y clang-format
+
+      - name: Run clang-format (check)
+        run: |
+          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
+          if [ -z "${FILES}" ]; then
+            echo "No C/C++ source files found, skipping format check."
+            exit 0
+          fi
+          if [ -f .clang-format ]; then
+            clang-format -style=file -n $FILES || true
+          else
+            clang-format -style=LLVM -n $FILES || true
+          fi
+          git --no-pager diff --name-only || true

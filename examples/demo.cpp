@@ -1,4 +1,4 @@
-#include "query.h"
+#include "fluentcpp/query.h"
 
 #include <iostream>
 #include <string_view>

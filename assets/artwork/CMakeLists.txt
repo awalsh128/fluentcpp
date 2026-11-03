@@ -1,6 +1,6 @@
 message(STATUS "Copying artwork to directories.")
 
-set(WEBSITE_IMAGES_DIR ${PROJECT_SOURCE_DIR}/assets/website/images)
+set(WEBSITE_IMAGES_DIR ${PROJECT_SOURCE_DIR}/docs/website/images)
 file(COPY 
   ${CMAKE_CURRENT_SOURCE_DIR}/fluentcpp-sm.png
   ${CMAKE_CURRENT_SOURCE_DIR}/fluentcpp-initial-sm.png  

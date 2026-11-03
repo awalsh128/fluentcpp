@@ -13,7 +13,7 @@ file(REMOVE RECURSE ${DOXYGEN_OUTPUT_DIR})
 file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR})
 
 # Doxyfile.in variable substitutions.
-set(DOXYGEN_SRC_INPUT ${PROJECT_SOURCE_DIR}/src)
+set(DOXYGEN_SRC_INPUT ${PROJECT_SOURCE_DIR}/include)
 set(DOXYGEN_INDEX_FILE ${DOXYGEN_OUTPUT_DIR}/index.html)
 set(DOXYGEN_MDFILE ${PROJECT_SOURCE_DIR}/README.md)
 set(DOXYFILE_IN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
@@ -25,7 +25,7 @@ set(DOXYGEN_CSS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/doxygen.css)
 # Replace variables inside @var@ with the current values
 configure_file(${DOXYFILE_IN_FILE} ${DOXYFILE_OUT_FILE} @ONLY)
 
-set(SCRIPT_FILE COMMAND ${PROJECT_SOURCE_DIR}/assets/scripts/expand_html_includes.sh)
+set(SCRIPT_FILE COMMAND ${PROJECT_SOURCE_DIR}/scripts/expand_html_includes.sh)
 
 set(DOXYGEN_SRC_FOOTER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/footer.html)
 set(DOXYGEN_SRC_HEADER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/header.html)
@@ -36,7 +36,7 @@ add_custom_command(
   COMMAND ${SCRIPT_FILE} ${DOXYGEN_SRC_FOOTER_FILE} ${DOXYGEN_FOOTER_FILE}
   COMMAND ${SCRIPT_FILE} ${DOXYGEN_SRC_HEADER_FILE} ${DOXYGEN_HEADER_FILE}
   # Copy all web assets.
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/assets/website ${DOXYGEN_OUTPUT_DIR}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/website ${DOXYGEN_OUTPUT_DIR}
   # Run Doxygen and generate docs.
   COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT_FILE}
   # Update Doxyfile.in timestamp to avoid unchanged rebuild.

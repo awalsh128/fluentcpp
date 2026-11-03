@@ -1,10 +1,10 @@
-name: "Analyze"
+name: Analyze
 
 on:
   push:
   pull_request:
   schedule:
-    - cron: "0 19 * * 0"
+    - cron: 0 19 * * 0
   workflow_dispatch:
 
 jobs:
@@ -15,25 +15,104 @@ jobs:
       - run: echo "Job triggered by ${{ github.event_name }} event."
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # We must fetch at least the immediate parents so that if this is
           # a pull request then we can checkout the head.
           fetch-depth: 2
 
-      - name: APT Packages
+      - name: APT Packages (tools for build & analysis)
         uses: awalsh128/cache-apt-pkgs-action@v1
         id: cache-deps
         with:
-          packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen
+          packages: |
+            dia
+            doxygen
+            doxygen-doc
+            doxygen-gui
+            doxygen-latex
+            graphviz
+            mscgen
+            clang
+            clang-format
+            clang-tidy
+            cmake
+            ninja-build
+            build-essential
+            ccache
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-
+
+      - name: Configure (CMake) - Force Clang
+        env:
+          CC: /usr/bin/clang
+          CXX: /usr/bin/clang++
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+
+      - name: Build
+        run: cmake --build build --config Debug -- -j$(nproc)
+
+      - name: Run tests
+        run: |
+          cd build
+          ctest --output-on-failure -C Debug || true
+
+      - name: clang-format check (informational)
+        continue-on-error: true
+        run: |
+          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
+          if [ -z "${FILES}" ]; then
+            echo "No C/C++ source files found, skipping format check."
+            exit 0
+          fi
+          if [ -f .clang-format ]; then
+            echo "Running clang-format (informational)."
+            clang-format -style=file -i $FILES || true
+          else
+            echo "No .clang-format file found, using LLVM style as fallback."
+            clang-format -style=LLVM -i $FILES || true
+          fi
+          if ! git diff --quiet; then
+            echo "clang-format would change files:"; git --no-pager diff --name-only
+            echo "This check is informational in analyze.yml (non-blocking)."
+          else
+            echo "No formatting changes required."
+          fi
+
+      - name: clang-tidy (informational)
+        continue-on-error: true
+        run: |
+          if [ -f build/compile_commands.json ]; then
+            echo "Running clang-tidy (reports only; won't fail the job)."
+            FILES=$(git ls-files 'src/**/*.cpp' || true)
+            if [ -n "${FILES}" ]; then
+              clang-tidy -p build $FILES || true
+            else
+              echo "No source files matched for clang-tidy."
+            fi
+          else
+            echo "No compile_commands.json found — skip clang-tidy."
+          fi
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
 
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
+      # Let CodeQL perform its own autobuild if needed; keep it but the
+      # repository will already have been built above.
+      - name: Autobuild (CodeQL)
+        uses: github/codeql-action/autobuild@v2
 
       - name: Analyze
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2
