@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/artwork/fluentcpp-initial-sm.png" alt="Fluent C++ logo">
+</p>
+
 # Fluent C++ :: Readme
 
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
