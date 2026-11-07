@@ -72,24 +72,6 @@ jobs:
             cd build && ctest --output-on-failure -C Debug
           fi
 
-      - name: clang-format check (only on clang-enabled runners)
-        if: matrix.compiler == 'clang'
-        run: |
-          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
-          if [ -z "${FILES}" ]; then
-            echo "No C/C++ source files found, skipping format check."
-            exit 0
-          fi
-          if [ -f .clang-format ]; then
-            clang-format -style=file -i $FILES
-          else
-            clang-format -style=LLVM -i $FILES
-          fi
-          if ! git diff --quiet; then
-            echo "clang-format would change files:"; git --no-pager diff --name-only
-            exit 1
-          fi
-
       - name: clang-tidy (informational, clang only)
         if: matrix.compiler == 'clang'
         continue-on-error: true

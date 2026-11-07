@@ -37,16 +37,3 @@ jobs:
       - name: Analyze
         uses: github/codeql-action/analyze@v2
 
-      - name: Clang-format
-        run: |
-          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
-          if [ -z "${FILES}" ]; then
-            echo "No C/C++ source files found, skipping format check."
-            exit 0
-          fi
-          if [ -f .clang-format ]; then
-            clang-format -style=file -n $FILES || true
-          else
-            clang-format -style=LLVM -n $FILES || true
-          fi
-          git --no-pager diff --name-only || true
