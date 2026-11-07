@@ -10,7 +10,13 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    # The steps are bash scripts; Windows runners default to PowerShell.
+    defaults:
+      run:
+        shell: bash
     strategy:
+      # Let every platform report its own result instead of canceling on the first failure.
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
