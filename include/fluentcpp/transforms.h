@@ -38,10 +38,10 @@ namespace fcpp::transforms {
  * @return std::vector<T> Transformed vector of items.
  */
 template <typename T>
-std::vector<T> to_vector(const std::set<T>& items) {
+std::vector<T> to_vector(const std::set<T> &items) {
   std::vector<T> result;
   result.reserve(items.size());
-  for (const auto& v : items) {
+  for (const auto &v : items) {
     result.emplace_back(v);
   }
   return result;
@@ -55,7 +55,7 @@ std::vector<T> to_vector(const std::set<T>& items) {
  * @return std::vector<T> Transformed vector of moved items.
  */
 template <typename T>
-std::vector<T> to_vector(std::set<T>&& items) {
+std::vector<T> to_vector(std::set<T> &&items) {
   std::vector<T> result;
   result.reserve(items.size());
   while (!items.empty()) {

@@ -26,9 +26,9 @@
 #define FCPP_QUERY_H
 
 #include <algorithm>
+#include <cstddef>
 #include <functional>
 #include <iterator>
-#include <cstddef>
 #include <map>
 #include <numeric>
 #include <optional>
@@ -673,8 +673,8 @@ U Queryable<T>::accumulate(U initial, AccumulateFn accumulate_func) const {
   // @todo Check that AccumulateFn is a binary operation.
   // This method is const: do not attempt to move-from `items_` here. Use
   // regular iterators so callers don't unexpectedly invalidate state.
-  return std::accumulate(items_.begin(), items_.end(), initial,
-                         accumulate_func);
+  return std::accumulate(
+      items_.begin(), items_.end(), initial, accumulate_func);
 }
 
 template <typename T>
@@ -746,9 +746,10 @@ template <typename T>
 template <typename Predicate>
 std::optional<T> Queryable<T>::first_or_default(Predicate predicate) {
   // @todo Require predicate to be a unary operation.
-  auto it = std::find_if(
-      items_.begin(), items_.end(),
-      [&predicate](const T &item) { return predicate(item); });
+  auto it =
+      std::find_if(items_.begin(), items_.end(), [&predicate](const T &item) {
+        return predicate(item);
+      });
   if (it == items_.end()) {
     return std::nullopt;
   }
@@ -835,7 +836,8 @@ Queryable<std::tuple<T, U>> Queryable<T>::join(
 
   std::map<K, std::vector<U>> rhs_mapped;
   for (U &rhs_item : rhs_items) {
-    rhs_mapped[rhs_key_selector(std::as_const(rhs_item))].push_back(std::move(rhs_item));
+    rhs_mapped[rhs_key_selector(std::as_const(rhs_item))].push_back(
+        std::move(rhs_item));
   }
 
   // Count how many lhs items use each rhs group so the last use can move.
@@ -964,7 +966,8 @@ Queryable<T>::order_by(ValueSelector value_selector, bool descending) {
   std::vector<size_t> order(items_.size());
   std::iota(order.begin(), order.end(), 0);
   std::stable_sort(
-      order.begin(), order.end(), [&values, descending](size_t lhs, size_t rhs) {
+      order.begin(), order.end(),
+      [&values, descending](size_t lhs, size_t rhs) {
         return descending ? values[rhs] < values[lhs]
                           : values[lhs] < values[rhs];
       });
@@ -1289,8 +1292,8 @@ public:
                                  std::function<Queryable<WhenFalseQueriedT>(Queryable<T>&)>
                                */
       ,
-    typename WhenFalseQueriedT =
-      typename std::invoke_result_t<WhenFalseQuery, Queryable<T>>::item_type>
+      typename WhenFalseQueriedT = typename std::invoke_result_t<
+          WhenFalseQuery, Queryable<T>>::item_type>
   Merge<WhenTrueQueriedT, WhenFalseQueriedT>
   when_false(WhenFalseQuery when_false_query) {
     return Merge<WhenTrueQueriedT, WhenFalseQueriedT>(
@@ -1344,8 +1347,8 @@ public:
                                 std::function<Queryable<WhenTrueQueriedT>(Queryable<T>)>
                               */
       ,
-    typename WhenTrueQueriedT =
-      typename std::invoke_result_t<WhenTrueQuery, Queryable<T>>::item_type>
+      typename WhenTrueQueriedT =
+          typename std::invoke_result_t<WhenTrueQuery, Queryable<T>>::item_type>
   WhenFalse<WhenTrueQueriedT, T> when_true(WhenTrueQuery when_true_query) {
     return WhenFalse<WhenTrueQueriedT, T>(
         when_true_query(Queryable<T>(std::move(when_true_items_))),
