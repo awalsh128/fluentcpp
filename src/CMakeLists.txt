@@ -17,6 +17,10 @@ target_include_directories(fluentcpp
 
 target_compile_features(fluentcpp PUBLIC cxx_std_20)
 
+# EXPR and CR_EXPR count __VA_ARGS__, which MSVC's traditional preprocessor gets wrong.
+# PUBLIC so every target that includes the headers uses the conforming preprocessor too.
+target_compile_options(fluentcpp PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/Zc:preprocessor>)
+
 set_target_properties(fluentcpp
   PROPERTIES
   PUBLIC_HEADER "${HEADER_FILES}"
