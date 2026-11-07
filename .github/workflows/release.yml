@@ -23,17 +23,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: APT Packages
+      - name: APT Packages (ensure clang)
         uses: awalsh128/cache-apt-pkgs-action@v1
         id: cache-deps
         with:
-          packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen
+          packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen clang
 
-      - name: Configure CMake
+      - name: Configure CMake (Force Clang)
+        env:
+          CC: /usr/bin/clang
+          CXX: /usr/bin/clang++
         run: cmake -B ${{github.workspace}}/build \
           -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
           -DBUILD_TESTS=ON \
-          -DBUILD_WEBSITE=ON
+          -DBUILD_WEBSITE=ON \
+          -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++
 
       - name: Build
         run: cd ${{github.workspace}}/build; make
@@ -50,7 +54,7 @@ jobs:
 
       - name: Create Release Package Artifacts
         run: |
-          ${{github.workspace}}/.github/workflows/create_release_pkg_artifacts.sh \
+          ${{github.workspace}}/scripts/create_release_pkg_artifacts.sh \
             ${{github.workspace}} \
             ${{github.event.inputs.tag}} \
             "${{github.event.inputs.notes}}"

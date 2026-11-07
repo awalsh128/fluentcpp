@@ -1,7 +1,10 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+ColumnLimit: 80
+DerivePointerAlignment: false
 Language: Cpp
 AlignAfterOpenBracket: AlwaysBreak
 AllowShortFunctionsOnASingleLine: All
 AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: Yes
 AlwaysBreakTemplateDeclarations: Yes
-ColumnLimit: 80

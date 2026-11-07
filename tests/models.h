@@ -60,6 +60,10 @@ struct NonCopyObject : Object {
   NonCopyObject(const NonCopyObject &) = delete;            // copy constructor
   NonCopyObject &operator=(const NonCopyObject &) = delete; // copy assignment
 
+  // Exact match needed to avoid C++20 reversed operator== ambiguity.
+  inline bool operator==(const NonCopyObject &rhs) const {
+    return value == rhs.value;
+  }
   inline bool operator==(const Object &rhs) const { return value == rhs.value; }
   inline bool operator==(int rhs) const { return value == rhs; }
 

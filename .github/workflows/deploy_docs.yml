@@ -1,4 +1,4 @@
-name: Deploy Website
+name: Deploy Docs
 
 on:
   workflow_dispatch:
@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "Job triggered by ${{github.event_name}} event."
+      - run: echo "Job triggered by ${{ github.event_name }} event."
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: APT Packages
         uses: awalsh128/cache-apt-pkgs-action@v1
@@ -22,8 +22,13 @@ jobs:
         with:
           packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen
 
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - name: Configure CMake (Force Clang)
+        env:
+          CC: /usr/bin/clang
+          CXX: /usr/bin/clang++
+        run:
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}

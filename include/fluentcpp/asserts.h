@@ -2,8 +2,8 @@
  * @file asserts.h
  * @author Andrew Walsh (awalsh128@gmail.com)
  * @brief Runtime validation of object states.
- * @version 0.1
- * @date 2021-09-03
+ * @version 0.2
+ * @date 2026-10-21
  *
  * @copyright Copyright 2021 Google LLC
  *
@@ -24,8 +24,12 @@
 #ifndef FCPP_VALIDATIONS_H
 #define FCPP_VALIDATIONS_H
 
+#include <exception>
+#include <optional>
 #include <sstream>
+#include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace fcpp::asserts {
 
@@ -33,31 +37,43 @@ namespace fcpp::asserts {
  * @brief Enforce assertions that a condition will never change during the
  * running lifetime of that code.
  *
+ * The message is only formatted when the condition is violated, so passing
+ * checks stay cheap.
+ *
+ * @code
+ * asserts::invariant::eval(value <= size()) << "Value " << value << ".";
+ * @endcode
  */
 class invariant {
 private:
-  const bool condition_;
-  std::stringstream message_;
+  // Only engaged when the condition is violated.
+  std::optional<std::ostringstream> message_;
 
-  invariant(bool condition, std::string message)
-      : condition_(condition), message_(message) {}
+  explicit invariant(bool condition) {
+    if (!condition) {
+      message_.emplace();
+    }
+  }
 
   // https://herbsutter.com/2014/05/03/reader-qa-how-can-i-prevent-a-type-from-being-instantiated-on-the-stack/
   invariant() = delete;
-  invariant(const invariant &) = default;
+  invariant(const invariant &) = delete;
+  invariant &operator=(const invariant &) = delete;
 
 public:
-  ~invariant() noexcept(false) {
-    if (!condition_) {
+  ~invariant() noexcept(false) { // NOLINT(bugprone-exception-escape)
+    // Throwing while another exception unwinds the stack would terminate.
+    if (message_ && std::uncaught_exceptions() == 0) {
       // Living dangerously, guaranteed not to live on the stack though. See
       // above link.
-      throw std::invalid_argument(  // lgtm [cpp/throw-in-destructor]
-          message_.str());
+      throw std::invalid_argument(message_->str());
     }
   }
 
   /**
    * @brief Sets the message as an incoming stream.
+   *
+   * @remark No-op when the condition holds.
    *
    * @tparam Text Type of element that will be streamed into message string.
    * @param item Invariant to set the message on.
@@ -66,7 +82,9 @@ public:
    */
   template <typename Text>
   friend invariant &&operator<<(invariant &&item, const Text &text) {
-    item.message_ << text;
+    if (item.message_) {
+      *item.message_ << text;
+    }
     return std::move(item);
   }
 
@@ -79,7 +97,7 @@ public:
    * @param condition Any predicate that affirms the invariant condition.
    * @return invariant Item holding invariant evaluation.
    */
-  static invariant eval(bool condition) { return invariant(condition, ""); }
+  static invariant eval(bool condition) { return invariant(condition); }
 };
 
 } // namespace fcpp::asserts

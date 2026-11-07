@@ -1,25 +1,27 @@
 {
+  "cSpell.enabled": false,
   "C_Cpp.clang_format_style": "file",
-  "C_Cpp.clang_format_fallbackStyle": "none",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  // sudo apt install clang-format; which clang-format
   "clang-format.executable": "/usr/bin/clang-format",
-  "clang-format.language.c.enable": true,
   "[c]": {
     "editor.defaultFormatter": "xaver.clang-format",
-    "editor.wordBasedSuggestions": false,
-    "editor.suggest.insertMode": "replace",
+    "editor.wordBasedSuggestions": "off",
+    "editor.semanticHighlighting.enabled": true
+  },
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.wordBasedSuggestions": "off",
     "editor.semanticHighlighting.enabled": true
   },
   "cmake.configureSettings": {
     "CMAKE_BUILD_TYPE": "${buildType}",
+    "CMAKE_C_COMPILER": "/usr/bin/clang",
+    "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
     "BUILD_TESTS": true,
     "BUILD_WEBSITE": true,
     "BUILD_BENCHMARKS": true,
-    "BUILD_EXAMPLES": true,
+    "BUILD_EXAMPLES": true
   },
-  "cmake.loggingLevel": "trace",
-  "cmake.sourceDirectory": "${workspaceFolder}/.",
   "editor.rulers": [
     80
   ],
@@ -30,7 +32,7 @@
   "[python]": {
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
+    "editor.detectIndentation": false
   },
   "files.associations": {
     "type_traits": "cpp",

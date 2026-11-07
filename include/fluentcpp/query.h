@@ -3,8 +3,8 @@
  * @author Andrew Walsh (awalsh128@gmail.com)
  * @brief A library to express information in a functional way that allows for
  * easy auto-complete and shorter expressions.
- * @version 0.1
- * @date 2021-08-20
+ * @version 0.2
+ * @date 2026-10-21
  *
  * @copyright Copyright 2021 Google LLC
  *
@@ -26,12 +26,16 @@
 #define FCPP_QUERY_H
 
 #include <algorithm>
+#include <cstddef>
 #include <functional>
 #include <iterator>
 #include <map>
+#include <numeric>
 #include <optional>
 #include <random>
 #include <set>
+#include <stdexcept>
+#include <string>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -83,6 +87,30 @@
   __GET_MACRO__(__VA_ARGS__, __EXPR2__, __EXPR1__)(const auto &, __VA_ARGS__)
 
 namespace fcpp {
+
+//! @cond Doxygen_Suppress
+namespace detail {
+
+// Seeding from std::random_device is expensive, so do it once per thread.
+inline std::mt19937 &random_engine() {
+  thread_local std::mt19937 engine(std::random_device{}());
+  return engine;
+}
+
+// Copies the item if possible, otherwise fails since it can't be duplicated.
+template <typename T>
+T copy_or_throw(const T &item, const char *operation) {
+  if constexpr (std::is_copy_constructible_v<T>) {
+    return item;
+  } else {
+    throw std::invalid_argument(
+        std::string(operation) + " requires copying a non-copyable item.");
+  }
+}
+
+} // namespace detail
+//! @endcond
+
 // Forward declaration. See actual definition below.
 template <typename T>
 class Queryable;
@@ -172,13 +200,13 @@ public:
    * @remark Removed since no-op state is unusable.
    */
   Queryable() = delete;
-  virtual ~Queryable() = default;
+  ~Queryable() = default;
   /**
    * @brief Move assignment operator.
    * @remark Allowed since state will be stable as it isn't shared amongst
    * multiple copies.
    */
-  Queryable(Queryable &&) = default;
+  Queryable(Queryable &&) noexcept = default;
   /**
    * @brief Copy constructor operator.
    * @remark Not allowed since state will not be stable as multiple Queryables
@@ -193,12 +221,18 @@ public:
    */
   Queryable &operator=(const Queryable &) = delete;
   /**
-   * @brief Implicit cast operator to vector as rvalue reference.
+   * @brief Implicit cast operator to vector from an rvalue.
    * @remark Object state will be invalid after this call since items have been
    * moved out.
    * @return std::vector<T>
    */
-  operator const std::vector<T> &&() const { return std::move(items_); }
+  operator std::vector<T>() && { return std::move(items_); }
+  /**
+   * @brief Implicit cast operator to vector from an lvalue.
+   * @remark Copies the items; requires T to be copy constructible.
+   * @return std::vector<T>
+   */
+  operator std::vector<T>() const & { return items_; }
 
   /**
    * @brief Equals overload operator for Queryable<T> against a
@@ -213,7 +247,7 @@ public:
    * @return false if both side are not equal.
    */
   friend bool operator==(const Queryable<T> &lhs, const std::vector<T> &rhs) {
-    return std::equal(lhs.items_.begin(), lhs.items_.end(), rhs.begin());
+    return lhs.items_ == rhs;
   }
   /**
    * @brief Equals overload operator.
@@ -224,7 +258,7 @@ public:
    * @return false if both side are not equal.
    */
   friend bool operator==(const Queryable<T> &lhs, const Queryable<T> &rhs) {
-    return std::equal(lhs.items_.begin(), lhs.items_.end(), rhs.items_.begin());
+    return lhs.items_ == rhs.items_;
   }
 
   /**
@@ -283,17 +317,21 @@ public:
   WhenTrue<T> branch(Predicate predicate);
 
   /**
-   * @brief Produces the set difference of two sequences.
+   * @brief Produces the multiset difference of two sequences.
+   *
+   * Each right hand side item cancels out at most one equivalent left hand
+   * side item. Neither sequence needs to be sorted.
    *
    * @param rhs_items Right hand side sequence.
-   * @return Queryable<T> Sequence of items not found in both sequences.
+   * @return Queryable<T> Left hand side items not cancelled out, in their
+   * original order.
    */
   Queryable<T> difference(std::vector<T> rhs_items);
 
   /**
    * @brief Gets distinct items from a sequence.
    *
-   * @return Queryable<T>
+   * @return Queryable<T> Distinct items in sorted order.
    */
   Queryable<T> distinct();
 
@@ -303,7 +341,7 @@ public:
    * @return true if the sequence is empty.
    * @return false if the sequence is populated.
    */
-  bool empty() const;
+  [[nodiscard]] bool empty() const;
 
   /**
    * @brief Gets the first item of a sequence, or a default value if no item is
@@ -335,12 +373,16 @@ public:
   Queryable<std::vector<T>> group_by(KeySelector key_selector);
 
   /**
-   * @brief Produces the set intersection of two sequences.
+   * @brief Produces the multiset intersection of two sequences.
+   *
+   * Each right hand side item matches at most one equivalent left hand side
+   * item. Neither sequence needs to be sorted.
    *
    * @param rhs_items Right hand side sequence.
-   * @return Queryable<T> The intersected set that share the same items.
+   * @return Queryable<T> Left hand side items that were matched, in their
+   * original order.
    */
-  Queryable<T> intersect(const std::vector<T> &rhs_items);
+  Queryable<T> intersect(std::vector<T> rhs_items);
 
   /**
    * @brief Correlates the items of two sequences based on matching keys.
@@ -354,6 +396,9 @@ public:
    * @param rhs_key_selector Transform to key function to apply to each item in
    * the right hand side sequence.
    * @return Queryable<std::tuple<T, U>>
+   *
+   * @remark An item that matches more than one item on the other side is
+   * copied, so this throws std::invalid_argument for non-copyable items.
    */
   template <typename U, typename LhsKeySelector, typename RhsKeySelector>
   Queryable<std::tuple<T, U>> join(
@@ -408,6 +453,8 @@ public:
   /**
    * @brief Orders the sequence by the selected value.
    *
+   * The sort is stable and the value selector is called once per item.
+   *
    * @tparam ValueSelector Transform to value function type. std::function<V(T)>
    * @param value_selector Transform to value function to apply to each item.
    * @param descending True if to order by greater to smaller values, otherwise
@@ -446,7 +493,7 @@ public:
    *
    * @return size_t
    */
-  size_t size() const;
+  [[nodiscard]] size_t size() const;
 
   /**
    * @brief Bypasses a specified number of items in the sequence and then
@@ -470,7 +517,8 @@ public:
    * @param start_index The initial / starting index into the sequence
    * inclusively.
    * @param size The number of the items to retrieve starting at start_index.
-   * @param stride The length of the skip to the next size items.
+   * @param stride The length of the skip to the next size items. A stride
+   * of zero repeats the item at start_index, which requires T to be copyable.
    * @return Queryable<T>
    */
   Queryable<T> slice(size_t start_index, size_t size, size_t stride = 1);
@@ -547,7 +595,7 @@ public:
    * @brief Unions the left hand and right hand side sequences.
    *
    * @param rhs_items The right hand side sequence to union.
-   * @return Queryable<T>
+   * @return Queryable<T> Distinct items from both sequences in sorted order.
    */
   Queryable<T> unionize(std::vector<T> rhs_items);
 
@@ -568,8 +616,9 @@ public:
    * @tparam U Type of the right hand side items.
    * @param rhs_items Right hand side items of the produced tuple sequence.
    * @param truncate Truncate the combined sequence by the minimum size of the
-   * two. If false both T and U must have a default constructor so default
-   * values can be provided if one sequence is larger than the other.
+   * two. If false and the sizes differ, the shorter side is padded with default
+   * values, which throws std::invalid_argument if that type has no default
+   * constructor.
    * @return Queryable<std::tuple<T, U>>
    */
   template <typename U>
@@ -583,13 +632,14 @@ public:
    * @tparam U Type of the right hand side items.
    * @param rhs_items Right hand side items of the produced tuple sequence.
    * @param truncate Truncate the combined sequence by the minimum size of the
-   * two. If false both T and U must have a default constructor so default
-   * values can be provided if one sequence is larger than the other.
+   * two. If false and the sizes differ, the shorter side is padded with default
+   * values, which throws std::invalid_argument if that type has no default
+   * constructor.
    * @return Queryable<std::tuple<T, U>>
    */
   template <typename U>
   Queryable<std::tuple<T, U>>
-  zip(std::initializer_list<U> rhs_items, bool truncate);
+  zip(std::initializer_list<U> rhs_items, bool truncate = false);
 
 private:
   /**
@@ -618,31 +668,22 @@ template <typename T>
 Queryable<T>::Queryable(std::vector<T> items) : items_(std::move(items)) {}
 
 template <typename T>
-bool operator==(const Queryable<T> &lhs, const std::vector<T> &rhs) {
-  return std::equal(lhs.items_.begin(), lhs.items_.end(), rhs.begin());
-}
-
-template <typename T>
-bool operator==(const Queryable<T> &lhs, const Queryable<T> &rhs) {
-  return std::equal(lhs.items_.begin(), lhs.items_.end(), rhs.items_.begin());
-}
-
-template <typename T>
 template <typename U, typename AccumulateFn>
 U Queryable<T>::accumulate(U initial, AccumulateFn accumulate_func) const {
-  static_assert(
-      traits::is_additive<U>::value, "Initial value type must be additive.");
   // @todo Check that AccumulateFn is a binary operation.
+  // This method is const: do not attempt to move-from `items_` here. Use
+  // regular iterators so callers don't unexpectedly invalidate state.
   return std::accumulate(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()), initial, accumulate_func);
+      items_.begin(), items_.end(), initial, accumulate_func);
 }
 
 template <typename T>
 template <typename ActionFn>
 Queryable<T> Queryable<T>::action(ActionFn action_func) {
   // @todo Check that ActionFn is a unary operation.
-  std::for_each(items_.begin(), items_.end(), [&action_func](auto item) {
+  // Avoid copying each item into the lambda; forward as const-ref to reduce
+  // unnecessary copies for large types.
+  std::for_each(items_.begin(), items_.end(), [&action_func](const auto &item) {
     action_func(item);
   });
   return Queryable<T>(std::move(items_));
@@ -663,28 +704,37 @@ bool Queryable<T>::any(Predicate predicate) const {
 template <typename T>
 Queryable<T> Queryable<T>::difference(std::vector<T> rhs_items) {
   static_assert(
-      traits::is_equality_comparable<T>::value,
-      "T must be equality comparable.");
-  // @todo Bubble up concepts for comparisons.
-  std::vector<T> difference;
-  std::set_difference(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()),
-      std::make_move_iterator(rhs_items.begin()),
-      std::make_move_iterator(rhs_items.end()), std::back_inserter(difference));
-  return Queryable<T>(std::move(difference));
+      traits::is_less_than_comparable<T>::value,
+      "T must be less-than comparable.");
+  std::sort(rhs_items.begin(), rhs_items.end());
+  // Number of matches consumed so far for each run of equivalent rhs items,
+  // indexed by the start of the run.
+  std::vector<size_t> consumed(rhs_items.size(), 0);
+  std::erase_if(items_, [&](const T &item) {
+    auto [lo, hi] = std::equal_range(rhs_items.begin(), rhs_items.end(), item);
+    size_t &used = consumed[lo - rhs_items.begin()];
+    if (lo + used < hi) {
+      used++;
+      return true;
+    }
+    return false;
+  });
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
 Queryable<T> Queryable<T>::distinct() {
   static_assert(
-      traits::is_equality_comparable<T>::value,
-      "T must be equality comparable.");
-  // @todo Reduce the number of transforms.
-  std::set<T> distinguished(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()));
-  return Queryable<T>(transforms::to_vector(std::move(distinguished)));
+      traits::is_less_than_comparable<T>::value,
+      "T must be less-than comparable.");
+  std::sort(items_.begin(), items_.end());
+  // Adjacent sorted items are equivalent when the first isn't less.
+  items_.erase(
+      std::unique(
+          items_.begin(), items_.end(),
+          [](const T &lhs, const T &rhs) { return !(lhs < rhs); }),
+      items_.end());
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
@@ -696,17 +746,28 @@ template <typename T>
 template <typename Predicate>
 std::optional<T> Queryable<T>::first_or_default(Predicate predicate) {
   // @todo Require predicate to be a unary operation.
-  auto end = std::make_move_iterator(items_.end());
   auto it =
-      std::find_if(std::make_move_iterator(items_.begin()), end, predicate);
-  return it != end ? std::make_optional(*it) : std::nullopt;
+      std::find_if(items_.begin(), items_.end(), [&predicate](const T &item) {
+        return predicate(item);
+      });
+  if (it == items_.end()) {
+    return std::nullopt;
+  }
+  return std::optional<T>(std::move(*it));
 }
 
 template <typename T>
 auto Queryable<T>::flatten() {
   // @todo asserts::invariant T is a vector.
-  using U = T::value_type;
+  using U = typename T::value_type;
+  // Reserve capacity when possible: sum sizes of inner sequences to avoid
+  // repeated reallocations.
+  size_t total = 0;
+  for (T &item : items_) {
+    total += item.size();
+  }
   std::vector<U> flattened;
+  flattened.reserve(total);
   for (T &item : items_) {
     for (U &sub_item : item) {
       flattened.push_back(std::move(sub_item));
@@ -724,34 +785,37 @@ Queryable<std::vector<T>> Queryable<T>::group_by(KeySelector key_selector) {
       "Key selector must produce a value that is less-than comparable.");
 
   std::map<K, std::vector<T>> keyed_groups;
-  std::for_each(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()), [&](auto item) {
-        keyed_groups[key_selector(item)].push_back(std::move(item));
-      });
+  for (T &item : items_) {
+    keyed_groups[key_selector(std::as_const(item))].push_back(std::move(item));
+  }
 
   std::vector<std::vector<T>> groups;
-  groups.resize(keyed_groups.size());
-  std::transform(
-      std::make_move_iterator(keyed_groups.begin()),
-      std::make_move_iterator(keyed_groups.end()), groups.begin(),
-      [this](std::pair<K, std::vector<T>> pair) {
-        return std::move(pair.second);
-      });
-
+  groups.reserve(keyed_groups.size());
+  for (auto &[key, group] : keyed_groups) {
+    groups.push_back(std::move(group));
+  }
   return Queryable<std::vector<T>>(std::move(groups));
 }
 
 template <typename T>
-Queryable<T> Queryable<T>::intersect(const std::vector<T> &rhs_items) {
-  // @todo Investigate potential copies of rhs_items when set_intersection
-  // called.
-  std::vector<T> intersection;
-  std::set_intersection(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()), rhs_items.begin(), rhs_items.end(),
-      std::back_inserter(intersection));
-  return Queryable<T>(std::move(intersection));
+Queryable<T> Queryable<T>::intersect(std::vector<T> rhs_items) {
+  static_assert(
+      traits::is_less_than_comparable<T>::value,
+      "T must be less-than comparable.");
+  std::sort(rhs_items.begin(), rhs_items.end());
+  // Number of matches consumed so far for each run of equivalent rhs items,
+  // indexed by the start of the run.
+  std::vector<size_t> consumed(rhs_items.size(), 0);
+  std::erase_if(items_, [&](const T &item) {
+    auto [lo, hi] = std::equal_range(rhs_items.begin(), rhs_items.end(), item);
+    size_t &used = consumed[lo - rhs_items.begin()];
+    if (lo + used < hi) {
+      used++;
+      return false;
+    }
+    return true;
+  });
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
@@ -760,7 +824,7 @@ Queryable<std::tuple<T, U>> Queryable<T>::join(
     std::vector<U> rhs_items, LhsKeySelector lhs_key_selector,
     RhsKeySelector rhs_key_selector) {
   using KU = decltype(rhs_key_selector(*rhs_items.begin()));
-  using KT = decltype(rhs_key_selector(*items_.begin()));
+  using KT = decltype(lhs_key_selector(*items_.begin()));
   static_assert(
       std::is_same<KU, KT>::value,
       "Left and right hand key selectors must produce the same type.");
@@ -771,24 +835,39 @@ Queryable<std::tuple<T, U>> Queryable<T>::join(
       "Key selectors must produce a type that is less-than compareable.");
 
   std::map<K, std::vector<U>> rhs_mapped;
-  std::for_each(
-      std::make_move_iterator(rhs_items.begin()),
-      std::make_move_iterator(rhs_items.end()), [&, this](U rhs_item) {
-        rhs_mapped[rhs_key_selector(rhs_item)].push_back(std::move(rhs_item));
-      });
+  for (U &rhs_item : rhs_items) {
+    rhs_mapped[rhs_key_selector(std::as_const(rhs_item))].push_back(
+        std::move(rhs_item));
+  }
+
+  // Count how many lhs items use each rhs group so the last use can move.
+  std::vector<K> lhs_keys;
+  lhs_keys.reserve(items_.size());
+  std::map<K, size_t> uses_left;
+  for (T &lhs_item : items_) {
+    lhs_keys.push_back(lhs_key_selector(std::as_const(lhs_item)));
+    if (rhs_mapped.count(lhs_keys.back())) {
+      uses_left[lhs_keys.back()]++;
+    }
+  }
 
   std::vector<std::tuple<T, U>> joined;
-  std::for_each(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()), [&, this](auto lhs_item) {
-        auto lhs_key = lhs_key_selector(lhs_item);
-        auto rhs_it = rhs_mapped.find(lhs_key);
-        if (rhs_it != rhs_mapped.end()) {
-          for (U &rhs_item : rhs_it->second) {
-            joined.push_back({std::move(lhs_item), std::move(rhs_item)});
-          }
-        }
-      });
+  for (size_t i = 0; i < items_.size(); i++) {
+    auto rhs_it = rhs_mapped.find(lhs_keys[i]);
+    if (rhs_it == rhs_mapped.end()) {
+      continue;
+    }
+    bool last_lhs_use = --uses_left[lhs_keys[i]] == 0;
+    std::vector<U> &rhs_group = rhs_it->second;
+    for (size_t j = 0; j < rhs_group.size(); j++) {
+      bool last_rhs_use = j + 1 == rhs_group.size();
+      joined.emplace_back(
+          last_rhs_use ? std::move(items_[i])
+                       : detail::copy_or_throw(items_[i], "join"),
+          last_lhs_use ? std::move(rhs_group[j])
+                       : detail::copy_or_throw(rhs_group[j], "join"));
+    }
+  }
 
   return Queryable<std::tuple<T, U>>(std::move(joined));
 }
@@ -799,9 +878,8 @@ auto Queryable<T>::keyed_group_by(KeySelector key_selector) {
   using K = decltype(key_selector(*items_.begin()));
 
   std::map<K, std::vector<T>> mapped;
-  for (int i = 0; i < items_.size(); i++) {
-    // @todo Avoid a copy of items_[i] on key_selector call for large objects.
-    mapped[key_selector(items_[i])].push_back(std::move(items_[i]));
+  for (T &item : items_) {
+    mapped[key_selector(std::as_const(item))].push_back(std::move(item));
   }
   return Queryable<std::pair<K, std::vector<T>>>(
       {std::make_move_iterator(mapped.begin()),
@@ -816,9 +894,7 @@ T Queryable<T>::max() {
   asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
 
   // @todo Investigate performance for large objects.
-  return *std::max_element(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()));
+  return std::move(*std::max_element(items_.begin(), items_.end()));
 }
 
 template <typename T>
@@ -831,12 +907,11 @@ T Queryable<T>::max(ValueSelector value_selector) {
   asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
   // @todo Require unary operation.
 
-  return *std::max_element(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()),
+  return std::move(*std::max_element(
+      items_.begin(), items_.end(),
       [&value_selector](const auto &lhs, const auto &rhs) {
         return value_selector(lhs) < value_selector(rhs);
-      });
+      }));
 }
 
 template <typename T>
@@ -847,9 +922,7 @@ T Queryable<T>::min() {
   asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
 
   // @todo Guard with concepts as seen in min_element.
-  return *std::min_element(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()));
+  return std::move(*std::min_element(items_.begin(), items_.end()));
 }
 
 template <typename T>
@@ -862,12 +935,11 @@ T Queryable<T>::min(ValueSelector value_selector) {
   asserts::invariant::eval(!items_.empty()) << "Sequence cannot be empty.";
   // @todo Require unary operation.
 
-  return *std::min_element(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()),
+  return std::move(*std::min_element(
+      items_.begin(), items_.end(),
       [&value_selector](const auto &lhs, const auto &rhs) {
         return value_selector(lhs) < value_selector(rhs);
-      });
+      }));
 }
 
 template <typename T>
@@ -884,16 +956,28 @@ Queryable<T>::order_by(ValueSelector value_selector, bool descending) {
           *items_.begin()))>::value,
       "ValueSelector return type must be less-than compareable.");
 
-  using K = decltype(value_selector(*items_.begin()));
-  std::sort(
-      items_.begin(), items_.end(),
-      [&value_selector, descending](const auto &lhs, const auto &rhs) -> bool {
-        const K &lhs_value = value_selector(lhs);
-        const K &rhs_value = value_selector(rhs);
-        return descending ? lhs_value > rhs_value : lhs_value < rhs_value;
+  using K = std::decay_t<decltype(value_selector(*items_.begin()))>;
+  // Select each value once, then stable sort the indices by value.
+  std::vector<K> values;
+  values.reserve(items_.size());
+  for (T &item : items_) {
+    values.push_back(value_selector(std::as_const(item)));
+  }
+  std::vector<size_t> order(items_.size());
+  std::iota(order.begin(), order.end(), 0);
+  std::stable_sort(
+      order.begin(), order.end(),
+      [&values, descending](size_t lhs, size_t rhs) {
+        return descending ? values[rhs] < values[lhs]
+                          : values[lhs] < values[rhs];
       });
 
-  return Queryable<T>(std::move(items_));
+  std::vector<T> ordered;
+  ordered.reserve(items_.size());
+  for (size_t i : order) {
+    ordered.push_back(std::move(items_[i]));
+  }
+  return Queryable<T>(std::move(ordered));
 }
 
 template <typename T>
@@ -918,8 +1002,7 @@ auto Queryable<T>::select(Selector selector) {
 
 template <typename T>
 Queryable<T> Queryable<T>::shuffle() {
-  std::shuffle(
-      items_.begin(), items_.end(), std::mt19937(std::random_device()()));
+  std::shuffle(items_.begin(), items_.end(), detail::random_engine());
   return Queryable<T>(std::move(items_));
 }
 
@@ -934,31 +1017,37 @@ Queryable<T> Queryable<T>::skip(size_t value) {
       << "Skip value " << value
       << " must be less than or equal to sequence size of " << size() << ".";
 
-  return Queryable<T>(
-      {std::make_move_iterator(items_.begin() + value),
-       std::make_move_iterator(items_.end())});
+  items_.erase(items_.begin(), items_.begin() + value);
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
 Queryable<T>
 Queryable<T>::slice(size_t start_index, size_t size, size_t stride) {
+  if (size == 0) {
+    return Queryable<T>(std::vector<T>());
+  }
   asserts::invariant::eval(start_index < this->size())
       << "Slice start index " << start_index
       << " must be less than sequence size of " << this->size() << ".";
 
-  size_t slice_length = (start_index - 1) + (size * stride);
-  asserts::invariant::eval(stride == 0 || slice_length <= this->size())
-      << "Slice length " << slice_length
-      << " must be less than or equal to the sequence size of " << this->size()
-      << ".";
+  size_t last_index = start_index + (size - 1) * stride;
+  asserts::invariant::eval(last_index < this->size())
+      << "Slice last index " << last_index
+      << " must be less than the sequence size of " << this->size() << ".";
 
   std::vector<T> sliced;
   sliced.reserve(size);
-
-  int i = start_index;
-  for (size_t current_size = 0; current_size < size; current_size++) {
-    sliced.push_back(std::move(items_[i]));
-    i += stride;
+  if (stride == 0) {
+    // Every item is the same one, so all but the last must be copies.
+    for (size_t i = 0; i + 1 < size; i++) {
+      sliced.push_back(detail::copy_or_throw(items_[start_index], "slice"));
+    }
+    sliced.push_back(std::move(items_[start_index]));
+  } else {
+    for (size_t i = start_index; sliced.size() < size; i += stride) {
+      sliced.push_back(std::move(items_[i]));
+    }
   }
 
   return Queryable<T>(std::move(sliced));
@@ -967,7 +1056,7 @@ Queryable<T>::slice(size_t start_index, size_t size, size_t stride) {
 template <typename T>
 Queryable<T> Queryable<T>::sort() {
   std::sort(items_.begin(), items_.end());
-  return this;
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
@@ -976,9 +1065,8 @@ Queryable<T> Queryable<T>::take(size_t value) {
       << "Take value " << value
       << " must be less than or equal to sequence size of " << size() << ".";
 
-  return Queryable<T>(
-      {std::make_move_iterator(items_.begin()),
-       std::make_move_iterator(items_.begin() + value)});
+  items_.erase(items_.begin() + value, items_.end());
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
@@ -987,22 +1075,14 @@ Queryable<T> Queryable<T>::take_random(size_t value) {
       << "Take random value " << value
       << " must be less than or equal to sequence size of " << size() << ".";
 
-  std::vector<int> indices;
-  indices.reserve(items_.size());
-  for (int i = 0; i < items_.size(); i++) {
-    indices.push_back(i);
+  // Partial Fisher-Yates shuffle: only the first value positions are drawn.
+  auto &engine = detail::random_engine();
+  for (size_t i = 0; i < value; i++) {
+    std::uniform_int_distribution<size_t> dist(i, items_.size() - 1);
+    std::swap(items_[i], items_[dist(engine)]);
   }
-  std::shuffle(
-      indices.begin(), indices.end(), std::mt19937(std::random_device()()));
-  indices.resize(value);
-
-  std::vector<T> random_items;
-  random_items.reserve(std::min(items_.size(), value));
-  std::transform(
-      indices.begin(), indices.end(), std::back_inserter(random_items),
-      [this](int i) { return std::move(items_[i]); });
-
-  return Queryable<T>(std::move(random_items));
+  items_.erase(items_.begin() + value, items_.end());
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
@@ -1010,9 +1090,9 @@ template <typename KeySelector /* = std::function<K(T)>*/>
 auto Queryable<T>::to_multi_value_map(KeySelector key_selector) {
   using K = decltype(key_selector(*items_.begin()));
   std::map<K, std::vector<T>> mapped;
-  std::for_each(items_.begin(), items_.end(), [&, this](auto &item) {
-    mapped[key_selector(item)].push_back(std::move(item));
-  });
+  for (T &item : items_) {
+    mapped[key_selector(std::as_const(item))].push_back(std::move(item));
+  }
   return mapped;
 }
 
@@ -1025,15 +1105,10 @@ auto Queryable<T>::to_single_value_map(KeySelector key_selector) {
       "KeySelector return type must be less-than compareable.");
 
   std::map<K, T> mapped;
-  std::for_each(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()), [&, this](auto item) {
-        K key = key_selector(item);
-        auto it = mapped.find(key);
-        if (it == mapped.end()) {
-          mapped.insert({std::move(key), std::move(item)});
-        }
-      });
+  for (T &item : items_) {
+    // Only moves the item if the key isn't already present.
+    mapped.try_emplace(key_selector(std::as_const(item)), std::move(item));
+  }
   return mapped;
 }
 
@@ -1054,11 +1129,11 @@ std::vector<T> Queryable<T>::to_vector() {
 
 template <typename T>
 Queryable<T> Queryable<T>::trim(size_t size) {
-  asserts::invariant(items_.size() <= size)
+  asserts::invariant::eval(size <= items_.size())
       << "Size " << size << " must be less than or equal to sequence size of "
       << this->size() << ".";
 
-  items_.resize(items_.size() - size);
+  items_.erase(items_.end() - size, items_.end());
   return Queryable<T>(std::move(items_));
 }
 
@@ -1068,63 +1143,55 @@ Queryable<T> Queryable<T>::unionize(std::vector<T> rhs_items) {
       traits::is_less_than_comparable<T>::value,
       "T must be less-than compareable.");
 
-  std::set<T> unionized(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()));
-  std::move(
-      rhs_items.begin(), rhs_items.end(),
-      std::inserter(unionized, unionized.end()));
-
-  return Queryable<T>(transforms::to_vector(std::move(unionized)));
+  items_.insert(
+      items_.end(), std::make_move_iterator(rhs_items.begin()),
+      std::make_move_iterator(rhs_items.end()));
+  return distinct();
 }
 
 template <typename T>
 template <typename Predicate>
 Queryable<T> Queryable<T>::where(Predicate predicate) {
-  std::vector<T> filtered;
-  std::copy_if(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()), std::back_inserter(filtered),
-      predicate);
-  return Queryable<T>(std::move(filtered));
+  // Filter in place; the predicate sees each item before any are moved.
+  std::erase_if(
+      items_, [&predicate](const T &item) { return !predicate(item); });
+  return Queryable<T>(std::move(items_));
 }
 
 template <typename T>
 template <typename U>
 Queryable<std::tuple<T, U>>
 Queryable<T>::zip(std::vector<U> rhs_items, bool truncate) {
-  if (!truncate) {
-    static_assert(
-        std::is_default_constructible_v<T>,
-        "T must have a default constructor so default values can "
-        "populate the tuple.");
-    static_assert(
-        std::is_default_constructible_v<U>,
-        "U must have a default constructor so default values can "
-        "populate the tuple.");
-  }
+  size_t common = std::min(items_.size(), rhs_items.size());
+  size_t total = truncate ? common : std::max(items_.size(), rhs_items.size());
 
   std::vector<std::tuple<T, U>> zipped;
-  zipped.reserve(
-      truncate ? std::min({items_.size(), rhs_items.size()})
-               : std::max({items_.size(), rhs_items.size()}));
-
-  int i = 0;
-  for (; i < std::min({items_.size(), rhs_items.size()}); i++) {
-    zipped.push_back({std::move(items_[i]), std::move(rhs_items[i])});
+  zipped.reserve(total);
+  for (size_t i = 0; i < common; i++) {
+    zipped.emplace_back(std::move(items_[i]), std::move(rhs_items[i]));
   }
-
-  if (truncate) {
+  if (total == common) {
     return Queryable<std::tuple<T, U>>(std::move(zipped));
   }
 
+  // Pad the shorter side with default values.
   if (items_.size() > rhs_items.size()) {
-    for (; i < items_.size(); i++) {
-      zipped.push_back({std::move(items_[i]), U()});
+    if constexpr (std::is_default_constructible_v<U>) {
+      for (size_t i = common; i < total; i++) {
+        zipped.emplace_back(std::move(items_[i]), U());
+      }
+    } else {
+      throw std::invalid_argument(
+          "zip padding requires a default constructible right hand type.");
     }
   } else {
-    for (; i < rhs_items.size(); i++) {
-      zipped.push_back({T(), std::move(rhs_items[i])});
+    if constexpr (std::is_default_constructible_v<T>) {
+      for (size_t i = common; i < total; i++) {
+        zipped.emplace_back(T(), std::move(rhs_items[i]));
+      }
+    } else {
+      throw std::invalid_argument(
+          "zip padding requires a default constructible left hand type.");
     }
   }
   return Queryable<std::tuple<T, U>>(std::move(zipped));
@@ -1160,7 +1227,7 @@ public:
       : true_queried_(std::move(true_queried)),
         false_queried_(std::move(false_queried)) {}
   Merge() = delete;
-  virtual ~Merge() = default;
+  ~Merge() = default;
   Merge(const Merge &) = delete;
   Merge &operator=(const Merge &) = delete;
 
@@ -1173,7 +1240,7 @@ public:
    * @return Queryable<std::tuple<TrueT, FalseT>>
    */
   Queryable<std::tuple<TrueT, FalseT>> merge(bool truncate = false) {
-    return true_queried_.zip(std::move(false_queried_.to_vector()), truncate);
+    return true_queried_.zip(false_queried_.to_vector(), truncate);
   }
 
 private:
@@ -1206,7 +1273,7 @@ public:
       : when_true_queried_(std::move(when_true_queried)),
         when_false_items_(std::move(when_false_items)) {}
   WhenFalse() = delete;
-  virtual ~WhenFalse() = default;
+  ~WhenFalse() = default;
   WhenFalse(const WhenFalse &) = delete;
   WhenFalse &operator=(const WhenFalse &) = delete;
 
@@ -1225,12 +1292,12 @@ public:
                                  std::function<Queryable<WhenFalseQueriedT>(Queryable<T>&)>
                                */
       ,
-      typename WhenFalseQueriedT =
-          std::invoke_result_t<WhenFalseQuery, Queryable<T>>::item_type>
+      typename WhenFalseQueriedT = typename std::invoke_result_t<
+          WhenFalseQuery, Queryable<T>>::item_type>
   Merge<WhenTrueQueriedT, WhenFalseQueriedT>
   when_false(WhenFalseQuery when_false_query) {
     return Merge<WhenTrueQueriedT, WhenFalseQueriedT>(
-        Queryable<WhenTrueQueriedT>(when_true_queried_.to_vector()),
+        std::move(when_true_queried_),
         when_false_query(Queryable<T>(std::move(when_false_items_))));
   }
 
@@ -1261,7 +1328,7 @@ public:
       : when_true_items_(std::move(when_true_items)),
         when_false_items_(std::move(when_false_items)) {}
   WhenTrue() = delete;
-  virtual ~WhenTrue() = default;
+  ~WhenTrue() = default;
   WhenTrue(const WhenTrue &) = delete;
   WhenTrue &operator=(const WhenTrue &) = delete;
 
@@ -1281,10 +1348,10 @@ public:
                               */
       ,
       typename WhenTrueQueriedT =
-          std::invoke_result_t<WhenTrueQuery, Queryable<T>>::item_type>
+          typename std::invoke_result_t<WhenTrueQuery, Queryable<T>>::item_type>
   WhenFalse<WhenTrueQueriedT, T> when_true(WhenTrueQuery when_true_query) {
     return WhenFalse<WhenTrueQueriedT, T>(
-        std::move(when_true_query(Queryable<T>(std::move(when_true_items_)))),
+        when_true_query(Queryable<T>(std::move(when_true_items_))),
         std::move(when_false_items_));
   }
 
@@ -1298,15 +1365,13 @@ template <typename Predicate>
 WhenTrue<T> Queryable<T>::branch(Predicate predicate) {
   std::vector<T> when_true_items;
   std::vector<T> when_false_items;
-  std::for_each(
-      std::make_move_iterator(items_.begin()),
-      std::make_move_iterator(items_.end()), [&](auto item) {
-        if (predicate(item)) {
-          when_true_items.push_back(std::move(item));
-        } else {
-          when_false_items.push_back(std::move(item));
-        }
-      });
+  for (T &item : items_) {
+    if (predicate(std::as_const(item))) {
+      when_true_items.push_back(std::move(item));
+    } else {
+      when_false_items.push_back(std::move(item));
+    }
+  }
 
   return WhenTrue<T>(std::move(when_true_items), std::move(when_false_items));
 }
