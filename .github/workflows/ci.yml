@@ -57,9 +57,10 @@ jobs:
           cd build
           if [ "${{ matrix.compiler }}" = "msvc" ]; then
             # No -G: CMake picks the newest Visual Studio on the runner image.
-            cmake .. -A x64 -DCMAKE_BUILD_TYPE=Debug
+            cmake .. -A x64 -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DBUILD_EXAMPLES=ON
           else
             cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+              -DBUILD_TESTS=ON -DBUILD_EXAMPLES=ON \
               -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX}
           fi
 
@@ -74,9 +75,9 @@ jobs:
       - name: Run tests
         run: |
           if [ "${{ matrix.compiler }}" = "msvc" ]; then
-            ctest --test-dir build -C Debug --output-on-failure
+            ctest --test-dir build -C Debug --output-on-failure --no-tests=error
           else
-            cd build && ctest --output-on-failure -C Debug
+            cd build && ctest --output-on-failure -C Debug --no-tests=error
           fi
 
       - name: clang-tidy (informational, clang only)
