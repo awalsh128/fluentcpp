@@ -35,10 +35,10 @@ void complex_query() {
 
 void simple_filter() {
   // Return value is an rvalue reference that gets moved into result.
-  std::vector<int> result =
-      std::move(fcpp::query<int>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
-                    .where(EXPR(x, x % 2 == 0))
-                    .select(EXPR(x, x + 2)));
+  std::vector<int> result = std::move(
+      fcpp::query<int>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+          .where(EXPR(x, x % 2 == 0))
+          .select(EXPR(x, x + 2)));
 
   print("simple_filter", result);
 }
