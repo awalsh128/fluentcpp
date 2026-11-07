@@ -56,7 +56,8 @@ jobs:
           mkdir -p build
           cd build
           if [ "${{ matrix.compiler }}" = "msvc" ]; then
-            cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
+            # No -G: CMake picks the newest Visual Studio on the runner image.
+            cmake .. -A x64 -DCMAKE_BUILD_TYPE=Debug
           else
             cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
               -DCMAKE_C_COMPILER=${CC} -DCMAKE_CXX_COMPILER=${CXX}
