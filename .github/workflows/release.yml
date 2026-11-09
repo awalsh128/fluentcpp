@@ -1,73 +1,126 @@
 name: Release
 
+# Release by pushing a tag (git tag v0.2 && git push origin v0.2), or run this
+# workflow by hand with a tag, which creates the tag on the dispatched commit.
+# The tag must match the project VERSION in CMakeLists.txt.
+#
+# To redeploy the docs without a new release, re-run the "docs" job of the
+# latest release run.
 on:
+  push:
+    tags: ["v*"]
   workflow_dispatch:
     inputs:
       tag:
-        description: "Git tag"
+        description: "Tag to create and release (e.g. v0.2)"
         required: true
       notes:
-        description: "Release notes"
-        required: true
+        description: "Extra release notes, shown above the generated changelog"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 env:
-  BUILD_TYPE: Release
+  TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
 
 jobs:
-  release:
+  validate:
     runs-on: ubuntu-latest
-
     steps:
-      - run: echo "Job triggered by ${{github.event_name}} event."
-
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: APT Packages (ensure clang)
-        uses: awalsh128/cache-apt-pkgs-action@v1
-        id: cache-deps
-        with:
-          packages: dia doxygen doxygen-doc doxygen-gui doxygen-latex graphviz mscgen clang
+      - name: Check tag
+        run: |
+          set -euo pipefail
+          if ! [[ "${TAG}" =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::Tag '${TAG}' must look like v<major>.<minor>[.<patch>]."
+            exit 1
+          fi
+          VERSION=$(sed -nE 's/^[[:space:]]*VERSION[[:space:]]+([0-9.]+).*/\1/p' CMakeLists.txt | head -n1)
+          if [ "v${VERSION}" != "${TAG}" ]; then
+            echo "::error::Tag '${TAG}' does not match project VERSION ${VERSION} in CMakeLists.txt."
+            exit 1
+          fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+            && git ls-remote --exit-code --tags origin "refs/tags/${TAG}" >/dev/null; then
+            echo "::error::Tag '${TAG}' already exists; push a new version instead."
+            exit 1
+          fi
 
-      - name: Configure CMake (Force Clang)
+  ci:
+    needs: validate
+    uses: ./.github/workflows/ci.yml
+
+  package:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Create release packages
         env:
-          CC: /usr/bin/clang
-          CXX: /usr/bin/clang++
-        run: cmake -B ${{github.workspace}}/build \
-          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-          -DBUILD_TESTS=ON \
-          -DBUILD_WEBSITE=ON \
-          -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+          # Passed through env, never interpolated into the script.
+          NOTES: ${{ inputs.notes }}
+        run: scripts/create_release_pkg_artifacts.sh "${GITHUB_WORKSPACE}" "${TAG}" "${NOTES}"
 
-      - name: Build
-        run: cd ${{github.workspace}}/build; make
+      - name: Upload release packages
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release
+          path: release/
+          if-no-files-found: error
 
-      - name: Test
-        working-directory: ${{github.workspace}}/build
-        run: cd ${{github.workspace}}/build; ctest -C ${{env.BUILD_TYPE}}
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release packages
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release
+          path: release
 
-      - name: Deploy Documentation
-        uses: JamesIves/github-pages-deploy-action@4.1.5
+      # Creates the tag on the CI-tested commit when dispatched by hand.
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          tag_name: ${{ env.TAG }}
+          target_commitish: ${{ github.sha }}
+          body_path: release/notes.md
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            release/fluentcpp-${{ env.TAG }}.tar.gz
+            release/fluentcpp-${{ env.TAG }}.zip
+
+  docs:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Built and uploaded by the ci job above.
+      - name: Download website
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: website
+          path: website
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
           branch: gh-pages
-          folder: ${{github.workspace}}/build/website
-
-      - name: Create Release Package Artifacts
-        run: |
-          ${{github.workspace}}/scripts/create_release_pkg_artifacts.sh \
-            ${{github.workspace}} \
-            ${{github.event.inputs.tag}} \
-            "${{github.event.inputs.notes}}"
-
-      - name: Create Tag
-        run: git tag ${{github.event.inputs.tag}}; git push origin --tags
-
-      - name: Create Release Package
-        uses: ncipollo/release-action@v1
-        with:
-          bodyFile: ${{github.workspace}}/release/notes.md
-          artifacts: |
-            ${{github.workspace}}/release/fluentcpp-${{github.event.inputs.tag}}.tar.gz \
-            ${{github.workspace}}/release/fluentcpp-${{github.event.inputs.tag}}.zip
-          tag: ${{github.event.inputs.tag}}
-          token: ${{secrets.GITHUB_TOKEN}}
+          folder: website
