@@ -1,0 +1,4 @@
+# The one place the clang-format version is pinned. Used by ci.yml and
+# apply_format.yml. Install locally with:
+#   pip install -r .github/clang-format-requirements.txt
+clang-format==23.1.5

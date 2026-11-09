@@ -95,7 +95,7 @@ std::optional<T> first_or_default(Predicate predicate);
 ## YAML (GitHub Actions) Best Practices
 
 1. Keep workflows small and focused:
-   - One workflow per concern: `ci.yml` (build/test/lint), `codeql.yml` (security analysis), `release.yml` (releases), `deploy_docs.yml` (docs).
+   - One workflow per concern: `ci.yml` (all PR checks: format, build/test, sanitizers, lint, docs, benchmarks build; reused by release), `codeql.yml` (security analysis), `release.yml` (tag → CI → package → GitHub release → docs), `apply_format.yml` (manual formatting PR).
 
 2. Pin actions when stability matters:
    - Prefer tags like `actions/checkout@v3` for normal use. For maximum reproducibility, pin to a commit SHA (e.g., `actions/checkout@<sha>`).
