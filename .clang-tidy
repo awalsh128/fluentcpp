@@ -1,4 +1,4 @@
-Checks: '-*,clang-analyzer-*,modernize-*,performance-*,bugprone-*,readability-*,portability-*'
+Checks: '-*,clang-analyzer-*,modernize-*,performance-*,bugprone-*,readability-*,portability-*,-modernize-use-trailing-return-type'
 WarningsAsErrors: ''
 HeaderFilterRegex: 'src/.*|include/.*'
 FormatStyle: none
@@ -6,4 +6,4 @@ CheckOptions:
   - key: modernize-use-auto.MinTypeNameLength
     value: '0'
   - key: readability-identifier-naming.VariableCase
-    value: camelCase
+    value: camelBack
