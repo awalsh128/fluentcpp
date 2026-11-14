@@ -13,9 +13,14 @@ a {
   text-decoration: none;
 }
 
+body {
+  background-color: #FFFFFF;
+}
+
 h1 {
   background-color: var(--bs-green);
   border-radius: var(--border-radius);
+  font-size: xx-large;
   margin-bottom: var(--header-margin);
   margin-top: var(--header-margin);
   padding: var(--padding-large);
@@ -23,8 +28,8 @@ h1 {
 
 h2 {
   background-color: var(--bs-cyan);
-  border-radius: var(--border-radius);
-  margin-top: var(--header-margin);
+  border-radius: var(--border-radius);  
+  font-size: x-large;
   padding: var(--padding-large);
 }
 
@@ -32,6 +37,14 @@ h3 {
   background-color: var(--bs-gray-900);
   border-radius: var(--border-radius);
   padding: var(--padding-medium);
+}
+
+img {
+  margin-bottom: var(--margin-large);
+}
+
+p {
+  padding: 0 var(--padding-medium) 0 var(--padding-medium);
 }
 
 /* Tree View - Hide for now. Doxygen layouts are too unruly. */
@@ -58,7 +71,8 @@ div.ttc {
   margin-left: var(--padding-medium);
 }
 .title {
-  padding: var(--padding-medium);
+  font-size: x-large;
+  padding: var(--padding-medium);  
 }
 
 .textblock {
@@ -67,7 +81,7 @@ div.ttc {
   border-width: 1px;
   border-radius: var(--border-radius);
   margin-bottom: var(--margin-medium);
-  padding: var(--padding-large);
+  padding: var(--padding-medium);
 }
 
 .section {
@@ -87,13 +101,22 @@ div.ttc {
   padding: var(--padding-medium);
 }
 
+.memSeparator {
+  line-height: 1rem;
+}
 .separator\: {
-  line-height: var(--margin-medium);
+  line-height: var(--margin-small);
 }
 
 /* Code */
 code {
   white-space: pre-wrap;
+}
+.contents > p > code {
+  background-color: #000000;
+  display: inline-block;
+  padding: 1rem;
+  width: 100%;
 }
 .fragment {
   background-color: #000000;
@@ -167,6 +190,12 @@ span.lineno {
   padding: var(--padding-medium);
   vertical-align: middle;
 }
+.inherit_header {
+  background-color: var(--bs-gray-700);
+  line-height: 3rem;
+  padding-left: var(--padding-large);
+  vertical-align: middle;
+}
 .memTemplParams {
   background-color: var(--bs-gray-700);
   padding: var(--padding-medium);
@@ -233,9 +262,6 @@ span.lineno {
   vertical-align: baseline;
 }
 /* Class: Member Function - Components */
-.memdoc p {
-  padding: 0 var(--padding-medium) 0 var(--padding-medium);
-}
 .memdoc dl {
   margin-bottom: var(--margin-medium);
 }
@@ -270,12 +296,6 @@ span.lineno {
 }
 table.params tr {
   margin-bottom: 1px;
-}
-
-/* Class Legend */
-.contents p {
-  margin-bottom: var(--margin-large);
-  margin-top: var(--margin-large);
 }
 
 /* Class List */
@@ -323,13 +343,17 @@ table.directory {
 
 /* Struct */
 .dynheader {
-  background-color: var(--bs-gray-700);
+  background-color: var(--bs-blue);
   border-radius: var(--border-radius) var(--border-radius) 0 0;
-  margin-bottom: var(--margin-medium);
+  font-weight: bolder;
+  padding: var(--padding-medium);
   text-align: center;
 }
 .dyncontent {
   background-color: var(--bs-gray-700);
+  background-image: var(--bs-gradient);
   border-radius: 0 0 var(--border-radius) var(--border-radius);
+  margin-bottom: var(--margin-medium);
+  padding: var(--padding-medium);
   text-align: center;
 }

@@ -1,5 +1,5 @@
-\hypertarget{classfcpp_1_1asserts_1_1invariant}{}\doxysection{fcpp\+::asserts\+::invariant Class Reference}
-\label{classfcpp_1_1asserts_1_1invariant}\index{fcpp::asserts::invariant@{fcpp::asserts::invariant}}
+\doxysection{fcpp\+::asserts\+::invariant Class Reference}
+\hypertarget{classfcpp_1_1asserts_1_1invariant}{}\label{classfcpp_1_1asserts_1_1invariant}\index{fcpp::asserts::invariant@{fcpp::asserts::invariant}}
 
 
 Enforce assertions that a condition will never change during the running lifetime of that code.  
@@ -9,29 +9,38 @@ Enforce assertions that a condition will never change during the running lifetim
 
 {\ttfamily \#include $<$asserts.\+h$>$}
 
-\doxysubsection*{Static Public Member Functions}
+\doxysubsubsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-static \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant}{invariant}} \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{eval}} (bool condition)
+static invariant \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{eval}} (bool condition)
 \begin{DoxyCompactList}\small\item\em Evaluate the invariant and throw std\+::invalid\+\_\+argument if violated. \end{DoxyCompactList}\end{DoxyCompactItemize}
-\doxysubsection*{Friends}
+\doxysubsubsection*{Friends}
 \begin{DoxyCompactItemize}
 \item 
-{\footnotesize template$<$typename Text $>$ }\\\mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant}{invariant}} \&\& \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a2c1a77c13b0edf7c596482922898e59d}{operator$<$$<$}} (\mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant}{invariant}} \&\&item, const Text \&text)
+{\footnotesize template$<$typename Text$>$ }\\invariant \&\& \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a838dfa9b99743e380d641a14b5841e3f}{operator$<$$<$}} (invariant \&\&item, const Text \&text)
 \begin{DoxyCompactList}\small\item\em Sets the message as an incoming stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
 Enforce assertions that a condition will never change during the running lifetime of that code. 
 
+The message is only formatted when the condition is violated, so passing checks stay cheap.
 
 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(value\ <=\ size())\ <<\ \textcolor{stringliteral}{"{}Value\ "{}}\ <<\ value\ <<\ \textcolor{stringliteral}{"{}."{}};}
+
+\end{DoxyCode}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classfcpp_1_1asserts_1_1invariant_doc-func-members}
 \doxysubsection{Member Function Documentation}
-\mbox{\Hypertarget{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}\label{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}} 
-\index{fcpp::asserts::invariant@{fcpp::asserts::invariant}!eval@{eval}}
+\Hypertarget{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}\index{fcpp::asserts::invariant@{fcpp::asserts::invariant}!eval@{eval}}
 \index{eval@{eval}!fcpp::asserts::invariant@{fcpp::asserts::invariant}}
 \doxysubsubsection{\texorpdfstring{eval()}{eval()}}
-{\footnotesize\ttfamily static \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant}{invariant}} fcpp\+::asserts\+::invariant\+::eval (\begin{DoxyParamCaption}\item[{bool}]{condition }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+{\footnotesize\ttfamily \label{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5} 
+invariant fcpp\+::asserts\+::invariant\+::eval (\begin{DoxyParamCaption}\item[{bool}]{condition}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
 
 
 
@@ -50,18 +59,23 @@ invariant Item holding invariant evaluation.
 \end{DoxyReturn}
 
 
-\doxysubsection{Friends And Related Function Documentation}
-\mbox{\Hypertarget{classfcpp_1_1asserts_1_1invariant_a2c1a77c13b0edf7c596482922898e59d}\label{classfcpp_1_1asserts_1_1invariant_a2c1a77c13b0edf7c596482922898e59d}} 
-\index{fcpp::asserts::invariant@{fcpp::asserts::invariant}!operator$<$$<$@{operator$<$$<$}}
+\label{doc-related-members}
+\Hypertarget{classfcpp_1_1asserts_1_1invariant_doc-related-members}
+\doxysubsection{Friends And Related Symbol Documentation}
+\Hypertarget{classfcpp_1_1asserts_1_1invariant_a838dfa9b99743e380d641a14b5841e3f}\index{fcpp::asserts::invariant@{fcpp::asserts::invariant}!operator$<$$<$@{operator$<$$<$}}
 \index{operator$<$$<$@{operator$<$$<$}!fcpp::asserts::invariant@{fcpp::asserts::invariant}}
 \doxysubsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
-{\footnotesize\ttfamily template$<$typename Text $>$ \\
-\mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant}{invariant}}\&\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant}{invariant}} \&\&}]{item,  }\item[{const Text \&}]{text }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+{\footnotesize\ttfamily \label{classfcpp_1_1asserts_1_1invariant_a838dfa9b99743e380d641a14b5841e3f} 
+template$<$typename Text$>$ \\
+invariant \&\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{invariant \&\&}]{item}{, }\item[{const Text \&}]{text}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
 
 
 
 Sets the message as an incoming stream. 
 
+\begin{DoxyRemark}{Remarks}
+No-\/op when the condition holds.
+\end{DoxyRemark}
 
 \begin{DoxyTemplParams}{Template Parameters}
 {\em Text} & Type of element that will be streamed into message string. \\
@@ -81,4 +95,4 @@ invariant\&\&
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
-/home/runner/work/fluentcpp/fluentcpp/src/\mbox{\hyperlink{asserts_8h}{asserts.\+h}}\end{DoxyCompactItemize}
+/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/\mbox{\hyperlink{asserts_8h}{asserts.\+h}}\end{DoxyCompactItemize}

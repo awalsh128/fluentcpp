@@ -1,5 +1,7 @@
-<map id="/home/runner/work/fluentcpp/fluentcpp/src/traits.h" name="/home/runner/work/fluentcpp/fluentcpp/src/traits.h">
-<area shape="rect" id="node1" title="Traits for asserting object features." alt="" coords="5,5,215,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="23,95,93,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="117,95,209,121"/>
+<map id="/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/traits.h" name="/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/traits.h">
+<area shape="rect" id="Node000001" title="Traits for asserting object features." alt="" coords="5,5,214,67"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="23,115,92,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,66,75,103,70,100,90,69"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="116,115,207,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="128,65,149,102,144,101,126,70"/>
 </map>

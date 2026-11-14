@@ -1,0 +1,864 @@
+\doxysection{query.\+h}
+\hypertarget{query_8h_source}{}\label{query_8h_source}\index{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/query.h@{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/query.h}}
+\mbox{\hyperlink{query_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#ifndef\ FCPP\_QUERY\_H}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#define\ FCPP\_QUERY\_H}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <cstddef>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <iterator>}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ <numeric>}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ <optional>}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <random>}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ <stdexcept>}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <tuple>}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <valarray>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <variant>}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{asserts_8h}{asserts.h}}"{}}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{traits_8h}{traits.h}}"{}}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{transforms_8h}{transforms.h}}"{}}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{comment}{//\ DO\ NOT\ USE}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//}}
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ Internal\ overloads\ of\ [CR\_]EXPR.}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#define\ \_\_EXPR1\_\_(type,\ var,\ expr)\ [](type\ var)\ \{\ return\ expr;\ \}}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#define\ \_\_EXPR2\_\_(type,\ var1,\ var2,\ expr)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\ \ [](type\ var1,\ type\ var2)\ \{\ return\ expr;\ \}}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#define\ \_\_GET\_MACRO\_\_(\_1,\ \_2,\ \_3,\ NAME,\ ...)\ NAME}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#define\ EXPR(...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\ \ \_\_GET\_MACRO\_\_(\_\_VA\_ARGS\_\_,\ \_\_EXPR2\_\_,\ \_\_EXPR1\_\_)(auto,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00086\ \textcolor{preprocessor}{\#define\ CR\_EXPR(...)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\ \ \_\_GET\_MACRO\_\_(\_\_VA\_ARGS\_\_,\ \_\_EXPR2\_\_,\ \_\_EXPR1\_\_)(const\ auto\ \&,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{keyword}{namespace\ }fcpp\ \{}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00092\ \textcolor{keyword}{namespace\ }detail\ \{}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{comment}{//\ Seeding\ from\ std::random\_device\ is\ expensive,\ so\ do\ it\ once\ per\ thread.}}
+\DoxyCodeLine{00095\ \textcolor{keyword}{inline}\ std::mt19937\ \&random\_engine()\ \{}
+\DoxyCodeLine{00096\ \ \ \textcolor{keyword}{thread\_local}\ std::mt19937\ engine(std::random\_device\{\}());}
+\DoxyCodeLine{00097\ \ \ \textcolor{keywordflow}{return}\ engine;}
+\DoxyCodeLine{00098\ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{comment}{//\ Copies\ the\ item\ if\ possible,\ otherwise\ fails\ since\ it\ can't\ be\ duplicated.}}
+\DoxyCodeLine{00101\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00102\ T\ copy\_or\_throw(\textcolor{keyword}{const}\ T\ \&item,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *operation)\ \{}
+\DoxyCodeLine{00103\ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_copy\_constructible\_v<T>)\ \{}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordflow}{return}\ item;}
+\DoxyCodeLine{00105\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ std::string(operation)\ +\ \textcolor{stringliteral}{"{}\ requires\ copying\ a\ non-\/copyable\ item."{}});}
+\DoxyCodeLine{00108\ \ \ \}}
+\DoxyCodeLine{00109\ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{comment}{//\ Forward\ declaration.\ See\ actual\ definition\ below.}}
+\DoxyCodeLine{00115\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00116\ \textcolor{keyword}{class\ }Queryable;}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00123\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00124\ \textcolor{keyword}{class\ }WhenTrue;}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00132\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ WhenTrueQueried,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00133\ \textcolor{keyword}{class\ }WhenFalse;}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00142\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TrueT,\ \textcolor{keyword}{typename}\ FalseT>}
+\DoxyCodeLine{00143\ \textcolor{keyword}{class\ }Merge;}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00152\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00153\ Queryable<T>\ query(std::vector<T>\ items);}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00189\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00190\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}}\ final\ \{}
+\DoxyCodeLine{00191\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00197\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}}(std::vector<T>\ items);}
+\DoxyCodeLine{00202\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_a972d0938ae11a49b08809d5719cee8ca}{Queryable}}()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00203\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{\string~Queryable}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00209\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_a87cfd23972009d641c30eb81e587c181}{Queryable}}(\mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}}\ \&\&)\ noexcept\ =\ default;}
+\DoxyCodeLine{00215\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}}(const\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}}\ \&)\ =\ delete;}
+\DoxyCodeLine{00222\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}}\ \&operator=(const\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable}}\ \&)\ =\ delete;}
+\DoxyCodeLine{00229\ \ \ operator\ std::vector<T>()\ \&\&\ \{\ \textcolor{keywordflow}{return}\ std::move(items\_);\ \}}
+\DoxyCodeLine{00235\ \ \ \textcolor{keyword}{operator}\ std::vector<T>()\ const\ \&\ \{\ \textcolor{keywordflow}{return}\ items\_;\ \}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00249\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a55dae8bcd1a84a12b4de9de005f78fc1}{operator==}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \&lhs,\ \textcolor{keyword}{const}\ std::vector<T>\ \&rhs)\ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keywordflow}{return}\ lhs.items\_\ ==\ rhs;}
+\DoxyCodeLine{00251\ \ \ \}}
+\DoxyCodeLine{00260\ \ \ \textcolor{keyword}{friend}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ae864207c966986bf5ecc6f032766b1e4}{operator==}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \&lhs,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \&rhs)\ \{}
+\DoxyCodeLine{00261\ \ \ \ \ \textcolor{keywordflow}{return}\ lhs.items\_\ ==\ rhs.items\_;}
+\DoxyCodeLine{00262\ \ \ \}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00267\ \ \ \textcolor{keyword}{typedef}\ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_a2c517adac3b68e87b362d7874d794332}{item\_type}};}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00278\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U,\ \textcolor{keyword}{typename}\ AccumulateFn>}
+\DoxyCodeLine{00279\ \ \ U\ \mbox{\hyperlink{classfcpp_1_1Queryable_abe58cdf73d28d22f8a093dd824d64325}{accumulate}}(U\ initial,\ AccumulateFn\ accumulate\_func)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00287\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ActionFn>}
+\DoxyCodeLine{00288\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aefaf7cb34fa6db997c1a511ffa2e7652}{action}}(ActionFn\ action\_func);}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00297\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00298\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a0c840cddfba6609fba7fe35bd424fea4}{all}}(Predicate\ predicate)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00307\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00308\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a1bb0de06cc44da253487b0495817a8aa}{any}}(Predicate\ predicate)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00309\ }
+\DoxyCodeLine{00316\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00317\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenTrue}{WhenTrue<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{branch}}(Predicate\ predicate);}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00329\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a863b8977eee183604dd8cdd4001ef1f2}{difference}}(std::vector<T>\ rhs\_items);}
+\DoxyCodeLine{00330\ }
+\DoxyCodeLine{00336\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a8c6fe42dd0710c9edbd04e7953492ee3}{distinct}}();}
+\DoxyCodeLine{00337\ }
+\DoxyCodeLine{00344\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab902874bdfe8494dd94929a374392ca1}{empty}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00354\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00355\ \ \ std::optional<T>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a79b72200fd856f679829ae9d1f2b6dd1}{first\_or\_default}}(Predicate\ predicate);}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00363\ \ \ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a29c7980304fb9bf6b7e1d6118044ef41}{flatten}}();}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00372\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector>}
+\DoxyCodeLine{00373\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::vector<T>}}>\ \mbox{\hyperlink{classfcpp_1_1Queryable_aede834295955473228603511b016c46e}{group\_by}}(KeySelector\ key\_selector);}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00385\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ac764a12909c62698f46ef7d57588bb20}{intersect}}(std::vector<T>\ rhs\_items);}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00403\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U,\ \textcolor{keyword}{typename}\ LhsKeySelector,\ \textcolor{keyword}{typename}\ RhsKeySelector>}
+\DoxyCodeLine{00404\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::tuple<T,\ U>}}>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a275f68e6e0a034585e6246bf7cb83cd0}{join}}(}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ std::vector<U>\ rhs\_items,\ LhsKeySelector\ lhs\_key\_selector,}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ RhsKeySelector\ rhs\_key\_selector);}
+\DoxyCodeLine{00407\ }
+\DoxyCodeLine{00416\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector>}
+\DoxyCodeLine{00417\ \ \ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_afd3c9e3a276a0307081cfc9f5378e3d7}{keyed\_group\_by}}(KeySelector\ key\_selector);}
+\DoxyCodeLine{00418\ }
+\DoxyCodeLine{00424\ \ \ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}{max}}();}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00433\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ValueSelector>}
+\DoxyCodeLine{00434\ \ \ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}{max}}(ValueSelector\ value\_selector);}
+\DoxyCodeLine{00435\ }
+\DoxyCodeLine{00441\ \ \ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_a6277dd3c32cabef4a369ee4934713c52}{min}}();}
+\DoxyCodeLine{00442\ }
+\DoxyCodeLine{00450\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ValueSelector>}
+\DoxyCodeLine{00451\ \ \ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_a6277dd3c32cabef4a369ee4934713c52}{min}}(ValueSelector\ value\_selector);}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00464\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ValueSelector>}
+\DoxyCodeLine{00465\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a602241a2328173e1c8437dfd54d65cb7}{order\_by}}(ValueSelector\ value\_selector,\ \textcolor{keywordtype}{bool}\ descending\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00466\ }
+\DoxyCodeLine{00472\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a61691c8877e3f545fc5d35ba879cfd96}{reverse}}();}
+\DoxyCodeLine{00473\ }
+\DoxyCodeLine{00481\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Selector>}
+\DoxyCodeLine{00482\ \ \ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ae134d9182adc199ef2e863c28478d05a}{select}}(Selector\ selector);}
+\DoxyCodeLine{00483\ }
+\DoxyCodeLine{00489\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a1290687cda3f76692b23104cb31909a6}{shuffle}}();}
+\DoxyCodeLine{00490\ }
+\DoxyCodeLine{00496\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00497\ }
+\DoxyCodeLine{00505\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a38c5930c2276e6394a4b1395cded39b1}{skip}}(\textcolor{keywordtype}{size\_t}\ value);}
+\DoxyCodeLine{00506\ }
+\DoxyCodeLine{00524\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a9278a124ab47469301082cc8b77b9cd6}{slice}}(\textcolor{keywordtype}{size\_t}\ start\_index,\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}},\ \textcolor{keywordtype}{size\_t}\ stride\ =\ 1);}
+\DoxyCodeLine{00525\ }
+\DoxyCodeLine{00531\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a50fffbe4332ac62bbc6a89eb0e064b17}{sort}}();}
+\DoxyCodeLine{00532\ }
+\DoxyCodeLine{00540\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a903c7f0d36e68278858932057ae7fabe}{take}}(\textcolor{keywordtype}{size\_t}\ value);}
+\DoxyCodeLine{00541\ }
+\DoxyCodeLine{00549\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a86f90fa4f1751ac918ad3601d002c781}{take\_random}}(\textcolor{keywordtype}{size\_t}\ value);}
+\DoxyCodeLine{00550\ }
+\DoxyCodeLine{00557\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ae91020682e139d499aaf5adc114804ac}{trim}}(\textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}});}
+\DoxyCodeLine{00558\ }
+\DoxyCodeLine{00566\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector>}
+\DoxyCodeLine{00567\ \ \ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a80a1d43f51d0b3e0da7f6f4050f8f9ca}{to\_multi\_value\_map}}(KeySelector\ key\_selector);}
+\DoxyCodeLine{00568\ }
+\DoxyCodeLine{00577\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector\ \textcolor{comment}{/*\ =\ std::function<K(T)>*/}>}
+\DoxyCodeLine{00578\ \ \ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a0a3381370b348b2dfd3f7aae3013d377}{to\_single\_value\_map}}(KeySelector\ key\_selector);}
+\DoxyCodeLine{00579\ }
+\DoxyCodeLine{00585\ \ \ std::set<T>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a0ae9b2b1409645018152712dbd4c653b}{to\_set}}();}
+\DoxyCodeLine{00586\ }
+\DoxyCodeLine{00592\ \ \ std::vector<T>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a90636a0132afa4437e2fe38a10262818}{to\_vector}}();}
+\DoxyCodeLine{00593\ }
+\DoxyCodeLine{00600\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a56ce5e9e0bef42e46ec88e5881275385}{unionize}}(std::vector<T>\ rhs\_items);}
+\DoxyCodeLine{00601\ }
+\DoxyCodeLine{00609\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00610\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a3251df3ba348429da627c3dfbaad47f8}{where}}(Predicate\ predicate);}
+\DoxyCodeLine{00611\ }
+\DoxyCodeLine{00624\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00625\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::tuple<T,\ U>}}>}
+\DoxyCodeLine{00626\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}{zip}}(std::vector<U>\ rhs\_items,\ \textcolor{keywordtype}{bool}\ truncate\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00627\ }
+\DoxyCodeLine{00640\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00641\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::tuple<T,\ U>}}>}
+\DoxyCodeLine{00642\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}{zip}}(std::initializer\_list<U>\ rhs\_items,\ \textcolor{keywordtype}{bool}\ truncate\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00643\ }
+\DoxyCodeLine{00644\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00648\ \ \ std::vector<T>\ items\_;}
+\DoxyCodeLine{00649\ \};}
+\DoxyCodeLine{00650\ }
+\DoxyCodeLine{00651\ \}\ \textcolor{comment}{//\ namespace\ fcpp}}
+\DoxyCodeLine{00652\ }
+\DoxyCodeLine{00653\ \textcolor{comment}{/******************************************************************************}}
+\DoxyCodeLine{00654\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00655\ \textcolor{comment}{\ *\ @brief\ Keep\ definitions\ separate\ to\ allow\ the\ declarations\ to\ stay\ clean\ and}}
+\DoxyCodeLine{00656\ \textcolor{comment}{\ *\ compact.}}
+\DoxyCodeLine{00657\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00658\ \textcolor{comment}{\ *****************************************************************************/}}
+\DoxyCodeLine{00659\ }
+\DoxyCodeLine{00660\ \textcolor{keyword}{namespace\ }fcpp\ \{}
+\DoxyCodeLine{00661\ }
+\DoxyCodeLine{00662\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00663\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<T>}}\ \mbox{\hyperlink{query_8h_aeea416a11cf2455528dcee9d6ad211de}{query}}(std::vector<T>\ items)\ \{}
+\DoxyCodeLine{00664\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<T>}}(std::move(items));}
+\DoxyCodeLine{00665\ \}}
+\DoxyCodeLine{00666\ }
+\DoxyCodeLine{00667\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00668\ \mbox{\hyperlink{classfcpp_1_1Queryable_a972d0938ae11a49b08809d5719cee8ca}{Queryable<T>::Queryable}}(std::vector<T>\ items)\ :\ items\_(std::move(items))\ \{\}}
+\DoxyCodeLine{00669\ }
+\DoxyCodeLine{00670\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00671\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U,\ \textcolor{keyword}{typename}\ AccumulateFn>}
+\DoxyCodeLine{00672\ U\ \mbox{\hyperlink{classfcpp_1_1Queryable_abe58cdf73d28d22f8a093dd824d64325}{Queryable<T>::accumulate}}(U\ initial,\ AccumulateFn\ accumulate\_func)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00673\ \ \ \textcolor{comment}{//\ @todo\ Check\ that\ AccumulateFn\ is\ a\ binary\ operation.}}
+\DoxyCodeLine{00674\ \ \ \textcolor{comment}{//\ This\ method\ is\ const:\ do\ not\ attempt\ to\ move-\/from\ \`{}items\_`\ here.\ Use}}
+\DoxyCodeLine{00675\ \ \ \textcolor{comment}{//\ regular\ iterators\ so\ callers\ don't\ unexpectedly\ invalidate\ state.}}
+\DoxyCodeLine{00676\ \ \ \textcolor{keywordflow}{return}\ std::accumulate(}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ items\_.begin(),\ items\_.end(),\ initial,\ accumulate\_func);}
+\DoxyCodeLine{00678\ \}}
+\DoxyCodeLine{00679\ }
+\DoxyCodeLine{00680\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00681\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ActionFn>}
+\DoxyCodeLine{00682\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aefaf7cb34fa6db997c1a511ffa2e7652}{Queryable<T>::action}}(ActionFn\ action\_func)\ \{}
+\DoxyCodeLine{00683\ \ \ \textcolor{comment}{//\ @todo\ Check\ that\ ActionFn\ is\ a\ unary\ operation.}}
+\DoxyCodeLine{00684\ \ \ \textcolor{comment}{//\ Avoid\ copying\ each\ item\ into\ the\ lambda;\ forward\ as\ const-\/ref\ to\ reduce}}
+\DoxyCodeLine{00685\ \ \ \textcolor{comment}{//\ unnecessary\ copies\ for\ large\ types.}}
+\DoxyCodeLine{00686\ \ \ std::for\_each(items\_.begin(),\ items\_.end(),\ [\&action\_func](\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&item)\ \{}
+\DoxyCodeLine{00687\ \ \ \ \ action\_func(item);}
+\DoxyCodeLine{00688\ \ \ \});}
+\DoxyCodeLine{00689\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{00690\ \}}
+\DoxyCodeLine{00691\ }
+\DoxyCodeLine{00692\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00693\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00694\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a0c840cddfba6609fba7fe35bd424fea4}{Queryable<T>::all}}(Predicate\ predicate)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00695\ \ \ \textcolor{keywordflow}{return}\ std::all\_of(items\_.begin(),\ items\_.end(),\ predicate);}
+\DoxyCodeLine{00696\ \}}
+\DoxyCodeLine{00697\ }
+\DoxyCodeLine{00698\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00699\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00700\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a1bb0de06cc44da253487b0495817a8aa}{Queryable<T>::any}}(Predicate\ predicate)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00701\ \ \ \textcolor{keywordflow}{return}\ std::any\_of(items\_.begin(),\ items\_.end(),\ predicate);}
+\DoxyCodeLine{00702\ \}}
+\DoxyCodeLine{00703\ }
+\DoxyCodeLine{00704\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00705\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a863b8977eee183604dd8cdd4001ef1f2}{Queryable<T>::difference}}(std::vector<T>\ rhs\_items)\ \{}
+\DoxyCodeLine{00706\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00707\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<T>::value}},}
+\DoxyCodeLine{00708\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ be\ less-\/than\ comparable."{}});}
+\DoxyCodeLine{00709\ \ \ std::sort(rhs\_items.begin(),\ rhs\_items.end());}
+\DoxyCodeLine{00710\ \ \ \textcolor{comment}{//\ Number\ of\ matches\ consumed\ so\ far\ for\ each\ run\ of\ equivalent\ rhs\ items,}}
+\DoxyCodeLine{00711\ \ \ \textcolor{comment}{//\ indexed\ by\ the\ start\ of\ the\ run.}}
+\DoxyCodeLine{00712\ \ \ std::vector<size\_t>\ consumed(rhs\_items.size(),\ 0);}
+\DoxyCodeLine{00713\ \ \ std::erase\_if(items\_,\ [\&](\textcolor{keyword}{const}\ T\ \&item)\ \{}
+\DoxyCodeLine{00714\ \ \ \ \ \textcolor{keyword}{auto}\ [lo,\ hi]\ =\ std::equal\_range(rhs\_items.begin(),\ rhs\_items.end(),\ item);}
+\DoxyCodeLine{00715\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \&used\ =\ consumed[lo\ -\/\ rhs\_items.begin()];}
+\DoxyCodeLine{00716\ \ \ \ \ \textcolor{keywordflow}{if}\ (lo\ +\ used\ <\ hi)\ \{}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ used++;}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00719\ \ \ \ \ \}}
+\DoxyCodeLine{00720\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00721\ \ \ \});}
+\DoxyCodeLine{00722\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{00723\ \}}
+\DoxyCodeLine{00724\ }
+\DoxyCodeLine{00725\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00726\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a8c6fe42dd0710c9edbd04e7953492ee3}{Queryable<T>::distinct}}()\ \{}
+\DoxyCodeLine{00727\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00728\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<T>::value}},}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ be\ less-\/than\ comparable."{}});}
+\DoxyCodeLine{00730\ \ \ std::sort(items\_.begin(),\ items\_.end());}
+\DoxyCodeLine{00731\ \ \ \textcolor{comment}{//\ Adjacent\ sorted\ items\ are\ equivalent\ when\ the\ first\ isn't\ less.}}
+\DoxyCodeLine{00732\ \ \ items\_.erase(}
+\DoxyCodeLine{00733\ \ \ \ \ \ \ std::unique(}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ \ \ items\_.begin(),\ items\_.end(),}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ T\ \&lhs,\ \textcolor{keyword}{const}\ T\ \&rhs)\ \{\ return\ !(lhs\ <\ rhs);\ \}),}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ items\_.end());}
+\DoxyCodeLine{00737\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{00738\ \}}
+\DoxyCodeLine{00739\ }
+\DoxyCodeLine{00740\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00741\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab902874bdfe8494dd94929a374392ca1}{Queryable<T>::empty}}()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00742\ \ \ \textcolor{keywordflow}{return}\ items\_.empty();}
+\DoxyCodeLine{00743\ \}}
+\DoxyCodeLine{00744\ }
+\DoxyCodeLine{00745\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00746\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{00747\ std::optional<T>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a79b72200fd856f679829ae9d1f2b6dd1}{Queryable<T>::first\_or\_default}}(Predicate\ predicate)\ \{}
+\DoxyCodeLine{00748\ \ \ \textcolor{comment}{//\ @todo\ Require\ predicate\ to\ be\ a\ unary\ operation.}}
+\DoxyCodeLine{00749\ \ \ \textcolor{keyword}{auto}\ it\ =}
+\DoxyCodeLine{00750\ \ \ \ \ \ \ std::find\_if(items\_.begin(),\ items\_.end(),\ [\&predicate](\textcolor{keyword}{const}\ T\ \&item)\ \{}
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \ \ return\ predicate(item);}
+\DoxyCodeLine{00752\ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00753\ \ \ \textcolor{keywordflow}{if}\ (it\ ==\ items\_.end())\ \{}
+\DoxyCodeLine{00754\ \ \ \ \ \textcolor{keywordflow}{return}\ std::nullopt;}
+\DoxyCodeLine{00755\ \ \ \}}
+\DoxyCodeLine{00756\ \ \ \textcolor{keywordflow}{return}\ std::optional<T>(std::move(*it));}
+\DoxyCodeLine{00757\ \}}
+\DoxyCodeLine{00758\ }
+\DoxyCodeLine{00759\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00760\ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a29c7980304fb9bf6b7e1d6118044ef41}{Queryable<T>::flatten}}()\ \{}
+\DoxyCodeLine{00761\ \ \ \textcolor{comment}{//\ @todo\ asserts::invariant\ T\ is\ a\ vector.}}
+\DoxyCodeLine{00762\ \ \ \textcolor{keyword}{using\ }U\ =\ \textcolor{keyword}{typename}\ T::value\_type;}
+\DoxyCodeLine{00763\ \ \ \textcolor{comment}{//\ Reserve\ capacity\ when\ possible:\ sum\ sizes\ of\ inner\ sequences\ to\ avoid}}
+\DoxyCodeLine{00764\ \ \ \textcolor{comment}{//\ repeated\ reallocations.}}
+\DoxyCodeLine{00765\ \ \ \textcolor{keywordtype}{size\_t}\ total\ =\ 0;}
+\DoxyCodeLine{00766\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{00767\ \ \ \ \ total\ +=\ item.size();}
+\DoxyCodeLine{00768\ \ \ \}}
+\DoxyCodeLine{00769\ \ \ std::vector<U>\ flattened;}
+\DoxyCodeLine{00770\ \ \ flattened.reserve(total);}
+\DoxyCodeLine{00771\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{00772\ \ \ \ \ \textcolor{keywordflow}{for}\ (U\ \&sub\_item\ :\ item)\ \{}
+\DoxyCodeLine{00773\ \ \ \ \ \ \ flattened.push\_back(std::move(sub\_item));}
+\DoxyCodeLine{00774\ \ \ \ \ \}}
+\DoxyCodeLine{00775\ \ \ \}}
+\DoxyCodeLine{00776\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<U>}}(std::move(flattened));}
+\DoxyCodeLine{00777\ \}}
+\DoxyCodeLine{00778\ }
+\DoxyCodeLine{00779\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00780\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector>}
+\DoxyCodeLine{00781\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::vector<T>}}>\ \mbox{\hyperlink{classfcpp_1_1Queryable_aede834295955473228603511b016c46e}{Queryable<T>::group\_by}}(KeySelector\ key\_selector)\ \{}
+\DoxyCodeLine{00782\ \ \ \textcolor{keyword}{using\ }K\ =\ \textcolor{keyword}{decltype}(key\_selector(*items\_.begin()));}
+\DoxyCodeLine{00783\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<K>::value}},}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Key\ selector\ must\ produce\ a\ value\ that\ is\ less-\/than\ comparable."{}});}
+\DoxyCodeLine{00786\ }
+\DoxyCodeLine{00787\ \ \ std::map<K,\ std::vector<T>>\ keyed\_groups;}
+\DoxyCodeLine{00788\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{00789\ \ \ \ \ keyed\_groups[key\_selector(std::as\_const(item))].push\_back(std::move(item));}
+\DoxyCodeLine{00790\ \ \ \}}
+\DoxyCodeLine{00791\ }
+\DoxyCodeLine{00792\ \ \ std::vector<std::vector<T>>\ groups;}
+\DoxyCodeLine{00793\ \ \ groups.reserve(keyed\_groups.size());}
+\DoxyCodeLine{00794\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\ \&[key,\ group]\ :\ keyed\_groups)\ \{}
+\DoxyCodeLine{00795\ \ \ \ \ groups.push\_back(std::move(group));}
+\DoxyCodeLine{00796\ \ \ \}}
+\DoxyCodeLine{00797\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::vector<T>}}>(std::move(groups));}
+\DoxyCodeLine{00798\ \}}
+\DoxyCodeLine{00799\ }
+\DoxyCodeLine{00800\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00801\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ac764a12909c62698f46ef7d57588bb20}{Queryable<T>::intersect}}(std::vector<T>\ rhs\_items)\ \{}
+\DoxyCodeLine{00802\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<T>::value}},}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ be\ less-\/than\ comparable."{}});}
+\DoxyCodeLine{00805\ \ \ std::sort(rhs\_items.begin(),\ rhs\_items.end());}
+\DoxyCodeLine{00806\ \ \ \textcolor{comment}{//\ Number\ of\ matches\ consumed\ so\ far\ for\ each\ run\ of\ equivalent\ rhs\ items,}}
+\DoxyCodeLine{00807\ \ \ \textcolor{comment}{//\ indexed\ by\ the\ start\ of\ the\ run.}}
+\DoxyCodeLine{00808\ \ \ std::vector<size\_t>\ consumed(rhs\_items.size(),\ 0);}
+\DoxyCodeLine{00809\ \ \ std::erase\_if(items\_,\ [\&](\textcolor{keyword}{const}\ T\ \&item)\ \{}
+\DoxyCodeLine{00810\ \ \ \ \ \textcolor{keyword}{auto}\ [lo,\ hi]\ =\ std::equal\_range(rhs\_items.begin(),\ rhs\_items.end(),\ item);}
+\DoxyCodeLine{00811\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \&used\ =\ consumed[lo\ -\/\ rhs\_items.begin()];}
+\DoxyCodeLine{00812\ \ \ \ \ \textcolor{keywordflow}{if}\ (lo\ +\ used\ <\ hi)\ \{}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ used++;}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00815\ \ \ \ \ \}}
+\DoxyCodeLine{00816\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00817\ \ \ \});}
+\DoxyCodeLine{00818\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{00819\ \}}
+\DoxyCodeLine{00820\ }
+\DoxyCodeLine{00821\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00822\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U,\ \textcolor{keyword}{typename}\ LhsKeySelector,\ \textcolor{keyword}{typename}\ RhsKeySelector>}
+\DoxyCodeLine{00823\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::tuple<T,\ U>}}>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a275f68e6e0a034585e6246bf7cb83cd0}{Queryable<T>::join}}(}
+\DoxyCodeLine{00824\ \ \ \ \ std::vector<U>\ rhs\_items,\ LhsKeySelector\ lhs\_key\_selector,}
+\DoxyCodeLine{00825\ \ \ \ \ RhsKeySelector\ rhs\_key\_selector)\ \{}
+\DoxyCodeLine{00826\ \ \ \textcolor{keyword}{using\ }KU\ =\ \textcolor{keyword}{decltype}(rhs\_key\_selector(*rhs\_items.begin()));}
+\DoxyCodeLine{00827\ \ \ \textcolor{keyword}{using\ }KT\ =\ \textcolor{keyword}{decltype}(lhs\_key\_selector(*items\_.begin()));}
+\DoxyCodeLine{00828\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00829\ \ \ \ \ \ \ std::is\_same<KU,\ KT>::value,}
+\DoxyCodeLine{00830\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Left\ and\ right\ hand\ key\ selectors\ must\ produce\ the\ same\ type."{}});}
+\DoxyCodeLine{00831\ }
+\DoxyCodeLine{00832\ \ \ \textcolor{keyword}{using\ }K\ =\ KT;}
+\DoxyCodeLine{00833\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00834\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<K>::value}},}
+\DoxyCodeLine{00835\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Key\ selectors\ must\ produce\ a\ type\ that\ is\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{00836\ }
+\DoxyCodeLine{00837\ \ \ std::map<K,\ std::vector<U>>\ rhs\_mapped;}
+\DoxyCodeLine{00838\ \ \ \textcolor{keywordflow}{for}\ (U\ \&rhs\_item\ :\ rhs\_items)\ \{}
+\DoxyCodeLine{00839\ \ \ \ \ rhs\_mapped[rhs\_key\_selector(std::as\_const(rhs\_item))].push\_back(}
+\DoxyCodeLine{00840\ \ \ \ \ \ \ \ \ std::move(rhs\_item));}
+\DoxyCodeLine{00841\ \ \ \}}
+\DoxyCodeLine{00842\ }
+\DoxyCodeLine{00843\ \ \ \textcolor{comment}{//\ Count\ how\ many\ lhs\ items\ use\ each\ rhs\ group\ so\ the\ last\ use\ can\ move.}}
+\DoxyCodeLine{00844\ \ \ std::vector<K>\ lhs\_keys;}
+\DoxyCodeLine{00845\ \ \ lhs\_keys.reserve(items\_.size());}
+\DoxyCodeLine{00846\ \ \ std::map<K,\ size\_t>\ uses\_left;}
+\DoxyCodeLine{00847\ \ \ \textcolor{keywordflow}{for}\ (T\ \&lhs\_item\ :\ items\_)\ \{}
+\DoxyCodeLine{00848\ \ \ \ \ lhs\_keys.push\_back(lhs\_key\_selector(std::as\_const(lhs\_item)));}
+\DoxyCodeLine{00849\ \ \ \ \ \textcolor{keywordflow}{if}\ (rhs\_mapped.count(lhs\_keys.back()))\ \{}
+\DoxyCodeLine{00850\ \ \ \ \ \ \ uses\_left[lhs\_keys.back()]++;}
+\DoxyCodeLine{00851\ \ \ \ \ \}}
+\DoxyCodeLine{00852\ \ \ \}}
+\DoxyCodeLine{00853\ }
+\DoxyCodeLine{00854\ \ \ std::vector<std::tuple<T,\ U>>\ joined;}
+\DoxyCodeLine{00855\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ items\_.size();\ i++)\ \{}
+\DoxyCodeLine{00856\ \ \ \ \ \textcolor{keyword}{auto}\ rhs\_it\ =\ rhs\_mapped.find(lhs\_keys[i]);}
+\DoxyCodeLine{00857\ \ \ \ \ \textcolor{keywordflow}{if}\ (rhs\_it\ ==\ rhs\_mapped.end())\ \{}
+\DoxyCodeLine{00858\ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00859\ \ \ \ \ \}}
+\DoxyCodeLine{00860\ \ \ \ \ \textcolor{keywordtype}{bool}\ last\_lhs\_use\ =\ -\/-\/uses\_left[lhs\_keys[i]]\ ==\ 0;}
+\DoxyCodeLine{00861\ \ \ \ \ std::vector<U>\ \&rhs\_group\ =\ rhs\_it-\/>second;}
+\DoxyCodeLine{00862\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ j\ =\ 0;\ j\ <\ rhs\_group.size();\ j++)\ \{}
+\DoxyCodeLine{00863\ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ last\_rhs\_use\ =\ j\ +\ 1\ ==\ rhs\_group.size();}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ joined.emplace\_back(}
+\DoxyCodeLine{00865\ \ \ \ \ \ \ \ \ \ \ last\_rhs\_use\ ?\ std::move(items\_[i])}
+\DoxyCodeLine{00866\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ detail::copy\_or\_throw(items\_[i],\ \textcolor{stringliteral}{"{}join"{}}),}
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ \ \ last\_lhs\_use\ ?\ std::move(rhs\_group[j])}
+\DoxyCodeLine{00868\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ detail::copy\_or\_throw(rhs\_group[j],\ \textcolor{stringliteral}{"{}join"{}}));}
+\DoxyCodeLine{00869\ \ \ \ \ \}}
+\DoxyCodeLine{00870\ \ \ \}}
+\DoxyCodeLine{00871\ }
+\DoxyCodeLine{00872\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::tuple<T,\ U>}}>(std::move(joined));}
+\DoxyCodeLine{00873\ \}}
+\DoxyCodeLine{00874\ }
+\DoxyCodeLine{00875\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00876\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector>}
+\DoxyCodeLine{00877\ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_afd3c9e3a276a0307081cfc9f5378e3d7}{Queryable<T>::keyed\_group\_by}}(KeySelector\ key\_selector)\ \{}
+\DoxyCodeLine{00878\ \ \ \textcolor{keyword}{using\ }K\ =\ \textcolor{keyword}{decltype}(key\_selector(*items\_.begin()));}
+\DoxyCodeLine{00879\ }
+\DoxyCodeLine{00880\ \ \ std::map<K,\ std::vector<T>>\ mapped;}
+\DoxyCodeLine{00881\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{00882\ \ \ \ \ mapped[key\_selector(std::as\_const(item))].push\_back(std::move(item));}
+\DoxyCodeLine{00883\ \ \ \}}
+\DoxyCodeLine{00884\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::pair<K,\ std::vector<T>}}>>(}
+\DoxyCodeLine{00885\ \ \ \ \ \ \ \{std::make\_move\_iterator(mapped.begin()),}
+\DoxyCodeLine{00886\ \ \ \ \ \ \ \ std::make\_move\_iterator(mapped.end())\});}
+\DoxyCodeLine{00887\ \}}
+\DoxyCodeLine{00888\ }
+\DoxyCodeLine{00889\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00890\ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}{Queryable<T>::max}}()\ \{}
+\DoxyCodeLine{00891\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00892\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<T>::value}},}
+\DoxyCodeLine{00893\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{00894\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(!items\_.empty())\ <<\ \textcolor{stringliteral}{"{}Sequence\ cannot\ be\ empty."{}};}
+\DoxyCodeLine{00895\ }
+\DoxyCodeLine{00896\ \ \ \textcolor{comment}{//\ @todo\ Investigate\ performance\ for\ large\ objects.}}
+\DoxyCodeLine{00897\ \ \ \textcolor{keywordflow}{return}\ std::move(*std::max\_element(items\_.begin(),\ items\_.end()));}
+\DoxyCodeLine{00898\ \}}
+\DoxyCodeLine{00899\ }
+\DoxyCodeLine{00900\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00901\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ValueSelector>}
+\DoxyCodeLine{00902\ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_acf826943a9e6e7d663facc280ec0185f}{Queryable<T>::max}}(ValueSelector\ value\_selector)\ \{}
+\DoxyCodeLine{00903\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00904\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable}}<\textcolor{keyword}{decltype}(value\_selector(}
+\DoxyCodeLine{00905\ \ \ \ \ \ \ \ \ \ \ *items\_.begin()))>::value,}
+\DoxyCodeLine{00906\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}ValueSelector\ return\ type\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{00907\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(!items\_.empty())\ <<\ \textcolor{stringliteral}{"{}Sequence\ cannot\ be\ empty."{}};}
+\DoxyCodeLine{00908\ \ \ \textcolor{comment}{//\ @todo\ Require\ unary\ operation.}}
+\DoxyCodeLine{00909\ }
+\DoxyCodeLine{00910\ \ \ \textcolor{keywordflow}{return}\ std::move(*std::max\_element(}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ items\_.begin(),\ items\_.end(),}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ [\&value\_selector](\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&lhs,\ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&rhs)\ \{}
+\DoxyCodeLine{00913\ \ \ \ \ \ \ \ \ return\ value\_selector(lhs)\ <\ value\_selector(rhs);}
+\DoxyCodeLine{00914\ \ \ \ \ \ \ \}));}
+\DoxyCodeLine{00915\ \}}
+\DoxyCodeLine{00916\ }
+\DoxyCodeLine{00917\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00918\ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_a6277dd3c32cabef4a369ee4934713c52}{Queryable<T>::min}}()\ \{}
+\DoxyCodeLine{00919\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00920\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<T>::value}},}
+\DoxyCodeLine{00921\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{00922\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(!items\_.empty())\ <<\ \textcolor{stringliteral}{"{}Sequence\ cannot\ be\ empty."{}};}
+\DoxyCodeLine{00923\ }
+\DoxyCodeLine{00924\ \ \ \textcolor{comment}{//\ @todo\ Guard\ with\ concepts\ as\ seen\ in\ min\_element.}}
+\DoxyCodeLine{00925\ \ \ \textcolor{keywordflow}{return}\ std::move(*std::min\_element(items\_.begin(),\ items\_.end()));}
+\DoxyCodeLine{00926\ \}}
+\DoxyCodeLine{00927\ }
+\DoxyCodeLine{00928\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00929\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ValueSelector\ \textcolor{comment}{/*\ =\ std::function<K(T)>*/}>}
+\DoxyCodeLine{00930\ T\ \mbox{\hyperlink{classfcpp_1_1Queryable_a6277dd3c32cabef4a369ee4934713c52}{Queryable<T>::min}}(ValueSelector\ value\_selector)\ \{}
+\DoxyCodeLine{00931\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00932\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable}}<\textcolor{keyword}{decltype}(value\_selector(}
+\DoxyCodeLine{00933\ \ \ \ \ \ \ \ \ \ \ *items\_.begin()))>::value,}
+\DoxyCodeLine{00934\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}ValueSelector\ return\ type\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{00935\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(!items\_.empty())\ <<\ \textcolor{stringliteral}{"{}Sequence\ cannot\ be\ empty."{}};}
+\DoxyCodeLine{00936\ \ \ \textcolor{comment}{//\ @todo\ Require\ unary\ operation.}}
+\DoxyCodeLine{00937\ }
+\DoxyCodeLine{00938\ \ \ \textcolor{keywordflow}{return}\ std::move(*std::min\_element(}
+\DoxyCodeLine{00939\ \ \ \ \ \ \ items\_.begin(),\ items\_.end(),}
+\DoxyCodeLine{00940\ \ \ \ \ \ \ [\&value\_selector](\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&lhs,\ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&rhs)\ \{}
+\DoxyCodeLine{00941\ \ \ \ \ \ \ \ \ return\ value\_selector(lhs)\ <\ value\_selector(rhs);}
+\DoxyCodeLine{00942\ \ \ \ \ \ \ \}));}
+\DoxyCodeLine{00943\ \}}
+\DoxyCodeLine{00944\ }
+\DoxyCodeLine{00945\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00946\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ValueSelector>}
+\DoxyCodeLine{00947\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<T>}}}
+\DoxyCodeLine{00948\ \mbox{\hyperlink{classfcpp_1_1Queryable_a602241a2328173e1c8437dfd54d65cb7}{Queryable<T>::order\_by}}(ValueSelector\ value\_selector,\ \textcolor{keywordtype}{bool}\ descending)\ \{}
+\DoxyCodeLine{00949\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00950\ \ \ \ \ \ \ std::is\_copy\_assignable\_v<T>\ ||}
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \ \ \ \ (std::is\_move\_assignable\_v<T>\ \&\&\ std::is\_move\_constructible\_v<T>),}
+\DoxyCodeLine{00952\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ either\ be\ copy\ assignable,\ or\ move\ assignable\ and\ "{}}}
+\DoxyCodeLine{00953\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}constructible."{}});}
+\DoxyCodeLine{00954\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00955\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable}}<\textcolor{keyword}{decltype}(value\_selector(}
+\DoxyCodeLine{00956\ \ \ \ \ \ \ \ \ \ \ *items\_.begin()))>::value,}
+\DoxyCodeLine{00957\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}ValueSelector\ return\ type\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{00958\ }
+\DoxyCodeLine{00959\ \ \ \textcolor{keyword}{using\ }K\ =\ std::decay\_t<\textcolor{keyword}{decltype}(value\_selector(*items\_.begin()))>;}
+\DoxyCodeLine{00960\ \ \ \textcolor{comment}{//\ Select\ each\ value\ once,\ then\ stable\ sort\ the\ indices\ by\ value.}}
+\DoxyCodeLine{00961\ \ \ std::vector<K>\ values;}
+\DoxyCodeLine{00962\ \ \ values.reserve(items\_.size());}
+\DoxyCodeLine{00963\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{00964\ \ \ \ \ values.push\_back(value\_selector(std::as\_const(item)));}
+\DoxyCodeLine{00965\ \ \ \}}
+\DoxyCodeLine{00966\ \ \ std::vector<size\_t>\ order(items\_.size());}
+\DoxyCodeLine{00967\ \ \ std::iota(order.begin(),\ order.end(),\ 0);}
+\DoxyCodeLine{00968\ \ \ std::stable\_sort(}
+\DoxyCodeLine{00969\ \ \ \ \ \ \ order.begin(),\ order.end(),}
+\DoxyCodeLine{00970\ \ \ \ \ \ \ [\&values,\ descending](\textcolor{keywordtype}{size\_t}\ lhs,\ \textcolor{keywordtype}{size\_t}\ rhs)\ \{}
+\DoxyCodeLine{00971\ \ \ \ \ \ \ \ \ return\ descending\ ?\ values[rhs]\ <\ values[lhs]}
+\DoxyCodeLine{00972\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ values[lhs]\ <\ values[rhs];}
+\DoxyCodeLine{00973\ \ \ \ \ \ \ \});}
+\DoxyCodeLine{00974\ }
+\DoxyCodeLine{00975\ \ \ std::vector<T>\ ordered;}
+\DoxyCodeLine{00976\ \ \ ordered.reserve(items\_.size());}
+\DoxyCodeLine{00977\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ :\ order)\ \{}
+\DoxyCodeLine{00978\ \ \ \ \ ordered.push\_back(std::move(items\_[i]));}
+\DoxyCodeLine{00979\ \ \ \}}
+\DoxyCodeLine{00980\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(ordered));}
+\DoxyCodeLine{00981\ \}}
+\DoxyCodeLine{00982\ }
+\DoxyCodeLine{00983\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00984\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a61691c8877e3f545fc5d35ba879cfd96}{Queryable<T>::reverse}}()\ \{}
+\DoxyCodeLine{00985\ \ \ std::reverse(items\_.begin(),\ items\_.end());}
+\DoxyCodeLine{00986\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{00987\ \}}
+\DoxyCodeLine{00988\ }
+\DoxyCodeLine{00989\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00990\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Selector\ \textcolor{comment}{/*\ =\ std::function<U(T)>*/}>}
+\DoxyCodeLine{00991\ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ae134d9182adc199ef2e863c28478d05a}{Queryable<T>::select}}(Selector\ selector)\ \{}
+\DoxyCodeLine{00992\ \ \ \textcolor{keyword}{using\ }U\ =\ \textcolor{keyword}{decltype}(selector(*items\_.begin()));}
+\DoxyCodeLine{00993\ \ \ std::vector<U>\ selected;}
+\DoxyCodeLine{00994\ \ \ selected.reserve(items\_.size());}
+\DoxyCodeLine{00995\ \ \ std::transform(}
+\DoxyCodeLine{00996\ \ \ \ \ \ \ std::make\_move\_iterator(items\_.begin()),}
+\DoxyCodeLine{00997\ \ \ \ \ \ \ std::make\_move\_iterator(items\_.end()),\ std::back\_inserter(selected),}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ selector);}
+\DoxyCodeLine{00999\ }
+\DoxyCodeLine{01000\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<U>}}(std::move(selected));}
+\DoxyCodeLine{01001\ \}}
+\DoxyCodeLine{01002\ }
+\DoxyCodeLine{01003\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01004\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a1290687cda3f76692b23104cb31909a6}{Queryable<T>::shuffle}}()\ \{}
+\DoxyCodeLine{01005\ \ \ std::shuffle(items\_.begin(),\ items\_.end(),\ detail::random\_engine());}
+\DoxyCodeLine{01006\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{01007\ \}}
+\DoxyCodeLine{01008\ }
+\DoxyCodeLine{01009\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01010\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{Queryable<T>::size}}()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01011\ \ \ \textcolor{keywordflow}{return}\ items\_.size();}
+\DoxyCodeLine{01012\ \}}
+\DoxyCodeLine{01013\ }
+\DoxyCodeLine{01014\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01015\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a38c5930c2276e6394a4b1395cded39b1}{Queryable<T>::skip}}(\textcolor{keywordtype}{size\_t}\ value)\ \{}
+\DoxyCodeLine{01016\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(value\ <=\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}())}
+\DoxyCodeLine{01017\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Skip\ value\ "{}}\ <<\ value}
+\DoxyCodeLine{01018\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ must\ be\ less\ than\ or\ equal\ to\ sequence\ size\ of\ "{}}\ <<\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01019\ }
+\DoxyCodeLine{01020\ \ \ items\_.erase(items\_.begin(),\ items\_.begin()\ +\ value);}
+\DoxyCodeLine{01021\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{01022\ \}}
+\DoxyCodeLine{01023\ }
+\DoxyCodeLine{01024\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01025\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<T>}}}
+\DoxyCodeLine{01026\ \mbox{\hyperlink{classfcpp_1_1Queryable_a9278a124ab47469301082cc8b77b9cd6}{Queryable<T>::slice}}(\textcolor{keywordtype}{size\_t}\ start\_index,\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}},\ \textcolor{keywordtype}{size\_t}\ stride)\ \{}
+\DoxyCodeLine{01027\ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}\ ==\ 0)\ \{}
+\DoxyCodeLine{01028\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::vector<T>());}
+\DoxyCodeLine{01029\ \ \ \}}
+\DoxyCodeLine{01030\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(start\_index\ <\ this-\/>\mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}())}
+\DoxyCodeLine{01031\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Slice\ start\ index\ "{}}\ <<\ start\_index}
+\DoxyCodeLine{01032\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ must\ be\ less\ than\ sequence\ size\ of\ "{}}\ <<\ this-\/>size()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01033\ }
+\DoxyCodeLine{01034\ \ \ \textcolor{keywordtype}{size\_t}\ last\_index\ =\ start\_index\ +\ (\mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}\ -\/\ 1)\ *\ stride;}
+\DoxyCodeLine{01035\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(last\_index\ <\ this-\/>\mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}())}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Slice\ last\ index\ "{}}\ <<\ last\_index}
+\DoxyCodeLine{01037\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ must\ be\ less\ than\ the\ sequence\ size\ of\ "{}}\ <<\ this-\/>size()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01038\ }
+\DoxyCodeLine{01039\ \ \ std::vector<T>\ sliced;}
+\DoxyCodeLine{01040\ \ \ sliced.reserve(\mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}});}
+\DoxyCodeLine{01041\ \ \ \textcolor{keywordflow}{if}\ (stride\ ==\ 0)\ \{}
+\DoxyCodeLine{01042\ \ \ \ \ \textcolor{comment}{//\ Every\ item\ is\ the\ same\ one,\ so\ all\ but\ the\ last\ must\ be\ copies.}}
+\DoxyCodeLine{01043\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ +\ 1\ <\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}};\ i++)\ \{}
+\DoxyCodeLine{01044\ \ \ \ \ \ \ sliced.push\_back(detail::copy\_or\_throw(items\_[start\_index],\ \textcolor{stringliteral}{"{}slice"{}}));}
+\DoxyCodeLine{01045\ \ \ \ \ \}}
+\DoxyCodeLine{01046\ \ \ \ \ sliced.push\_back(std::move(items\_[start\_index]));}
+\DoxyCodeLine{01047\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01048\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ start\_index;\ sliced.size()\ <\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}};\ i\ +=\ stride)\ \{}
+\DoxyCodeLine{01049\ \ \ \ \ \ \ sliced.push\_back(std::move(items\_[i]));}
+\DoxyCodeLine{01050\ \ \ \ \ \}}
+\DoxyCodeLine{01051\ \ \ \}}
+\DoxyCodeLine{01052\ }
+\DoxyCodeLine{01053\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(sliced));}
+\DoxyCodeLine{01054\ \}}
+\DoxyCodeLine{01055\ }
+\DoxyCodeLine{01056\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01057\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a50fffbe4332ac62bbc6a89eb0e064b17}{Queryable<T>::sort}}()\ \{}
+\DoxyCodeLine{01058\ \ \ std::sort(items\_.begin(),\ items\_.end());}
+\DoxyCodeLine{01059\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{01060\ \}}
+\DoxyCodeLine{01061\ }
+\DoxyCodeLine{01062\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01063\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a903c7f0d36e68278858932057ae7fabe}{Queryable<T>::take}}(\textcolor{keywordtype}{size\_t}\ value)\ \{}
+\DoxyCodeLine{01064\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(value\ <=\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}())}
+\DoxyCodeLine{01065\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Take\ value\ "{}}\ <<\ value}
+\DoxyCodeLine{01066\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ must\ be\ less\ than\ or\ equal\ to\ sequence\ size\ of\ "{}}\ <<\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01067\ }
+\DoxyCodeLine{01068\ \ \ items\_.erase(items\_.begin()\ +\ value,\ items\_.end());}
+\DoxyCodeLine{01069\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{01070\ \}}
+\DoxyCodeLine{01071\ }
+\DoxyCodeLine{01072\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01073\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a86f90fa4f1751ac918ad3601d002c781}{Queryable<T>::take\_random}}(\textcolor{keywordtype}{size\_t}\ value)\ \{}
+\DoxyCodeLine{01074\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(value\ <=\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}())}
+\DoxyCodeLine{01075\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Take\ random\ value\ "{}}\ <<\ value}
+\DoxyCodeLine{01076\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ must\ be\ less\ than\ or\ equal\ to\ sequence\ size\ of\ "{}}\ <<\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01077\ }
+\DoxyCodeLine{01078\ \ \ \textcolor{comment}{//\ Partial\ Fisher-\/Yates\ shuffle:\ only\ the\ first\ value\ positions\ are\ drawn.}}
+\DoxyCodeLine{01079\ \ \ \textcolor{keyword}{auto}\ \&engine\ =\ detail::random\_engine();}
+\DoxyCodeLine{01080\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ value;\ i++)\ \{}
+\DoxyCodeLine{01081\ \ \ \ \ std::uniform\_int\_distribution<size\_t>\ dist(i,\ items\_.size()\ -\/\ 1);}
+\DoxyCodeLine{01082\ \ \ \ \ std::swap(items\_[i],\ items\_[dist(engine)]);}
+\DoxyCodeLine{01083\ \ \ \}}
+\DoxyCodeLine{01084\ \ \ items\_.erase(items\_.begin()\ +\ value,\ items\_.end());}
+\DoxyCodeLine{01085\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{01086\ \}}
+\DoxyCodeLine{01087\ }
+\DoxyCodeLine{01088\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01089\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector\ \textcolor{comment}{/*\ =\ std::function<K(T)>*/}>}
+\DoxyCodeLine{01090\ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a80a1d43f51d0b3e0da7f6f4050f8f9ca}{Queryable<T>::to\_multi\_value\_map}}(KeySelector\ key\_selector)\ \{}
+\DoxyCodeLine{01091\ \ \ \textcolor{keyword}{using\ }K\ =\ \textcolor{keyword}{decltype}(key\_selector(*items\_.begin()));}
+\DoxyCodeLine{01092\ \ \ std::map<K,\ std::vector<T>>\ mapped;}
+\DoxyCodeLine{01093\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{01094\ \ \ \ \ mapped[key\_selector(std::as\_const(item))].push\_back(std::move(item));}
+\DoxyCodeLine{01095\ \ \ \}}
+\DoxyCodeLine{01096\ \ \ \textcolor{keywordflow}{return}\ mapped;}
+\DoxyCodeLine{01097\ \}}
+\DoxyCodeLine{01098\ }
+\DoxyCodeLine{01099\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01100\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ KeySelector\ \textcolor{comment}{/*\ =\ std::function<K(T)>*/}>}
+\DoxyCodeLine{01101\ \textcolor{keyword}{auto}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a0a3381370b348b2dfd3f7aae3013d377}{Queryable<T>::to\_single\_value\_map}}(KeySelector\ key\_selector)\ \{}
+\DoxyCodeLine{01102\ \ \ \textcolor{keyword}{using\ }K\ =\ \textcolor{keyword}{decltype}(key\_selector(*items\_.begin()));}
+\DoxyCodeLine{01103\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{01104\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<K>::value}},}
+\DoxyCodeLine{01105\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}KeySelector\ return\ type\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{01106\ }
+\DoxyCodeLine{01107\ \ \ std::map<K,\ T>\ mapped;}
+\DoxyCodeLine{01108\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{01109\ \ \ \ \ \textcolor{comment}{//\ Only\ moves\ the\ item\ if\ the\ key\ isn't\ already\ present.}}
+\DoxyCodeLine{01110\ \ \ \ \ mapped.try\_emplace(key\_selector(std::as\_const(item)),\ std::move(item));}
+\DoxyCodeLine{01111\ \ \ \}}
+\DoxyCodeLine{01112\ \ \ \textcolor{keywordflow}{return}\ mapped;}
+\DoxyCodeLine{01113\ \}}
+\DoxyCodeLine{01114\ }
+\DoxyCodeLine{01115\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01116\ std::set<T>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a0ae9b2b1409645018152712dbd4c653b}{Queryable<T>::to\_set}}()\ \{}
+\DoxyCodeLine{01117\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{01118\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<T>::value}},}
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{01120\ \ \ \textcolor{keywordflow}{return}\ std::set<T>(}
+\DoxyCodeLine{01121\ \ \ \ \ \ \ std::make\_move\_iterator(items\_.begin()),}
+\DoxyCodeLine{01122\ \ \ \ \ \ \ std::make\_move\_iterator(items\_.end()));}
+\DoxyCodeLine{01123\ \}}
+\DoxyCodeLine{01124\ }
+\DoxyCodeLine{01125\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01126\ std::vector<T>\ \mbox{\hyperlink{classfcpp_1_1Queryable_a90636a0132afa4437e2fe38a10262818}{Queryable<T>::to\_vector}}()\ \{}
+\DoxyCodeLine{01127\ \ \ \textcolor{keywordflow}{return}\ std::move(items\_);}
+\DoxyCodeLine{01128\ \}}
+\DoxyCodeLine{01129\ }
+\DoxyCodeLine{01130\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01131\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ae91020682e139d499aaf5adc114804ac}{Queryable<T>::trim}}(\textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}})\ \{}
+\DoxyCodeLine{01132\ \ \ \mbox{\hyperlink{classfcpp_1_1asserts_1_1invariant_a876ed95ac6ce116150351d540f0a45b5}{asserts::invariant::eval}}(\mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}\ <=\ items\_.size())}
+\DoxyCodeLine{01133\ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Size\ "{}}\ <<\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}}\ <<\ \textcolor{stringliteral}{"{}\ must\ be\ less\ than\ or\ equal\ to\ sequence\ size\ of\ "{}}}
+\DoxyCodeLine{01134\ \ \ \ \ \ \ <<\ this-\/>size()\ <<\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{01135\ }
+\DoxyCodeLine{01136\ \ \ items\_.erase(items\_.end()\ -\/\ \mbox{\hyperlink{classfcpp_1_1Queryable_ab6211b2bb300551ff2bfe07614c32c22}{size}},\ items\_.end());}
+\DoxyCodeLine{01137\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{01138\ \}}
+\DoxyCodeLine{01139\ }
+\DoxyCodeLine{01140\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01141\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a56ce5e9e0bef42e46ec88e5881275385}{Queryable<T>::unionize}}(std::vector<T>\ rhs\_items)\ \{}
+\DoxyCodeLine{01142\ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{01143\ \ \ \ \ \ \ \mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{traits::is\_less\_than\_comparable<T>::value}},}
+\DoxyCodeLine{01144\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}T\ must\ be\ less-\/than\ compareable."{}});}
+\DoxyCodeLine{01145\ }
+\DoxyCodeLine{01146\ \ \ items\_.insert(}
+\DoxyCodeLine{01147\ \ \ \ \ \ \ items\_.end(),\ std::make\_move\_iterator(rhs\_items.begin()),}
+\DoxyCodeLine{01148\ \ \ \ \ \ \ std::make\_move\_iterator(rhs\_items.end()));}
+\DoxyCodeLine{01149\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a8c6fe42dd0710c9edbd04e7953492ee3}{distinct}}();}
+\DoxyCodeLine{01150\ \}}
+\DoxyCodeLine{01151\ }
+\DoxyCodeLine{01152\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01153\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{01154\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a3251df3ba348429da627c3dfbaad47f8}{Queryable<T>::where}}(Predicate\ predicate)\ \{}
+\DoxyCodeLine{01155\ \ \ \textcolor{comment}{//\ Filter\ in\ place;\ the\ predicate\ sees\ each\ item\ before\ any\ are\ moved.}}
+\DoxyCodeLine{01156\ \ \ std::erase\_if(}
+\DoxyCodeLine{01157\ \ \ \ \ \ \ items\_,\ [\&predicate](\textcolor{keyword}{const}\ T\ \&item)\ \{\ \textcolor{keywordflow}{return}\ !predicate(item);\ \});}
+\DoxyCodeLine{01158\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<T>}}(std::move(items\_));}
+\DoxyCodeLine{01159\ \}}
+\DoxyCodeLine{01160\ }
+\DoxyCodeLine{01161\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01162\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01163\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<std::tuple<T,\ U>}}>}
+\DoxyCodeLine{01164\ \mbox{\hyperlink{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}{Queryable<T>::zip}}(std::vector<U>\ rhs\_items,\ \textcolor{keywordtype}{bool}\ truncate)\ \{}
+\DoxyCodeLine{01165\ \ \ \textcolor{keywordtype}{size\_t}\ common\ =\ std::min(items\_.size(),\ rhs\_items.size());}
+\DoxyCodeLine{01166\ \ \ \textcolor{keywordtype}{size\_t}\ total\ =\ truncate\ ?\ common\ :\ std::max(items\_.size(),\ rhs\_items.size());}
+\DoxyCodeLine{01167\ }
+\DoxyCodeLine{01168\ \ \ std::vector<std::tuple<T,\ U>>\ zipped;}
+\DoxyCodeLine{01169\ \ \ zipped.reserve(total);}
+\DoxyCodeLine{01170\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ common;\ i++)\ \{}
+\DoxyCodeLine{01171\ \ \ \ \ zipped.emplace\_back(std::move(items\_[i]),\ std::move(rhs\_items[i]));}
+\DoxyCodeLine{01172\ \ \ \}}
+\DoxyCodeLine{01173\ \ \ \textcolor{keywordflow}{if}\ (total\ ==\ common)\ \{}
+\DoxyCodeLine{01174\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::tuple<T,\ U>}}>(std::move(zipped));}
+\DoxyCodeLine{01175\ \ \ \}}
+\DoxyCodeLine{01176\ }
+\DoxyCodeLine{01177\ \ \ \textcolor{comment}{//\ Pad\ the\ shorter\ side\ with\ default\ values.}}
+\DoxyCodeLine{01178\ \ \ \textcolor{keywordflow}{if}\ (items\_.size()\ >\ rhs\_items.size())\ \{}
+\DoxyCodeLine{01179\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_default\_constructible\_v<U>)\ \{}
+\DoxyCodeLine{01180\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ common;\ i\ <\ total;\ i++)\ \{}
+\DoxyCodeLine{01181\ \ \ \ \ \ \ \ \ zipped.emplace\_back(std::move(items\_[i]),\ U());}
+\DoxyCodeLine{01182\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01183\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01184\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(}
+\DoxyCodeLine{01185\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}zip\ padding\ requires\ a\ default\ constructible\ right\ hand\ type."{}});}
+\DoxyCodeLine{01186\ \ \ \ \ \}}
+\DoxyCodeLine{01187\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01188\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_default\_constructible\_v<T>)\ \{}
+\DoxyCodeLine{01189\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ common;\ i\ <\ total;\ i++)\ \{}
+\DoxyCodeLine{01190\ \ \ \ \ \ \ \ \ zipped.emplace\_back(T(),\ std::move(rhs\_items[i]));}
+\DoxyCodeLine{01191\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01192\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01193\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(}
+\DoxyCodeLine{01194\ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}zip\ padding\ requires\ a\ default\ constructible\ left\ hand\ type."{}});}
+\DoxyCodeLine{01195\ \ \ \ \ \}}
+\DoxyCodeLine{01196\ \ \ \}}
+\DoxyCodeLine{01197\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_aba673d44f38f19624c929b0a6ce441a1}{Queryable<std::tuple<T,\ U>}}>(std::move(zipped));}
+\DoxyCodeLine{01198\ \}}
+\DoxyCodeLine{01199\ }
+\DoxyCodeLine{01200\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01201\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{01202\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<std::tuple<T,\ U>}}>}
+\DoxyCodeLine{01203\ \mbox{\hyperlink{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}{Queryable<T>::zip}}(std::initializer\_list<U>\ rhs\_items,\ \textcolor{keywordtype}{bool}\ truncate)\ \{}
+\DoxyCodeLine{01204\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Queryable_a3b7578f305fc3527fa0286e4b840b0cd}{zip}}(std::vector<U>(std::move(rhs\_items)),\ truncate);}
+\DoxyCodeLine{01205\ \}}
+\DoxyCodeLine{01206\ }
+\DoxyCodeLine{01214\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ TrueT,\ \textcolor{keyword}{typename}\ FalseT>}
+\DoxyCodeLine{01215\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classfcpp_1_1Merge_a31149933912c80c47caa4f0a7f5959ea}{Merge}}\ \{}
+\DoxyCodeLine{01216\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01226\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classfcpp_1_1Merge_a31149933912c80c47caa4f0a7f5959ea}{Merge}}(\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<TrueT>}}\ true\_queried,\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<FalseT>}}\ false\_queried)}
+\DoxyCodeLine{01227\ \ \ \ \ \ \ :\ true\_queried\_(std::move(true\_queried)),}
+\DoxyCodeLine{01228\ \ \ \ \ \ \ \ \ false\_queried\_(std::move(false\_queried))\ \{\}}
+\DoxyCodeLine{01229\ \ \ \mbox{\hyperlink{classfcpp_1_1Merge_a31149933912c80c47caa4f0a7f5959ea}{Merge}}()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01230\ \ \ \mbox{\hyperlink{classfcpp_1_1Merge}{\string~Merge}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{01231\ \ \ \mbox{\hyperlink{classfcpp_1_1Merge_a31149933912c80c47caa4f0a7f5959ea}{Merge}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1Merge}{Merge}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01232\ \ \ \mbox{\hyperlink{classfcpp_1_1Merge}{Merge}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1Merge}{Merge}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01233\ }
+\DoxyCodeLine{01242\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<std::tuple<TrueT,\ FalseT>}}>\ \mbox{\hyperlink{classfcpp_1_1Merge_a53b6ff9d1865c2b1648ba9a6b422d400}{merge}}(\textcolor{keywordtype}{bool}\ truncate\ =\ \textcolor{keyword}{false})\ \{}
+\DoxyCodeLine{01243\ \ \ \ \ \textcolor{keywordflow}{return}\ true\_queried\_.zip(false\_queried\_.to\_vector(),\ truncate);}
+\DoxyCodeLine{01244\ \ \ \}}
+\DoxyCodeLine{01245\ }
+\DoxyCodeLine{01246\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01247\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<TrueT>}}\ true\_queried\_;}
+\DoxyCodeLine{01248\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<FalseT>}}\ false\_queried\_;}
+\DoxyCodeLine{01249\ \};}
+\DoxyCodeLine{01250\ }
+\DoxyCodeLine{01257\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ WhenTrueQueriedT,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01258\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classfcpp_1_1WhenFalse_ab5805f3201a2e1899a0bc6b460cd8e3f}{WhenFalse}}\ \{}
+\DoxyCodeLine{01259\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01270\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classfcpp_1_1WhenFalse_ab5805f3201a2e1899a0bc6b460cd8e3f}{WhenFalse}}(}
+\DoxyCodeLine{01271\ \ \ \ \ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<WhenTrueQueriedT>}}\ when\_true\_queried,}
+\DoxyCodeLine{01272\ \ \ \ \ \ \ std::vector<T>\ when\_false\_items)}
+\DoxyCodeLine{01273\ \ \ \ \ \ \ :\ when\_true\_queried\_(std::move(when\_true\_queried)),}
+\DoxyCodeLine{01274\ \ \ \ \ \ \ \ \ when\_false\_items\_(std::move(when\_false\_items))\ \{\}}
+\DoxyCodeLine{01275\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenFalse_ab5805f3201a2e1899a0bc6b460cd8e3f}{WhenFalse}}()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01276\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenFalse}{\string~WhenFalse}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{01277\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenFalse_ab5805f3201a2e1899a0bc6b460cd8e3f}{WhenFalse}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1WhenFalse}{WhenFalse}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01278\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenFalse}{WhenFalse}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1WhenFalse}{WhenFalse}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01279\ }
+\DoxyCodeLine{01290\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{01291\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ WhenFalseQuery\ \textcolor{comment}{/*\ =}}
+\DoxyCodeLine{01292\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::function<Queryable<WhenFalseQueriedT>(Queryable<T>\&)>}}
+\DoxyCodeLine{01293\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{01294\ \ \ \ \ \ \ ,}
+\DoxyCodeLine{01295\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ WhenFalseQueriedT\ =\ \textcolor{keyword}{typename}\ std::invoke\_result\_t<}
+\DoxyCodeLine{01296\ \ \ \ \ \ \ \ \ \ \ WhenFalseQuery,\ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<T>}}>::item\_type>}
+\DoxyCodeLine{01297\ \ \ \mbox{\hyperlink{classfcpp_1_1Merge}{Merge<WhenTrueQueriedT,\ WhenFalseQueriedT>}}}
+\DoxyCodeLine{01298\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenFalse_a9fa44d40284dbe1f057845806cefb0e3}{when\_false}}(WhenFalseQuery\ when\_false\_query)\ \{}
+\DoxyCodeLine{01299\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1Merge}{Merge<WhenTrueQueriedT,\ WhenFalseQueriedT>}}(}
+\DoxyCodeLine{01300\ \ \ \ \ \ \ \ \ std::move(when\_true\_queried\_),}
+\DoxyCodeLine{01301\ \ \ \ \ \ \ \ \ when\_false\_query(\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<T>}}(std::move(when\_false\_items\_))));}
+\DoxyCodeLine{01302\ \ \ \}}
+\DoxyCodeLine{01303\ }
+\DoxyCodeLine{01304\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01305\ \ \ \mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<WhenTrueQueriedT>}}\ when\_true\_queried\_;}
+\DoxyCodeLine{01306\ \ \ std::vector<T>\ when\_false\_items\_;}
+\DoxyCodeLine{01307\ \};}
+\DoxyCodeLine{01308\ }
+\DoxyCodeLine{01314\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01315\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classfcpp_1_1WhenTrue_a7b4bb24a93c9f1eb81c90a4ff6ca3321}{WhenTrue}}\ \{}
+\DoxyCodeLine{01316\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01326\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classfcpp_1_1WhenTrue_a7b4bb24a93c9f1eb81c90a4ff6ca3321}{WhenTrue}}(}
+\DoxyCodeLine{01327\ \ \ \ \ \ \ std::vector<T>\ when\_true\_items,\ std::vector<T>\ when\_false\_items)}
+\DoxyCodeLine{01328\ \ \ \ \ \ \ :\ when\_true\_items\_(std::move(when\_true\_items)),}
+\DoxyCodeLine{01329\ \ \ \ \ \ \ \ \ when\_false\_items\_(std::move(when\_false\_items))\ \{\}}
+\DoxyCodeLine{01330\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenTrue_a7b4bb24a93c9f1eb81c90a4ff6ca3321}{WhenTrue}}()\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01331\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenTrue}{\string~WhenTrue}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{01332\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenTrue_a7b4bb24a93c9f1eb81c90a4ff6ca3321}{WhenTrue}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1WhenTrue}{WhenTrue}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01333\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenTrue}{WhenTrue}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{classfcpp_1_1WhenTrue}{WhenTrue}}\ \&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01334\ }
+\DoxyCodeLine{01345\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{01346\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ WhenTrueQuery\ \textcolor{comment}{/*\ =}}
+\DoxyCodeLine{01347\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::function<Queryable<WhenTrueQueriedT>(Queryable<T>)>}}
+\DoxyCodeLine{01348\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{01349\ \ \ \ \ \ \ ,}
+\DoxyCodeLine{01350\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ WhenTrueQueriedT\ =}
+\DoxyCodeLine{01351\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::invoke\_result\_t<WhenTrueQuery,\ Queryable<T>>::item\_type>}
+\DoxyCodeLine{01352\ \ \ \mbox{\hyperlink{classfcpp_1_1WhenFalse}{WhenFalse<WhenTrueQueriedT,\ T>}}\ \mbox{\hyperlink{classfcpp_1_1WhenTrue_ab916508203ed3fc1a0acb40e75ae8251}{when\_true}}(WhenTrueQuery\ when\_true\_query)\ \{}
+\DoxyCodeLine{01353\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1WhenFalse}{WhenFalse<WhenTrueQueriedT,\ T>}}(}
+\DoxyCodeLine{01354\ \ \ \ \ \ \ \ \ when\_true\_query(\mbox{\hyperlink{classfcpp_1_1Queryable}{Queryable<T>}}(std::move(when\_true\_items\_))),}
+\DoxyCodeLine{01355\ \ \ \ \ \ \ \ \ std::move(when\_false\_items\_));}
+\DoxyCodeLine{01356\ \ \ \}}
+\DoxyCodeLine{01357\ }
+\DoxyCodeLine{01358\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01359\ \ \ std::vector<T>\ when\_true\_items\_;}
+\DoxyCodeLine{01360\ \ \ std::vector<T>\ when\_false\_items\_;}
+\DoxyCodeLine{01361\ \};}
+\DoxyCodeLine{01362\ }
+\DoxyCodeLine{01363\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01364\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Predicate>}
+\DoxyCodeLine{01365\ \mbox{\hyperlink{classfcpp_1_1WhenTrue}{WhenTrue<T>}}\ \mbox{\hyperlink{classfcpp_1_1Queryable_af95433b6b63f4891e5ec8309910c8165}{Queryable<T>::branch}}(Predicate\ predicate)\ \{}
+\DoxyCodeLine{01366\ \ \ std::vector<T>\ when\_true\_items;}
+\DoxyCodeLine{01367\ \ \ std::vector<T>\ when\_false\_items;}
+\DoxyCodeLine{01368\ \ \ \textcolor{keywordflow}{for}\ (T\ \&item\ :\ items\_)\ \{}
+\DoxyCodeLine{01369\ \ \ \ \ \textcolor{keywordflow}{if}\ (predicate(std::as\_const(item)))\ \{}
+\DoxyCodeLine{01370\ \ \ \ \ \ \ when\_true\_items.push\_back(std::move(item));}
+\DoxyCodeLine{01371\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01372\ \ \ \ \ \ \ when\_false\_items.push\_back(std::move(item));}
+\DoxyCodeLine{01373\ \ \ \ \ \}}
+\DoxyCodeLine{01374\ \ \ \}}
+\DoxyCodeLine{01375\ }
+\DoxyCodeLine{01376\ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classfcpp_1_1WhenTrue}{WhenTrue<T>}}(std::move(when\_true\_items),\ std::move(when\_false\_items));}
+\DoxyCodeLine{01377\ \}}
+\DoxyCodeLine{01378\ }
+\DoxyCodeLine{01379\ \}\ \textcolor{comment}{//\ namespace\ fcpp}}
+\DoxyCodeLine{01380\ }
+\DoxyCodeLine{01381\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ FCPP\_QUERY\_H}}
+
+\end{DoxyCode}

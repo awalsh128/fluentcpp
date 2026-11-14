@@ -1,0 +1,41 @@
+\doxysection{transforms.\+h}
+\hypertarget{transforms_8h_source}{}\label{transforms_8h_source}\index{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/transforms.h@{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/transforms.h}}
+\mbox{\hyperlink{transforms_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#ifndef\ FCPP\_TRANSFORMS\_H}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#define\ FCPP\_TRANSFORMS\_H}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{namespace\ }fcpp::transforms\ \{}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00041\ std::vector<T>\ \mbox{\hyperlink{transforms_8h_a77090cfdc057565e085243fea1c481fe}{to\_vector}}(\textcolor{keyword}{const}\ std::set<T>\ \&items)\ \{}
+\DoxyCodeLine{00042\ \ \ std::vector<T>\ result;}
+\DoxyCodeLine{00043\ \ \ result.reserve(items.size());}
+\DoxyCodeLine{00044\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&v\ :\ items)\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ result.emplace\_back(v);}
+\DoxyCodeLine{00046\ \ \ \}}
+\DoxyCodeLine{00047\ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00048\ \}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00057\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00058\ std::vector<T>\ \mbox{\hyperlink{transforms_8h_a77090cfdc057565e085243fea1c481fe}{to\_vector}}(std::set<T>\ \&\&items)\ \{}
+\DoxyCodeLine{00059\ \ \ std::vector<T>\ result;}
+\DoxyCodeLine{00060\ \ \ result.reserve(items.size());}
+\DoxyCodeLine{00061\ \ \ \textcolor{keywordflow}{while}\ (!items.empty())\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{auto}\ nh\ =\ items.extract(items.begin());}
+\DoxyCodeLine{00063\ \ \ \ \ result.emplace\_back(std::move(nh.value()));}
+\DoxyCodeLine{00064\ \ \ \}}
+\DoxyCodeLine{00065\ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00066\ \}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \}\ \textcolor{comment}{//\ namespace\ fcpp::transforms}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ FCPP\_TRANSFORMS\_H}}
+
+\end{DoxyCode}

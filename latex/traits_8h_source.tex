@@ -1,0 +1,49 @@
+\doxysection{traits.\+h}
+\hypertarget{traits_8h_source}{}\label{traits_8h_source}\index{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/traits.h@{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/traits.h}}
+\mbox{\hyperlink{traits_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#ifndef\ FCPP\_TRAITS\_H}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#define\ FCPP\_TRAITS\_H}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <iterator>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }fcpp::traits\ \{}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00033\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structfcpp_1_1traits_1_1is__additive}{is\_additive}}\ :\ std::false\_type\ \{\};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00036\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structfcpp_1_1traits_1_1is__additive}{is\_additive}}<}
+\DoxyCodeLine{00037\ \ \ \ \ T,\ typename\ std::enable\_if<}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ true,}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ decltype(std::declval<T\ \&>()\ +\ std::declval<T\ \&>(),\ (void)0)>::type>}
+\DoxyCodeLine{00040\ \ \ \ \ :\ std::true\_type\ \{\};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00043\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structfcpp_1_1traits_1_1is__equality__comparable}{is\_equality\_comparable}}\ :\ std::false\_type\ \{\};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00046\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structfcpp_1_1traits_1_1is__equality__comparable}{is\_equality\_comparable}}<}
+\DoxyCodeLine{00047\ \ \ \ \ T,\ typename\ std::enable\_if<}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ true,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ decltype(std::declval<T\ \&>()\ ==\ std::declval<T\ \&>(),\ (void)0)>::type>}
+\DoxyCodeLine{00050\ \ \ \ \ :\ std::true\_type\ \{\};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00053\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{is\_less\_than\_comparable}}\ :\ std::false\_type\ \{\};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00056\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structfcpp_1_1traits_1_1is__less__than__comparable}{is\_less\_than\_comparable}}<}
+\DoxyCodeLine{00057\ \ \ \ \ T,\ typename\ std::enable\_if<}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ true,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ decltype(std::declval<T\ \&>()\ <\ std::declval<T\ \&>(),\ (void)0)>::type>}
+\DoxyCodeLine{00060\ \ \ \ \ :\ std::true\_type\ \{\};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \}\ \textcolor{comment}{//\ namespace\ fcpp::traits}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ FCPP\_TRAITS\_H}}
+
+\end{DoxyCode}

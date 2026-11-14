@@ -1,0 +1,107 @@
+\doxysection{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/transforms.h File Reference}
+\hypertarget{transforms_8h}{}\label{transforms_8h}\index{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/transforms.h@{/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/transforms.h}}
+
+
+Transforms between standard container types.  
+
+
+{\ttfamily \#include $<$set$>$}\newline
+{\ttfamily \#include $<$utility$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+Include dependency graph for transforms.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=246pt]{transforms_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=236pt]{transforms_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T$>$ }\\std\+::vector$<$ T $>$ \mbox{\hyperlink{transforms_8h_a77090cfdc057565e085243fea1c481fe}{fcpp\+::transforms\+::to\+\_\+vector}} (const std\+::set$<$ T $>$ \&items)
+\begin{DoxyCompactList}\small\item\em Transform a set to a vector using copy semantics. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T$>$ }\\std\+::vector$<$ T $>$ \mbox{\hyperlink{transforms_8h_ae1cc0852fb3fa47661bf993740be242c}{fcpp\+::transforms\+::to\+\_\+vector}} (std\+::set$<$ T $>$ \&\&items)
+\begin{DoxyCompactList}\small\item\em Transform a set to a vector using move semantics. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Transforms between standard container types. 
+
+\begin{DoxyAuthor}{Author}
+Andrew Walsh (\href{mailto:awalsh128@gmail.com}{\texttt{awalsh128@gmail.\+com}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+2 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2026-\/10-\/21
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright 2021 Google LLC
+\end{DoxyCopyright}
+Licensed under the Apache License, Version 2.\+0 (the "{}\+License"{}); you may not use this file except in compliance with the License. You may obtain a copy of the License at \begin{DoxyVerb}https://www.apache.org/licenses/LICENSE-2.0
+\end{DoxyVerb}
+
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "{}\+AS IS"{} BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. 
+
+\label{doc-func-members}
+\Hypertarget{transforms_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{transforms_8h_a77090cfdc057565e085243fea1c481fe}\index{transforms.h@{transforms.h}!to\_vector@{to\_vector}}
+\index{to\_vector@{to\_vector}!transforms.h@{transforms.h}}
+\doxysubsubsection{\texorpdfstring{to\_vector()}{to\_vector()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{transforms_8h_a77090cfdc057565e085243fea1c481fe} 
+template$<$typename T$>$ \\
+std\+::vector$<$ T $>$ fcpp\+::transforms\+::to\+\_\+vector (\begin{DoxyParamCaption}\item[{const std\+::set$<$ T $>$ \&}]{items}{}\end{DoxyParamCaption})}
+
+
+
+Transform a set to a vector using copy semantics. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of items in the set to copy. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em items} & Set of items to transform. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+T$>$ Transformed vector of items. 
+\end{DoxyReturn}
+\Hypertarget{transforms_8h_ae1cc0852fb3fa47661bf993740be242c}\index{transforms.h@{transforms.h}!to\_vector@{to\_vector}}
+\index{to\_vector@{to\_vector}!transforms.h@{transforms.h}}
+\doxysubsubsection{\texorpdfstring{to\_vector()}{to\_vector()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{transforms_8h_ae1cc0852fb3fa47661bf993740be242c} 
+template$<$typename T$>$ \\
+std\+::vector$<$ T $>$ fcpp\+::transforms\+::to\+\_\+vector (\begin{DoxyParamCaption}\item[{std\+::set$<$ T $>$ \&\&}]{items}{}\end{DoxyParamCaption})}
+
+
+
+Transform a set to a vector using move semantics. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of items in the set to move. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em items} & Set of items to transform. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+T$>$ Transformed vector of moved items. 
+\end{DoxyReturn}

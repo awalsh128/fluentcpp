@@ -1,5 +1,15 @@
-<map id="/home/runner/work/fluentcpp/fluentcpp/src/asserts.h" name="/home/runner/work/fluentcpp/fluentcpp/src/asserts.h">
-<area shape="rect" id="node1" title="Runtime validation of object states." alt="" coords="5,5,215,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="27,95,102,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="126,95,185,121"/>
+<map id="/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/asserts.h" name="/home/runner/work/fluentcpp/fluentcpp/include/fluentcpp/asserts.h">
+<area shape="rect" id="Node000001" title="Runtime validation of object states." alt="" coords="198,5,407,67"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,115,91,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="218,70,100,112,98,107,217,65"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="115,115,189,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="255,67,188,109,186,104,250,68"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="214,115,288,143"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="288,66,267,103,264,99,283,69"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="312,115,397,143"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="321,65,342,102,337,100,319,70"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="422,115,480,143"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="353,65,419,107,414,106,351,70"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="504,115,563,143"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="380,65,492,110,487,110,379,70"/>
 </map>
