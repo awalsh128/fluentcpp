@@ -3,35 +3,36 @@ name: Apply Format
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   apply-format:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Keep in sync with CLANG_FORMAT_VERSION in format.yml.
+      # Same pinned version as the CI format check.
       - name: Install clang-format
-        run: pip install "clang-format==23.1.5"
+        run: pip install -r .github/clang-format-requirements.txt
 
       - name: Apply clang-format
         run: |
-          FILES=$(git ls-files '*.c' '*.cc' '*.cxx' '*.cpp' '*.h' '*.hpp' || true)
-          if [ -z "${FILES}" ]; then
-            echo "No C/C++ source files found, nothing to format."
-            exit 0
-          fi
-          if [ -f .clang-format ]; then
-            clang-format -style=file -i $FILES
-          else
-            clang-format -style=LLVM -i $FILES
-          fi
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git checkout -b format/auto
-          git add -A
-          git commit -m "Apply clang-format" || echo "No changes to commit"
-          git push origin format/auto
+          git ls-files -z '*.c' '*.cc' '*.cpp' '*.cxx' '*.h' '*.hpp' \
+            | xargs -0 -r clang-format --style=file -i
+
+      # Opens (or updates) a PR against the branch this was dispatched on; does
+      # nothing when there are no changes. Note that PRs opened with GITHUB_TOKEN
+      # do not trigger CI; close and reopen the PR to start the checks.
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          branch: format/auto-${{ github.ref_name }}
+          commit-message: "style: apply clang-format"
+          title: "style: apply clang-format to ${{ github.ref_name }}"
+          body: Automated formatting from the Apply Format workflow.
+          delete-branch: true

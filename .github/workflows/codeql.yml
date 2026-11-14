@@ -2,38 +2,47 @@ name: CodeQL
 
 on:
   push:
+    branches: [master]
   pull_request:
+    branches: [master]
   schedule:
-    - cron: 0 19 * * 0
+    - cron: "0 19 * * 0"
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
-
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup APT packages (minimal for analysis)
-        uses: awalsh128/cache-apt-pkgs-action@v1
-        with:
-          packages: |
-            clang
-            clang-format
-            cmake
-
-      - name: Ensure Clang is available
-        run: clang --version || true
+      - name: Install Ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          languages: c-cpp
+          build-mode: manual
 
-      - name: Autobuild (CodeQL)
-        uses: github/codeql-action/autobuild@v2
+      - name: Build
+        run: |
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER=clang++ -DBUILD_EXAMPLES=ON
+          cmake --build build --parallel
 
       - name: Analyze
-        uses: github/codeql-action/analyze@v2
-
+        uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          category: /language:c-cpp

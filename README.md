@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/awalsh128/fluentcpp/actions/workflows/integrate.yml"><img src="https://github.com/awalsh128/fluentcpp/actions/workflows/integrate.yml/badge.svg" alt="Build status"></a>
+  <a href="https://github.com/awalsh128/fluentcpp/actions/workflows/ci.yml"><img src="https://github.com/awalsh128/fluentcpp/actions/workflows/ci.yml/badge.svg" alt="Build status"></a>
   <a href="https://github.com/awalsh128/fluentcpp/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="Apache 2.0 license"></a>
   <a href="https://en.cppreference.com/w/cpp/20"><img src="https://img.shields.io/badge/C%2B%2B-20-blue.svg" alt="C++20"></a>
   <a href="https://cmake.org/"><img src="https://img.shields.io/badge/CMake-3.16.3+-064F8C.svg?logo=cmake" alt="CMake 3.16.3+"></a>
@@ -116,7 +116,9 @@ clang++ -std=c++20 main.cpp -L/usr/local/lib/fluentcpp -lfluentcpp
 ```
 
 Find more in the [examples folder](examples). The full API reference is generated with Doxygen from
-the comments in [include/fluentcpp](include/fluentcpp).
+the comments in [include/fluentcpp](include/fluentcpp) and published at
+[awalsh128.com/fluentcpp](https://awalsh128.com/fluentcpp/). See all of my published APIs at
+[awalsh128.com/api](https://awalsh128.com/api/).
 
 ### Operations
 
