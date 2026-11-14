@@ -116,7 +116,9 @@ clang++ -std=c++20 main.cpp -L/usr/local/lib/fluentcpp -lfluentcpp
 ```
 
 Find more in the [examples folder](examples). The full API reference is generated with Doxygen from
-the comments in [include/fluentcpp](include/fluentcpp).
+the comments in [include/fluentcpp](include/fluentcpp) and published at
+[awalsh128.com/fluentcpp](https://awalsh128.com/fluentcpp/). See all of my published APIs at
+[awalsh128.com/api](https://awalsh128.com/api/).
 
 ### Operations
 
