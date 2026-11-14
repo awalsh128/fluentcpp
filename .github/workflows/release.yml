@@ -4,8 +4,7 @@ name: Release
 # workflow by hand with a tag, which creates the tag on the dispatched commit.
 # The tag must match the project VERSION in CMakeLists.txt.
 #
-# To redeploy the docs without a new release, re-run the "docs" job of the
-# latest release run.
+# To redeploy the docs without a new release, run the "Docs" workflow (docs.yml) by hand.
 on:
   push:
     tags: ["v*"]
