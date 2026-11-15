@@ -9,3 +9,29 @@ html.dark-mode #projectlogo img {
     content: url("fluentcpp-sm.png");
   }
 }
+
+/* Give the theme toggle a visible gap from the search box and make it read as a button. */
+@media screen and (min-width: 768px) {
+  #MSearchBox {
+    left: 60px !important;
+    right: auto !important;
+    width: calc(var(--side-nav-fixed-width) - 60px - 15px) !important;
+  }
+
+  #MSearchField {
+    width: calc(100% - 66px) !important;
+  }
+}
+
+doxygen-awesome-dark-mode-toggle {
+  margin: 0;
+  border: 1px solid var(--separator-color);
+  background: var(--page-background-color);
+  box-shadow: var(--box-shadow);
+}
+
+doxygen-awesome-dark-mode-toggle:hover,
+html.dark-mode doxygen-awesome-dark-mode-toggle:hover {
+  border-color: var(--primary-color);
+  background-color: var(--primary-light-color);
+}
