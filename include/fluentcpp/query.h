@@ -202,13 +202,13 @@ public:
   Queryable() = delete;
   ~Queryable() = default;
   /**
-   * @brief Move assignment operator.
+   * @brief Move constructor.
    * @remark Allowed since state will be stable as it isn't shared amongst
    * multiple copies.
    */
   Queryable(Queryable &&) noexcept = default;
   /**
-   * @brief Copy constructor operator.
+   * @brief Copy constructor.
    * @remark Not allowed since state will not be stable as multiple Queryables
    * are moving items.
    */
