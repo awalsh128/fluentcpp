@@ -115,23 +115,10 @@ Link against the installed static library:
 clang++ -std=c++20 main.cpp -L/usr/local/lib/fluentcpp -lfluentcpp
 ```
 
-Find more in the [examples folder](examples). The full API reference is generated with Doxygen from
-the comments in [include/fluentcpp](include/fluentcpp) and published at
-[awalsh128.com/fluentcpp](https://awalsh128.com/fluentcpp/). See all of my published APIs at
+Find more in the [examples folder](examples). Every operation on `fcpp::Queryable<T>` is
+documented in the [API reference](https://awalsh128.com/fluentcpp/annotated.html), generated with
+Doxygen from the comments in [include/fluentcpp](include/fluentcpp). See all of my published APIs at
 [awalsh128.com/api](https://awalsh128.com/api/).
-
-### Operations
-
-| Category     | Operations                                                                       |
-| ------------ | -------------------------------------------------------------------------------- |
-| Filtering    | `where`, `distinct`, `skip`, `take`, `take_random`, `slice`, `trim`              |
-| Projection   | `select`, `flatten`, `zip`, `join`                                               |
-| Ordering     | `order_by`, `sort`, `reverse`, `shuffle`                                         |
-| Sets         | `difference`, `intersect`, `unionize`                                            |
-| Grouping     | `group_by`, `keyed_group_by`, `branch`, `when_true`, `when_false`, `merge`       |
-| Aggregation  | `accumulate`, `all`, `any`, `min`, `max`, `first_or_default`                     |
-| Side effects | `action`                                                                         |
-| Conversion   | `to_vector`, `to_set`, `to_single_value_map`, `to_multi_value_map`               |
 
 ## Building
 
