@@ -33,6 +33,15 @@ def mainpage(src, dst):
     # GitHub alert syntax becomes a plain bold-prefixed quote.
     text = re.sub(r"<!-- prettier-ignore -->\n", "", text)
     text = re.sub(r"> \[!(\w+)\]\n> ", lambda m: "> **%s:** " % m.group(1).title(), text)
+    # Headings written as HTML stay out of Doxygen's sidebar tree, which would otherwise list
+    # every README section above Classes and Files.
+    lines, fenced = [], False
+    for line in text.split("\n"):
+        if line.startswith("```"):
+            fenced = not fenced
+        m = None if fenced else re.match(r"^(#{2,4}) (.+)$", line)
+        lines.append("<h%d>%s</h%d>" % (len(m.group(1)), m.group(2), len(m.group(1))) if m else line)
+    text = "\n".join(lines)
     # Repo-relative links only resolve on GitHub; point them at the repository.
     def fix(m):
         target = m.group(2)
@@ -52,7 +61,7 @@ def mainpage(src, dst):
     )
     btn = "display:inline-block;padding:.5em 1.1em;margin:0 .5em .5em 0;border-radius:6px;font-weight:600;text-decoration:none;"
     links = (
-        '<p><a href="annotated.html" style="%sbackground:var(--primary-color);color:#fff;">API reference</a>'
+        '<p><a href="annotated.html" style="%sbackground:var(--primary-color-dark);color:#fff;">API reference</a>'
         '<a href="functions.html" style="%sborder:1px solid var(--primary-color);">Class members</a>'
         '<a href="files.html" style="%sborder:1px solid var(--primary-color);">Files</a></p>'
     ) % (btn, btn, btn)
