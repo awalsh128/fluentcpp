@@ -45,32 +45,34 @@ fcpp::query(xs)
 
 ## Installation
 
-Install the latest release with a single command:
+Each [release](https://github.com/awalsh128/fluentcpp/releases/latest) lists the SHA-256 of its `install.sh` in the
+release notes. Download the script, check it against that hash, then run it
+([why not `curl | bash`](https://awalsh128.com/safer-curl-bash/)):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/awalsh128/fluentcpp/master/scripts/install.sh | bash
+PUB_SHA256="<install.sh SHA-256 from the release notes>"
+curl -q --proto '=https' --tlsv1.2 -fsSLO https://github.com/awalsh128/fluentcpp/releases/latest/download/install.sh &&
+printf '%s  %s\n' "$PUB_SHA256" 'install.sh' | sha256sum --check &&
+bash install.sh
 ```
+
+On macOS, use `shasum -a 256 --check` in place of `sha256sum --check`.
 
 This downloads the source, builds the library and installs it to `/usr/local/lib/fluentcpp`, with
 the headers in `/usr/local/include/fluentcpp`. It runs as your user and only asks for `sudo` to copy
 the files if the install location isn't writable. Requires `curl`, CMake 3.16.3 or newer, and a
 C++20 compiler; `clang++` and Ninja are used when available.
 
-Pass options after `bash -s --` to pick a version or install location:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/awalsh128/fluentcpp/master/scripts/install.sh |
-  bash -s -- --version v0.2 --prefix "$HOME/.local"
-```
+Pass options after `install.sh`, for example `bash install.sh --version v0.2 --prefix "$HOME/.local"`.
 
 | Option      | Default        | Description                                                    |
 | ----------- | -------------- | -------------------------------------------------------------- |
 | `--version` | Latest release | Release tag or branch to install, such as `v0.2` or `master`.  |
 | `--prefix`  | `/usr/local`   | Installation prefix for the `lib` and `include` directories.   |
 
-To build with a specific compiler, set `CXX` on the `bash` side of the pipe, for example
-`... | CXX=g++ bash`. To read the script before running it, download it with `curl -fsSLO` and
-run `bash install.sh`.
+To build with a specific compiler, set `CXX`, for example `CXX=g++ bash install.sh`. To read the
+script before running it, leave off the last line of the command above and open the file once the
+check passes (`less install.sh`).
 
 Alternatively, download `fluentcpp-<tag>.tar.gz` from a
 [release](https://github.com/awalsh128/fluentcpp/releases), extract it and run `./install.sh` from

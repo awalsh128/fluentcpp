@@ -101,6 +101,7 @@ jobs:
           files: |
             release/fluentcpp-${{ env.TAG }}.tar.gz
             release/fluentcpp-${{ env.TAG }}.zip
+            release/install.sh
 
   docs:
     needs: publish

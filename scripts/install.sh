@@ -2,13 +2,10 @@
 #
 # Builds and installs the Fluent C++ library.
 #
-# Single command install of the latest release:
+# Download install.sh from a release, check it against the SHA-256 in that
+# release's notes, then run it (see the README):
 #
-#   curl -fsSL https://raw.githubusercontent.com/awalsh128/fluentcpp/master/scripts/install.sh | bash
-#
-# Pass options after "bash -s --":
-#
-#   curl -fsSL .../install.sh | bash -s -- --version v0.2 --prefix "$HOME/.local"
+#   bash install.sh [--version v0.2] [--prefix "$HOME/.local"]
 #
 # When run from an extracted release package, that package is built instead of
 # downloading one.
