@@ -1,13 +1,8 @@
 var searchData=
 [
-  ['take_0',['take',['../classfcpp_1_1Queryable.html#a903c7f0d36e68278858932057ae7fabe',1,'fcpp::Queryable']]],
-  ['take_5frandom_1',['take_random',['../classfcpp_1_1Queryable.html#a86f90fa4f1751ac918ad3601d002c781',1,'fcpp::Queryable']]],
-  ['tests_2',['Debug Build with Tests',['../index.html#autotoc_md5',1,'']]],
-  ['to_5fmulti_5fvalue_5fmap_3',['to_multi_value_map',['../classfcpp_1_1Queryable.html#a80a1d43f51d0b3e0da7f6f4050f8f9ca',1,'fcpp::Queryable']]],
-  ['to_5fset_4',['to_set',['../classfcpp_1_1Queryable.html#a0ae9b2b1409645018152712dbd4c653b',1,'fcpp::Queryable']]],
-  ['to_5fsingle_5fvalue_5fmap_5',['to_single_value_map',['../classfcpp_1_1Queryable.html#a0a3381370b348b2dfd3f7aae3013d377',1,'fcpp::Queryable']]],
-  ['to_5fvector_6',['to_vector',['../classfcpp_1_1Queryable.html#a90636a0132afa4437e2fe38a10262818',1,'fcpp::Queryable::to_vector()'],['../transforms_8h.html#a77090cfdc057565e085243fea1c481fe',1,'fcpp::transforms::to_vector(const std::set&lt; T &gt; &amp;items)'],['../transforms_8h.html#ae1cc0852fb3fa47661bf993740be242c',1,'fcpp::transforms::to_vector(std::set&lt; T &gt; &amp;&amp;items)']]],
-  ['traits_2eh_7',['traits.h',['../traits_8h.html',1,'']]],
-  ['transforms_2eh_8',['transforms.h',['../transforms_8h.html',1,'']]],
-  ['trim_9',['trim',['../classfcpp_1_1Queryable.html#ae91020682e139d499aaf5adc114804ac',1,'fcpp::Queryable']]]
+  ['when_5ffalse_0',['when_false',['../classfcpp_1_1WhenFalse.html#a9fa44d40284dbe1f057845806cefb0e3',1,'fcpp::WhenFalse']]],
+  ['when_5ftrue_1',['when_true',['../classfcpp_1_1WhenTrue.html#ab916508203ed3fc1a0acb40e75ae8251',1,'fcpp::WhenTrue']]],
+  ['whenfalse_2',['WhenFalse',['../classfcpp_1_1WhenFalse.html',1,'fcpp::WhenFalse&lt; WhenTrueQueriedT, T &gt;'],['../classfcpp_1_1WhenFalse.html#ab5805f3201a2e1899a0bc6b460cd8e3f',1,'fcpp::WhenFalse::WhenFalse()']]],
+  ['whentrue_3',['WhenTrue',['../classfcpp_1_1WhenTrue.html',1,'fcpp::WhenTrue&lt; T &gt;'],['../classfcpp_1_1WhenTrue.html#a7b4bb24a93c9f1eb81c90a4ff6ca3321',1,'fcpp::WhenTrue::WhenTrue()']]],
+  ['where_4',['where',['../classfcpp_1_1Queryable.html#a3251df3ba348429da627c3dfbaad47f8',1,'fcpp::Queryable']]]
 ];

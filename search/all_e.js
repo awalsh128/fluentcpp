@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['query_0',['query',['../query_8h.html#aeea416a11cf2455528dcee9d6ad211de',1,'fcpp']]],
-  ['query_2eh_1',['query.h',['../query_8h.html',1,'']]],
-  ['queryable_2',['Queryable',['../classfcpp_1_1Queryable.html',1,'fcpp::Queryable&lt; T &gt;'],['../classfcpp_1_1Queryable.html#aba673d44f38f19624c929b0a6ce441a1',1,'fcpp::Queryable::Queryable(std::vector&lt; T &gt; items)'],['../classfcpp_1_1Queryable.html#a972d0938ae11a49b08809d5719cee8ca',1,'fcpp::Queryable::Queryable()=delete'],['../classfcpp_1_1Queryable.html#a87cfd23972009d641c30eb81e587c181',1,'fcpp::Queryable::Queryable(Queryable &amp;&amp;) noexcept=default'],['../classfcpp_1_1Queryable.html#ab2b0a0790b0d7be4abe9a9118fe71e9a',1,'fcpp::Queryable::Queryable(const Queryable &amp;)=delete']]],
-  ['queryable_3c_20falset_20_3e_3',['Queryable&lt; FalseT &gt;',['../classfcpp_1_1Queryable.html',1,'fcpp']]],
-  ['queryable_3c_20truet_20_3e_4',['Queryable&lt; TrueT &gt;',['../classfcpp_1_1Queryable.html',1,'fcpp']]],
-  ['queryable_3c_20whentruequeriedt_20_3e_5',['Queryable&lt; WhenTrueQueriedT &gt;',['../classfcpp_1_1Queryable.html',1,'fcpp']]]
+  ['select_0',['select',['../classfcpp_1_1Queryable.html#ae134d9182adc199ef2e863c28478d05a',1,'fcpp::Queryable']]],
+  ['shuffle_1',['shuffle',['../classfcpp_1_1Queryable.html#a1290687cda3f76692b23104cb31909a6',1,'fcpp::Queryable']]],
+  ['size_2',['size',['../classfcpp_1_1Queryable.html#ab6211b2bb300551ff2bfe07614c32c22',1,'fcpp::Queryable']]],
+  ['skip_3',['skip',['../classfcpp_1_1Queryable.html#a38c5930c2276e6394a4b1395cded39b1',1,'fcpp::Queryable']]],
+  ['slice_4',['slice',['../classfcpp_1_1Queryable.html#a9278a124ab47469301082cc8b77b9cd6',1,'fcpp::Queryable']]],
+  ['sort_5',['sort',['../classfcpp_1_1Queryable.html#a50fffbe4332ac62bbc6a89eb0e064b17',1,'fcpp::Queryable']]]
 ];

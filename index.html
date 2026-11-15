@@ -125,6 +125,7 @@ $(function(){initNavTree('index.html','',''); });
 <div class="textblock"><p><a class="anchor" id="mainpage"></a></p>
 <p>Statically typed, fluent query functions for C++20 containers that are easy to discover through auto-complete.</p>
 <p><a href="https://github.com/awalsh128/fluentcpp/actions/workflows/ci.yml"><img src="https://github.com/awalsh128/fluentcpp/actions/workflows/ci.yml/badge.svg" alt="Build status" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/awalsh128/fluentcpp/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="Apache 2.0 license" style="pointer-events: none;" class="inline"/></a> <a href="https://en.cppreference.com/w/cpp/20"><img src="https://img.shields.io/badge/C%2B%2B-20-blue.svg" alt="C++20" style="pointer-events: none;" class="inline"/></a></p>
+<p><a href="annotated.html" style="display:inline-block;padding:.5em 1.1em;margin:0 .5em .5em 0;border-radius:6px;font-weight:600;text-decoration:none;background:var(--primary-color);color:#fff;">API reference</a><a href="functions.html" style="display:inline-block;padding:.5em 1.1em;margin:0 .5em .5em 0;border-radius:6px;font-weight:600;text-decoration:none;border:1px solid var(--primary-color);">Class members</a><a href="files.html" style="display:inline-block;padding:.5em 1.1em;margin:0 .5em .5em 0;border-radius:6px;font-weight:600;text-decoration:none;border:1px solid var(--primary-color);">Files</a></p>
 <blockquote class="doxtable">
 <p><b>Tip:</b> If you find this project useful, please consider supporting it <a href="https://github.com/sponsors/awalsh128">as a sponsor and show some ❤️ for open source maintainers</a>. </p>
 </blockquote>
@@ -143,8 +144,7 @@ $(function(){initNavTree('index.html','',''); });
 <li>Works with move-only types; items are moved through the chain rather than copied.</li>
 </ul>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
-Installation</h1>
+<h1>Installation</h1>
 <p>Install the latest release with a single command:</p>
 <div class="fragment"><div class="line">curl -fsSL https://raw.githubusercontent.com/awalsh128/fluentcpp/master/scripts/install.sh | bash</div>
 </div><!-- fragment --><p>This downloads the source, builds the library and installs it to <span class="tt">/usr/local/lib/fluentcpp</span>, with the headers in <span class="tt">/usr/local/include/fluentcpp</span>. It runs as your user and only asks for <span class="tt">sudo</span> to copy the files if the install location isn't writable. Requires <span class="tt">curl</span>, CMake 3.16.3 or newer, and a C++20 compiler; <span class="tt">clang++</span> and Ninja are used when available.</p>
@@ -161,8 +161,7 @@ Installation</h1>
 </table>
 <p>To build with a specific compiler, set <span class="tt">CXX</span> on the <span class="tt">bash</span> side of the pipe, for example <span class="tt">... | CXX=g++ bash</span>. To read the script before running it, download it with <span class="tt">curl -fsSLO</span> and run <span class="tt">bash install.sh</span>.</p>
 <p>Alternatively, download <span class="tt">fluentcpp-&lt;tag&gt;.tar.gz</span> from a <a href="https://github.com/awalsh128/fluentcpp/releases">release</a>, extract it and run <span class="tt">./install.sh</span> from the extracted directory.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
-Usage</h1>
+<h1>Usage</h1>
 <p>Include the query header and wrap any <span class="tt">std::vector</span>:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="query_8h.html">fluentcpp/query.h</a>&gt;</span></div>
 <div class="line"> </div>
@@ -194,8 +193,7 @@ Usage</h1>
 </div><!-- fragment --><p>Link against the installed static library:</p>
 <div class="fragment"><div class="line">clang++ -std=c++20 main.cpp -L/usr/local/lib/fluentcpp -lfluentcpp</div>
 </div><!-- fragment --><p>Find more in the <a href="https://github.com/awalsh128/fluentcpp/blob/master/examples">examples folder</a>. The full API reference is generated with Doxygen from the comments in <a href="https://github.com/awalsh128/fluentcpp/blob/master/include/fluentcpp">include/fluentcpp</a> and published at <a href="https://awalsh128.com/fluentcpp/">awalsh128.com/fluentcpp</a>. See all of my published APIs at <a href="https://awalsh128.com/api/">awalsh128.com/api</a>.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md3"></a>
-Operations</h2>
+<h2>Operations</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Category  </th><th class="markdownTableHeadNone">Operations  </th></tr>
@@ -216,12 +214,10 @@ Operations</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Conversion  </td><td class="markdownTableBodyNone"><span class="tt">to_vector</span>, <span class="tt">to_set</span>, <span class="tt">to_single_value_map</span>, <span class="tt">to_multi_value_map</span>  </td></tr>
 </table>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
-Building</h1>
+<h1>Building</h1>
 <p>Building from source requires Clang (<span class="tt">clang++</span>), CMake and Ninja:</p>
 <div class="fragment"><div class="line">sudo apt-get install -y clang cmake ninja-build</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
-Debug Build with Tests</h2>
+</div><!-- fragment --><h2>Debug Build with Tests</h2>
 <p>The <span class="tt">debug</span> preset in <a href="https://github.com/awalsh128/fluentcpp/blob/master/CMakePresets.json">CMakePresets.json</a> configures clang++, Ninja, tests and examples into <span class="tt">build/debug</span>:</p>
 <div class="fragment"><div class="line">cmake --preset debug</div>
 <div class="line">cmake --build --preset debug</div>
@@ -234,13 +230,11 @@ Debug Build with Tests</h2>
 <div class="line">  -DBUILD_TESTS=ON</div>
 <div class="line">cmake --build build</div>
 <div class="line">ctest --test-dir build --output-on-failure</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
-Release Build and Install</h2>
+</div><!-- fragment --><h2>Release Build and Install</h2>
 <div class="fragment"><div class="line">cmake --preset release</div>
 <div class="line">cmake --build --preset release --target fluentcpp</div>
 <div class="line">sudo cmake --install build/release</div>
-</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md7"></a>
-Build Options</h2>
+</div><!-- fragment --><h2>Build Options</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Option  </th><th class="markdownTableHeadNone">Default  </th><th class="markdownTableHeadNone">Description  </th></tr>
@@ -253,8 +247,7 @@ Build Options</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><span class="tt">BUILD_WEBSITE</span>  </td><td class="markdownTableBodyNone"><span class="tt">OFF</span>  </td><td class="markdownTableBodyNone">Build the Doxygen API website from <a href="https://github.com/awalsh128/fluentcpp/blob/master/docs">docs</a>; requires Doxygen.  </td></tr>
 </table>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md8"></a>
-Project Layout</h2>
+<h2>Project Layout</h2>
 <div class="fragment"><div class="line">include/fluentcpp/  Public headers, included as &lt;fluentcpp/query.h&gt;.</div>
 <div class="line">src/                Library implementation files.</div>
 <div class="line">tests/              Catch2 unit tests.</div>
@@ -264,8 +257,7 @@ Project Layout</h2>
 <div class="line">cmake/              CMake helper modules.</div>
 <div class="line">scripts/            Install, release and developer scripts.</div>
 <div class="line">assets/             Artwork and other non-code assets.</div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md9"></a>
-Dependencies</h1>
+</div><!-- fragment --><h1>Dependencies</h1>
 <ul>
 <li><a href="https://cmake.org/">CMake</a> - Build system.</li>
 <li><a href="https://clang.llvm.org/">Clang</a> - C++20 compiler used for builds, formatting and static analysis.</li>
@@ -274,8 +266,7 @@ Dependencies</h1>
 <li><a href="https://www.doxygen.nl/">Doxygen</a> - API documentation generator, used when <span class="tt">BUILD_WEBSITE=ON</span>.</li>
 </ul>
 <p>Report bugs or request features through <a href="https://github.com/awalsh128/fluentcpp/issues">GitHub Issues</a>. For development guidelines, see <a href="https://github.com/awalsh128/fluentcpp/blob/master/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md10"></a>
-License</h1>
+<h1>License</h1>
 <p><a href="https://github.com/awalsh128/fluentcpp/blob/master/LICENSE">Apache 2.0</a>. </p>
 </div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"></a>

@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "fluentcpp", "index.html", [
-    [ "Fluent C++", "index.html", "index" ],
+    [ "Fluent C++", "index.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],

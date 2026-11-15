@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['operations_0',['Operations',['../index.html#autotoc_md3',1,'']]],
-  ['operator_20std_3a_3avector_3c_20t_20_3e_1',['operator std::vector&lt; T &gt;',['../classfcpp_1_1Queryable.html#abd6ecff219cd37450a211a2f0439b4d1',1,'fcpp::Queryable::vector&lt; T &gt;() &amp;&amp;'],['../classfcpp_1_1Queryable.html#acb43dbffb0060010d3b9799a325db125',1,'fcpp::Queryable::vector&lt; T &gt;() const &amp;']]],
-  ['operator_3c_3c_2',['operator&lt;&lt;',['../classfcpp_1_1asserts_1_1invariant.html#a838dfa9b99743e380d641a14b5841e3f',1,'fcpp::asserts::invariant']]],
-  ['operator_3d_3',['operator=',['../classfcpp_1_1Queryable.html#a969be47ea6b5f7aa036993e6f90cf336',1,'fcpp::Queryable']]],
-  ['operator_3d_3d_4',['operator==',['../classfcpp_1_1Queryable.html#a55dae8bcd1a84a12b4de9de005f78fc1',1,'fcpp::Queryable::operator==(const Queryable&lt; T &gt; &amp;lhs, const std::vector&lt; T &gt; &amp;rhs)'],['../classfcpp_1_1Queryable.html#ae864207c966986bf5ecc6f032766b1e4',1,'fcpp::Queryable::operator==(const Queryable&lt; T &gt; &amp;lhs, const Queryable&lt; T &gt; &amp;rhs)']]],
-  ['options_5',['Build Options',['../index.html#autotoc_md7',1,'']]],
-  ['order_5fby_6',['order_by',['../classfcpp_1_1Queryable.html#a602241a2328173e1c8437dfd54d65cb7',1,'fcpp::Queryable']]]
+  ['query_0',['query',['../query_8h.html#aeea416a11cf2455528dcee9d6ad211de',1,'fcpp']]],
+  ['query_2eh_1',['query.h',['../query_8h.html',1,'']]],
+  ['queryable_2',['Queryable',['../classfcpp_1_1Queryable.html',1,'fcpp::Queryable&lt; T &gt;'],['../classfcpp_1_1Queryable.html#aba673d44f38f19624c929b0a6ce441a1',1,'fcpp::Queryable::Queryable(std::vector&lt; T &gt; items)'],['../classfcpp_1_1Queryable.html#a972d0938ae11a49b08809d5719cee8ca',1,'fcpp::Queryable::Queryable()=delete'],['../classfcpp_1_1Queryable.html#a87cfd23972009d641c30eb81e587c181',1,'fcpp::Queryable::Queryable(Queryable &amp;&amp;) noexcept=default'],['../classfcpp_1_1Queryable.html#ab2b0a0790b0d7be4abe9a9118fe71e9a',1,'fcpp::Queryable::Queryable(const Queryable &amp;)=delete']]],
+  ['queryable_3c_20falset_20_3e_3',['Queryable&lt; FalseT &gt;',['../classfcpp_1_1Queryable.html',1,'fcpp']]],
+  ['queryable_3c_20truet_20_3e_4',['Queryable&lt; TrueT &gt;',['../classfcpp_1_1Queryable.html',1,'fcpp']]],
+  ['queryable_3c_20whentruequeriedt_20_3e_5',['Queryable&lt; WhenTrueQueriedT &gt;',['../classfcpp_1_1Queryable.html',1,'fcpp']]]
 ];

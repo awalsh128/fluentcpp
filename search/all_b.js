@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['max_0',['max',['../classfcpp_1_1Queryable.html#acf826943a9e6e7d663facc280ec0185f',1,'fcpp::Queryable::max()'],['../classfcpp_1_1Queryable.html#ad43e3faef7ac566e950e1721d638af4d',1,'fcpp::Queryable::max(ValueSelector value_selector)']]],
-  ['merge_1',['Merge',['../classfcpp_1_1Merge.html',1,'fcpp::Merge&lt; TrueT, FalseT &gt;'],['../classfcpp_1_1Merge.html#a31149933912c80c47caa4f0a7f5959ea',1,'fcpp::Merge::Merge(Queryable&lt; TrueT &gt; true_queried, Queryable&lt; FalseT &gt; false_queried)']]],
-  ['merge_2',['merge',['../classfcpp_1_1Merge.html#a53b6ff9d1865c2b1648ba9a6b422d400',1,'fcpp::Merge']]],
-  ['min_3',['min',['../classfcpp_1_1Queryable.html#a6277dd3c32cabef4a369ee4934713c52',1,'fcpp::Queryable::min()'],['../classfcpp_1_1Queryable.html#af5542211bcb0cca37b5c10a9d25dff4e',1,'fcpp::Queryable::min(ValueSelector value_selector)']]]
+  ['operator_20std_3a_3avector_3c_20t_20_3e_0',['operator std::vector&lt; T &gt;',['../classfcpp_1_1Queryable.html#abd6ecff219cd37450a211a2f0439b4d1',1,'fcpp::Queryable::vector&lt; T &gt;() &amp;&amp;'],['../classfcpp_1_1Queryable.html#acb43dbffb0060010d3b9799a325db125',1,'fcpp::Queryable::vector&lt; T &gt;() const &amp;']]],
+  ['operator_3c_3c_1',['operator&lt;&lt;',['../classfcpp_1_1asserts_1_1invariant.html#a838dfa9b99743e380d641a14b5841e3f',1,'fcpp::asserts::invariant']]],
+  ['operator_3d_2',['operator=',['../classfcpp_1_1Queryable.html#a969be47ea6b5f7aa036993e6f90cf336',1,'fcpp::Queryable']]],
+  ['operator_3d_3d_3',['operator==',['../classfcpp_1_1Queryable.html#a55dae8bcd1a84a12b4de9de005f78fc1',1,'fcpp::Queryable::operator==(const Queryable&lt; T &gt; &amp;lhs, const std::vector&lt; T &gt; &amp;rhs)'],['../classfcpp_1_1Queryable.html#ae864207c966986bf5ecc6f032766b1e4',1,'fcpp::Queryable::operator==(const Queryable&lt; T &gt; &amp;lhs, const Queryable&lt; T &gt; &amp;rhs)']]],
+  ['order_5fby_4',['order_by',['../classfcpp_1_1Queryable.html#a602241a2328173e1c8437dfd54d65cb7',1,'fcpp::Queryable']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['and_20install_0',['Release Build and Install',['../index.html#autotoc_md6',1,'']]]
+  ['c_0',['Fluent C++',['../index.html',1,'']]]
 ];
