@@ -13,9 +13,9 @@ html.dark-mode #projectlogo img {
 /* Give the theme toggle a visible gap from the search box and make it read as a button. */
 @media screen and (min-width: 768px) {
   #MSearchBox {
-    left: 48px !important;
+    left: 60px !important;
     right: auto !important;
-    width: calc(var(--side-nav-fixed-width) - 15px - 48px - 15px) !important;
+    width: calc(var(--side-nav-fixed-width) - 60px - 15px) !important;
   }
 
   #MSearchField {
