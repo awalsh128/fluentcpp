@@ -1,0 +1,11 @@
+/* Swap the project logo for its white-text variant in dark mode. The light variant is the
+   PROJECT_LOGO; the dark one is copied alongside it through HTML_EXTRA_FILES. */
+html.dark-mode #projectlogo img {
+  content: url("fluentcpp-sm.png");
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light-mode) #projectlogo img {
+    content: url("fluentcpp-sm.png");
+  }
+}
