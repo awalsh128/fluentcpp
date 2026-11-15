@@ -50,7 +50,8 @@ def mainpage(src, dst):
         "[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)]"
         "(https://en.cppreference.com/w/cpp/20)"
     )
-    out = "# Fluent C++ {#mainpage}\n\n%s\n\n%s\n\n%s" % (tagline, badges, text.lstrip())
+    links = "**[Class reference](annotated.html)** | **[Class members](functions.html)** | **[Files](files.html)**"
+    out = "# Fluent C++ {#mainpage}\n\n%s\n\n%s\n\n%s\n\n%s" % (tagline, badges, links, text.lstrip())
     open(dst, "w", encoding="utf-8").write(out)
 
 
