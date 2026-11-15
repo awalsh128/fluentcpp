@@ -25,6 +25,7 @@
 <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="fluentcpp.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
 <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
 <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
@@ -192,28 +193,7 @@ $(function(){initNavTree('index.html','',''); });
 <div class="ttc" id="aquery_8h_html"><div class="ttname"><a href="query_8h.html">query.h</a></div><div class="ttdoc">A library to express information in a functional way that allows for easy auto-complete and shorter e...</div></div>
 </div><!-- fragment --><p>Link against the installed static library:</p>
 <div class="fragment"><div class="line">clang++ -std=c++20 main.cpp -L/usr/local/lib/fluentcpp -lfluentcpp</div>
-</div><!-- fragment --><p>Find more in the <a href="https://github.com/awalsh128/fluentcpp/blob/master/examples">examples folder</a>. The full API reference is generated with Doxygen from the comments in <a href="https://github.com/awalsh128/fluentcpp/blob/master/include/fluentcpp">include/fluentcpp</a> and published at <a href="https://awalsh128.com/fluentcpp/">awalsh128.com/fluentcpp</a>. See all of my published APIs at <a href="https://awalsh128.com/api/">awalsh128.com/api</a>.</p>
-<h3>Operations</h3>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Category  </th><th class="markdownTableHeadNone">Operations  </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Filtering  </td><td class="markdownTableBodyNone"><span class="tt">where</span>, <span class="tt">distinct</span>, <span class="tt">skip</span>, <span class="tt">take</span>, <span class="tt">take_random</span>, <span class="tt">slice</span>, <span class="tt">trim</span>  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Projection  </td><td class="markdownTableBodyNone"><span class="tt">select</span>, <span class="tt">flatten</span>, <span class="tt">zip</span>, <span class="tt">join</span>  </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Ordering  </td><td class="markdownTableBodyNone"><span class="tt">order_by</span>, <span class="tt">sort</span>, <span class="tt">reverse</span>, <span class="tt">shuffle</span>  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Sets  </td><td class="markdownTableBodyNone"><span class="tt">difference</span>, <span class="tt">intersect</span>, <span class="tt">unionize</span>  </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Grouping  </td><td class="markdownTableBodyNone"><span class="tt">group_by</span>, <span class="tt">keyed_group_by</span>, <span class="tt">branch</span>, <span class="tt">when_true</span>, <span class="tt">when_false</span>, <span class="tt">merge</span>  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Aggregation  </td><td class="markdownTableBodyNone"><span class="tt">accumulate</span>, <span class="tt">all</span>, <span class="tt">any</span>, <span class="tt">min</span>, <span class="tt">max</span>, <span class="tt">first_or_default</span>  </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Side effects  </td><td class="markdownTableBodyNone"><span class="tt">action</span>  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Conversion  </td><td class="markdownTableBodyNone"><span class="tt">to_vector</span>, <span class="tt">to_set</span>, <span class="tt">to_single_value_map</span>, <span class="tt">to_multi_value_map</span>  </td></tr>
-</table>
+</div><!-- fragment --><p>Find more in the <a href="https://github.com/awalsh128/fluentcpp/blob/master/examples">examples folder</a>. Every operation on <span class="tt"><a class="el" href="classfcpp_1_1Queryable.html" title="Core object used to query items and hold the sequence state.">fcpp::Queryable</a>&lt;T&gt;</span> is documented in the <a href="https://awalsh128.com/fluentcpp/annotated.html">API reference</a>, generated with Doxygen from the comments in <a href="https://github.com/awalsh128/fluentcpp/blob/master/include/fluentcpp">include/fluentcpp</a>. See all of my published APIs at <a href="https://awalsh128.com/api/">awalsh128.com/api</a>.</p>
 <h2>Building</h2>
 <p>Building from source requires Clang (<span class="tt">clang++</span>), CMake and Ninja:</p>
 <div class="fragment"><div class="line">sudo apt-get install -y clang cmake ninja-build</div>
