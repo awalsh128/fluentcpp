@@ -37,6 +37,5 @@ if(BUILD_EXAMPLES)
 endif()
 
 if(BUILD_WEBSITE)
-  add_subdirectory(assets/artwork)  # Distribute artwork first.
   add_subdirectory(docs)  # Build API website.
 endif()

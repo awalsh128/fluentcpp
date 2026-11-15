@@ -2,53 +2,39 @@ message(STATUS "Building API documentation.")
 
 set(DOXYGEN_OUTPUT_DIR ${PROJECT_BINARY_DIR}/website)
 
-find_package(Doxygen)
-if (NOT DOXYGEN_FOUND)
-  message(SEND_ERROR "Doxygen not found. Aborted building API documentation.")
-  return()
-endif(NOT DOXYGEN_FOUND)
-
-# Clean and rebuild directory.
-file(REMOVE RECURSE ${DOXYGEN_OUTPUT_DIR})
-file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR})
+find_package(Doxygen REQUIRED)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 # Doxyfile.in variable substitutions.
 set(DOXYGEN_SRC_INPUT ${PROJECT_SOURCE_DIR}/include)
 set(DOXYGEN_INDEX_FILE ${DOXYGEN_OUTPUT_DIR}/index.html)
-set(DOXYGEN_MDFILE ${PROJECT_SOURCE_DIR}/README.md)
+set(DOXYGEN_THEME_DIR ${CMAKE_CURRENT_SOURCE_DIR}/theme)
+set(DOXYGEN_LOGO_FILE ${PROJECT_SOURCE_DIR}/assets/artwork/fluentcpp-sm-light.png)
+set(DOXYGEN_MAINPAGE_FILE ${CMAKE_CURRENT_BINARY_DIR}/mainpage.md)
+set(DOXYGEN_HEADER_FILE ${CMAKE_CURRENT_BINARY_DIR}/header.html)
 set(DOXYFILE_IN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
 set(DOXYFILE_OUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-set(DOXYGEN_FOOTER_FILE ${CMAKE_CURRENT_BINARY_DIR}/footer.html)
-set(DOXYGEN_HEADER_FILE ${CMAKE_CURRENT_BINARY_DIR}/header.html)
-set(DOXYGEN_CSS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/doxygen.css)
+set(PREPARE_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/prepare.py)
 
-# Replace variables inside @var@ with the current values
 configure_file(${DOXYFILE_IN_FILE} ${DOXYFILE_OUT_FILE} @ONLY)
-
-set(SCRIPT_FILE COMMAND ${PROJECT_SOURCE_DIR}/scripts/expand_html_includes.sh)
-
-set(DOXYGEN_SRC_FOOTER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/footer.html)
-set(DOXYGEN_SRC_HEADER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/header.html)
 
 add_custom_command(
   COMMENT "Building API documentation."
-  # Expand out HTML files (i.e. replace href-include attributed elements).
-  COMMAND ${SCRIPT_FILE} ${DOXYGEN_SRC_FOOTER_FILE} ${DOXYGEN_FOOTER_FILE}
-  COMMAND ${SCRIPT_FILE} ${DOXYGEN_SRC_HEADER_FILE} ${DOXYGEN_HEADER_FILE}
-  # Copy all web assets.
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/website ${DOXYGEN_OUTPUT_DIR}
-  # Run Doxygen and generate docs.
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${DOXYGEN_OUTPUT_DIR}
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${DOXYGEN_OUTPUT_DIR}
+  # The README is the landing page; convert its GitHub-only markup for Doxygen.
+  COMMAND ${Python3_EXECUTABLE} ${PREPARE_SCRIPT} mainpage ${PROJECT_SOURCE_DIR}/README.md
+          ${DOXYGEN_MAINPAGE_FILE}
+  # Generate the stock header for this Doxygen version, then add the theme scripts to it.
+  COMMAND ${DOXYGEN_EXECUTABLE} -w html ${DOXYGEN_HEADER_FILE} ${CMAKE_CURRENT_BINARY_DIR}/footer.html
+          ${CMAKE_CURRENT_BINARY_DIR}/stock.css ${DOXYFILE_OUT_FILE}
+  COMMAND ${Python3_EXECUTABLE} ${PREPARE_SCRIPT} header ${DOXYGEN_HEADER_FILE}
   COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT_FILE}
-  # Update Doxyfile.in timestamp to avoid unchanged rebuild.
-  COMMAND ${CMAKE_COMMAND} -E touch ${DOXYFILE_IN_FILE}
-  WORKING_DIRECTORY ${DOXYGEN_OUTPUT_DIR}
-  # Run condition based on state of Doxyfile.
-  DEPENDS ${DOXYFILE_IN_FILE} ${DOXYGEN_SRC_FOOTER_FILE} ${DOXYGEN_SRC_HEADER_FILE}
-  # HTML index file will be used as dependency artifact.
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  DEPENDS ${DOXYFILE_IN_FILE} ${PREPARE_SCRIPT} ${PROJECT_SOURCE_DIR}/README.md
   OUTPUT ${DOXYGEN_INDEX_FILE}
   VERBATIM)
 
-# HTML index file will be used as dependency artifact as noted above.
 add_custom_target(website_api ALL DEPENDS ${DOXYGEN_INDEX_FILE})
 # Require source code compile to generate documentation from.
 add_dependencies(website_api fluentcpp)
