@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['project_20layout_0',['Project Layout',['../index.html#autotoc_md8',1,'']]]
+  ['operations_0',['Operations',['../index.html#autotoc_md3',1,'']]],
+  ['options_1',['Build Options',['../index.html#autotoc_md7',1,'']]]
 ];
