@@ -150,9 +150,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a972d0938ae11a49b08809d5719cee8ca" id="r_a972d0938ae11a49b08809d5719cee8ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a972d0938ae11a49b08809d5719cee8ca">Queryable</a> ()=delete</td></tr>
 <tr class="memdesc:a972d0938ae11a49b08809d5719cee8ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty constructor.  <br /></td></tr>
 <tr class="memitem:a87cfd23972009d641c30eb81e587c181" id="r_a87cfd23972009d641c30eb81e587c181"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87cfd23972009d641c30eb81e587c181">Queryable</a> (Queryable &amp;&amp;) noexcept=default</td></tr>
-<tr class="memdesc:a87cfd23972009d641c30eb81e587c181"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment operator.  <br /></td></tr>
+<tr class="memdesc:a87cfd23972009d641c30eb81e587c181"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor.  <br /></td></tr>
 <tr class="memitem:ab2b0a0790b0d7be4abe9a9118fe71e9a" id="r_ab2b0a0790b0d7be4abe9a9118fe71e9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab2b0a0790b0d7be4abe9a9118fe71e9a">Queryable</a> (const Queryable &amp;)=delete</td></tr>
-<tr class="memdesc:ab2b0a0790b0d7be4abe9a9118fe71e9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor operator.  <br /></td></tr>
+<tr class="memdesc:ab2b0a0790b0d7be4abe9a9118fe71e9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <br /></td></tr>
 <tr class="memitem:a969be47ea6b5f7aa036993e6f90cf336" id="r_a969be47ea6b5f7aa036993e6f90cf336"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#aba673d44f38f19624c929b0a6ce441a1">Queryable</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a969be47ea6b5f7aa036993e6f90cf336">operator=</a> (const <a class="el" href="#aba673d44f38f19624c929b0a6ce441a1">Queryable</a> &amp;)=delete</td></tr>
 <tr class="memdesc:a969be47ea6b5f7aa036993e6f90cf336"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy assignment operator.  <br /></td></tr>
 <tr class="memitem:abd6ecff219cd37450a211a2f0439b4d1" id="r_abd6ecff219cd37450a211a2f0439b4d1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd6ecff219cd37450a211a2f0439b4d1">operator std::vector&lt; T &gt;</a> () &amp;&amp;</td></tr>
@@ -369,7 +369,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Move assignment operator. </p>
+<p>Move constructor. </p>
 <dl class="section remark"><dt>Remarks</dt><dd>Allowed since state will be stable as it isn't shared amongst multiple copies. </dd></dl>
 
 </div>
@@ -399,7 +399,7 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Copy constructor operator. </p>
+<p>Copy constructor. </p>
 <dl class="section remark"><dt>Remarks</dt><dd>Not allowed since state will not be stable as multiple Queryables are moving items. </dd></dl>
 
 </div>
