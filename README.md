@@ -20,30 +20,27 @@
   <a href="https://github.com/awalsh128/fluentcpp"><img src="https://img.shields.io/badge/platform-linux-lightgrey.svg" alt="Linux"></a>
 </p>
 
-<!-- prettier-ignore -->
-> [!TIP]
-> If you find this project useful, please consider supporting it
-> [as a sponsor and show some ❤️ for open source maintainers](https://github.com/sponsors/awalsh128).
-
 Wrap a container in `fcpp::query` and chain operations on it, instead of writing loops and
 temporary containers by hand.
 
-```cpp
-fcpp::query(xs)
-    .where(EXPR(x, x > 500))
-    .select(EXPR(x, x % 10))
-    .distinct()
-    .to_vector();
-```
+- 🔗 Chain filtering, projection, ordering, set and grouping operations in a single expression.
+- 🔍 Find every operation through auto-complete on the returned `fcpp::Queryable<T>`.
+- ⚡ Write terse lambdas with the `EXPR` and `CR_EXPR` macros.
+- 📦 Works with move-only types; items are moved through the chain rather than copied.
 
-- :link: Chain filtering, projection, ordering, set and grouping operations in a single expression.
-- :mag: Find every operation through auto-complete on the returned `fcpp::Queryable<T>`.
-- :zap: Write terse lambdas with the `EXPR` and `CR_EXPR` macros.
-- :package: Works with move-only types; items are moved through the chain rather than copied.
+<!-- prettier-ignore -->
+<p align="center">
+  <a href="https://github.com/sponsors/awalsh128"><img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor awalsh128"></a>
+</p>
 
----
+<p align="center">
+  Free and open source, and kept up by one person.<br />
+  If it saves you time, <a href="https://github.com/sponsors/awalsh128">sponsor it monthly</a> or
+  <a href="https://github.com/sponsors/awalsh128?frequency=one-time">leave a small one-time tip</a>. Every bit
+  helps.
+</p>
 
-## Installation
+## Quick Start
 
 Each [release](https://github.com/awalsh128/fluentcpp/releases/latest) lists the SHA-256 of its `install.sh` in the
 release notes. Download the script, check it against that hash, then run it
@@ -77,6 +74,16 @@ check passes (`less install.sh`).
 Alternatively, download `fluentcpp-<tag>.tar.gz` from a
 [release](https://github.com/awalsh128/fluentcpp/releases), extract it and run `./install.sh` from
 the extracted directory.
+
+Then query a container:
+
+```cpp
+fcpp::query(xs)
+    .where(EXPR(x, x > 500))
+    .select(EXPR(x, x % 10))
+    .distinct()
+    .to_vector();
+```
 
 ## Usage
 
@@ -198,7 +205,3 @@ assets/             Artwork and other non-code assets.
 Report bugs or request features through
 [GitHub Issues](https://github.com/awalsh128/fluentcpp/issues). For development guidelines, see
 [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## License
-
-[Apache 2.0](LICENSE).
